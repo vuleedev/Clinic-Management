@@ -1,9 +1,15 @@
 package com.hamter.dto;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @AllArgsConstructor
@@ -12,15 +18,20 @@ import lombok.NoArgsConstructor;
 public class UserDTO {
 	private Long id;                  
     private String email;             
-    private String password;          
+    private String password;   
+    private String retypePassword;
     private String firstName;         
     private String lastName;          
     private String address;           
-    private String gender;            
+    private Boolean gender;            
     private String roleId;            
     private String phoneNumber;       
     private String positionId;        
-    private byte[] image;             
+    private String image;             
     private String tokenUser;         
-    private Integer status;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "UTC")
+    private Date createdAt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "UTC")
+    private Date updatedAt;
 }
