@@ -53,4 +53,5 @@ public class User implements Serializable {
     @Column(name = "updatedAt", nullable = false)
     private Date updatedAt;
 
+
 }
