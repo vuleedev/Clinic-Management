@@ -1,5 +1,7 @@
 package com.hamter.model;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 
 import lombok.Data;
@@ -7,7 +9,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "allcodes")
-public class AllCode {
+public class AllCode implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

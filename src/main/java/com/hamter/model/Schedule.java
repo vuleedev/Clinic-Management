@@ -4,12 +4,13 @@ import javax.persistence.*;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @Entity
 @Table(name = "Schedules")
-public class Schedule {
+public class Schedule implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

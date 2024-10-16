@@ -1,15 +1,18 @@
 package com.hamter.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @Entity
 @Table(name = "Users") 
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
@@ -17,11 +20,15 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String email;
-
+    
+    @Size(min = 6, max = 20, message = "Mật khẩu phải từ 6 đến 20 ký tự")
     @Column(nullable = false) 
     private String password;
-
+    
+    @NotBlank(message = "Không được để trống")
     private String firstName;
+    
+    @NotBlank(message = "Không được để trống")
     private String lastName;
     private String address;
 
