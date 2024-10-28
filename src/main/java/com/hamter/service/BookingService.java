@@ -12,7 +12,7 @@ public interface BookingService {
 	
 	Booking create(Booking booking);
 	
-	Booking update(Booking bookingDetails);
+	Booking update(Booking booking);
 	
 	void delete(Long id);
 }

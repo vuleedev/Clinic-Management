@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.model.Booking;
 import com.hamter.service.BookingService;
+import com.hamter.service.ScheduleService;
 
 
 @RestController
@@ -27,36 +28,44 @@ public class BookingRestController {
     @Autowired
     private BookingService bookingService;
     
+    @Autowired
+    private ScheduleService scheduleService;
+    
     @GetMapping
     public List<Booking> getAllBookings() {
         return bookingService.findAll();
     }
+    
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable("id") Long id) {
-        Booking booking = bookingService.findById(id);
-        if (booking != null) {
-            return ResponseEntity.ok(booking);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public Booking getBookingById(@PathVariable("id") Long id) {
+        return bookingService.findById(id);
     }
+    
+    //Dat lich chi khi co khung gio trong
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
-        Booking newBooking = bookingService.create(booking);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newBooking);
-    }
-    @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable("id") Long id, @RequestBody Booking bookingDetails) {
-        Booking updatedBooking = bookingService.update(bookingDetails);
-        if (updatedBooking != null) {
-            return ResponseEntity.ok(updatedBooking);
+    public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
+        boolean isAvailable = scheduleService.isTimeSlotAvailable(
+            booking.getDoctorId(),
+            booking.getDate(), 
+            booking.getTimeType()
+        );
+        if (isAvailable == true) {
+            bookingService.update(booking);
+            return ResponseEntity.ok("Booking successfully created.");
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+            	.body("Selected time slot is unavailable.");
         }
     }
+    
+    @PutMapping("/{id}")
+    public Booking updateBooking(@PathVariable("id") Long id, @RequestBody Booking booking) {
+    	booking.setId(id);
+        return bookingService.update(booking);
+    }
+    
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBooking(@PathVariable("id") Long id) {
-        bookingService.delete(id);
-        return ResponseEntity.noContent().build();
+    public void deleteBooking(@PathVariable("id") Long id) {
+    	bookingService.delete(id);
     }
 }

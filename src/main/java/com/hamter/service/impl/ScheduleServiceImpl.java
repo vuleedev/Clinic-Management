@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.hamter.repository.ScheduleRepository;
 import com.hamter.model.Schedule;
 import com.hamter.service.ScheduleService;
+import java.util.Date;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
@@ -38,6 +39,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 	@Override
 	public void delete(Long id) {
 		scheduleRepository.deleteById(id);
+	}
+
+	@Override
+	public boolean isTimeSlotAvailable(Integer doctorId, Date date, String timeType) {
+	    return scheduleRepository.existsByDoctorIdAndDateAndTimeType(doctorId, date, timeType);
 	}
 
 }

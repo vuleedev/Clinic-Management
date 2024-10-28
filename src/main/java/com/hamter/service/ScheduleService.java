@@ -1,5 +1,6 @@
 package com.hamter.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.hamter.model.Schedule;
@@ -15,4 +16,6 @@ public interface ScheduleService {
 	Schedule update (Schedule schedule);
 	
 	void delete (Long id);
+	
+	boolean isTimeSlotAvailable(Integer doctorId, Date date, String timeType);
 }

@@ -17,7 +17,7 @@ import com.hamter.model.User;
 import com.hamter.service.UserService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/rest/users")
 public class UserRestController {
 

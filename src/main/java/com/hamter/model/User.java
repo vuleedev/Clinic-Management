@@ -52,6 +52,4 @@ public class User implements Serializable {
     @Temporal(TemporalType.TIMESTAMP) 
     @Column(name = "updatedAt", nullable = false)
     private Date updatedAt;
-
-
 }
