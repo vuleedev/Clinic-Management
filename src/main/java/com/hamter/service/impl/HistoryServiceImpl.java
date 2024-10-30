@@ -1,6 +1,8 @@
 package com.hamter.service.impl;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,12 +29,24 @@ public class HistoryServiceImpl implements HistoryService {
 
 	@Override
 	public History create(History history) {
+		history.setCreatedAt(new Date());
+		history.setUpdatedAt(new Date());
 		return historyRepository.save(history);
 	}
 
 	@Override
 	public History update(History history) {
-		return historyRepository.save(history);
+		Optional<History> existingHistoryOpt = historyRepository.findById(history.getId());
+        if (existingHistoryOpt.isPresent()) {
+            History existingHistory = existingHistoryOpt.get();
+            existingHistory.setPatientId(history.getPatientId());
+            existingHistory.setDoctorId(history.getDoctorId());
+            existingHistory.setDescription(history.getDescription());
+            existingHistory.setFiles(history.getFiles());
+            existingHistory.setUpdatedAt(new Date());
+            return historyRepository.save(existingHistory);
+        }
+		return null;
 	}
 
 	@Override
