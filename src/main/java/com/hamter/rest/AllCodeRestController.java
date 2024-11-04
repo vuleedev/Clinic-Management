@@ -41,8 +41,8 @@ public class AllCodeRestController {
     }
 
     @PutMapping("/{id}")
-    public AllCode update(@PathVariable Long id, @RequestBody AllCode allCode) {
-        return allCodeService.findById(id);
+    public AllCode updateAllCode(@PathVariable Long id, @RequestBody AllCode allCode) {
+        return allCodeService.update(allCode);
     }
 
     @DeleteMapping("/{id}")
