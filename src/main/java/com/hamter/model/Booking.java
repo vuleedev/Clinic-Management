@@ -21,6 +21,8 @@ public class Booking implements Serializable {
     private Integer doctorId;
 
     private String patientId;
+    
+    private String email;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;

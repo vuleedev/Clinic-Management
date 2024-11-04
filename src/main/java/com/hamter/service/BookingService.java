@@ -15,4 +15,13 @@ public interface BookingService {
 	Booking update(Booking booking);
 	
 	void delete(Long id);
+	
+	Booking confirmBooking(Long id);
+	
+	Booking cancelBooking(Long id);
+	
+	void sendReminders();
+	
+	Booking cancelBookingPending(Long id);
+
 }

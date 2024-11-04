@@ -18,4 +18,6 @@ public interface ScheduleService {
 	void delete (Long id);
 	
 	boolean isTimeSlotAvailable(Integer doctorId, Date date, String timeType);
+	
+	
 }

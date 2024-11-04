@@ -43,7 +43,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 	@Override
 	public boolean isTimeSlotAvailable(Integer doctorId, Date date, String timeType) {
-	    return scheduleRepository.existsByDoctorIdAndDateAndTimeType(doctorId, date, timeType);
+		List<Schedule> schedules = scheduleRepository.findByDoctorIdAndDateAndTimeType(doctorId, date, timeType);
+	    return schedules.isEmpty();
 	}
 
 }
