@@ -1,11 +1,19 @@
 package com.hamter.model;
 
-import javax.persistence.*;
 import java.util.Date;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "clinics")
-public class Clinic {
+public class Clinics {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +23,6 @@ public class Clinic {
 
     private String address;
 
-    @Lob
     private String description;
 
     private String image;
