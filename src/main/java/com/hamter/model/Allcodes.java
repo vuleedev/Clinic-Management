@@ -15,7 +15,7 @@ public class Allcodes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String key;
+    private String keyMap;
 
     private String type;
 
@@ -38,11 +38,11 @@ public class Allcodes {
     }
 
     public String getKey() {
-        return key;
+        return keyMap;
     }
 
     public void setKey(String key) {
-        this.key = key;
+        this.keyMap = key;
     }
 
     public String getType() {

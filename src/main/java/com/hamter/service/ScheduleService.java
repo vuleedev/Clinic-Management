@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hamster.interfaceService.IScheduleService;
 import com.hamter.dto.ScheduleDTO;
-import com.hamter.model.Schedule;
+import com.hamter.model.Schedules;
 import com.hamter.repository.ScheduleRepository;
 
 public class ScheduleService implements IScheduleService {
@@ -22,7 +22,7 @@ public class ScheduleService implements IScheduleService {
 
 	@Override
 	public ScheduleDTO createSchedule(ScheduleDTO scheduleDTO) throws Exception {
-		Schedule schedule = new Schedule();
+		Schedules schedule = new Schedules();
 		schedule.setCurrentNumber(scheduleDTO.getCurrentNumber());
 		schedule.setMaxNumber(scheduleDTO.getMaxNumber());
         schedule.setDate(scheduleDTO.getDate());
@@ -35,9 +35,9 @@ public class ScheduleService implements IScheduleService {
 
 	@Override
 	public ScheduleDTO updateSchedule(Long id, ScheduleDTO scheduleDTO) {
-		Optional<Schedule> scheduleOpt = scheduleRepository.findById(id);
+		Optional<Schedules> scheduleOpt = scheduleRepository.findById(id);
         if (scheduleOpt.isPresent()) {
-            Schedule schedule = scheduleOpt.get();
+            Schedules schedule = scheduleOpt.get();
 
             schedule.setCurrentNumber(scheduleDTO.getCurrentNumber());
             schedule.setMaxNumber(scheduleDTO.getMaxNumber());
@@ -55,7 +55,7 @@ public class ScheduleService implements IScheduleService {
 
 	@Override
 	public Optional<ScheduleDTO> getScheduleById(Long id) {
-		Optional<Schedule> schedule = scheduleRepository.findById(id);
+		Optional<Schedules> schedule = scheduleRepository.findById(id);
         if (schedule.isPresent()) {
             ScheduleDTO scheduleDTO = new ScheduleDTO(
                     schedule.get().getId(),
@@ -72,7 +72,7 @@ public class ScheduleService implements IScheduleService {
 
 	@Override
 	public List<ScheduleDTO> getAllScheduleById(Long id) {
-		List<Schedule> schedules = scheduleRepository.findAll();
+		List<Schedules> schedules = scheduleRepository.findAll();
         return schedules.stream().map(schedule -> new ScheduleDTO(
                 schedule.getId(),
                 schedule.getCurrentNumber(),
@@ -90,7 +90,7 @@ public class ScheduleService implements IScheduleService {
 
 	@Override
 	public List<ScheduleDTO> getAllSchedules() {
-List<Schedule> schedules = scheduleRepository.findAll();
+List<Schedules> schedules = scheduleRepository.findAll();
         
         // Chuyển các đối tượng Schedule thành ScheduleDTO
         return schedules.stream().map(schedule -> new ScheduleDTO(

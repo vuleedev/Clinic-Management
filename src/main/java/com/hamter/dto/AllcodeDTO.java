@@ -1,5 +1,7 @@
 package com.hamter.dto;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +17,6 @@ public class AllcodeDTO {
     private String type;      
     private String valueEn;   
     private String valueVi;   
-    private Integer value;
+    private Date createdAt;  
+    private Date updatedAt; 
 }

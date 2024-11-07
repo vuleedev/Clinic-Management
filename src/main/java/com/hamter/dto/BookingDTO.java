@@ -1,5 +1,7 @@
 package com.hamter.dto;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,18 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class BookingDTO {
-	private Long id;                     
-    private String statusId;             
-    private Long doctorId;               
-    private Long patientId;              
-    private String date;                 
-    private String timeType;             
-    private String token;                 
-    private byte[] imageRemedy;          
-    private String patientName;          
-    private String patientPhoneNumber;  
-    private String patientAddress;       
-    private String patientReason;       
-    private String patientGender;       
-    private String patientBirthday;
+	private Long id;              // ID của booking
+    private String statusId;      // ID trạng thái của booking
+    private Integer doctorId;     // ID của bác sĩ
+    private String patientId;     // ID của bệnh nhân
+    private Date date;            // Ngày đặt lịch, kiểu Date (có thể đổi thành String nếu cần định dạng lại)
+    private String timeType;      // Loại thời gian (sáng, chiều, ...)
+    private Date createdAt;       // Ngày tạo
+    private Date updatedAt;       // Ngày cập nhật
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.hamter.dto.ScheduleDTO;
-import com.hamter.model.Schedule;
 
 public interface IScheduleService {
 	List<ScheduleDTO> getAllSchedules();

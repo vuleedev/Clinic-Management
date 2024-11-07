@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class HistoryDTO {
-	private Long id;              
-    private Long patientId;       
-    private Long doctorId;        
-    private String description;   
-    private String drugs;         
-    private byte[] files;         
-    private String reason;
+	 private Long id;                  // ID của lịch sử
+	    private Integer patientId;        // ID bệnh nhân
+	    private Integer doctorId;         // ID bác sĩ
+	    private String description;       // Mô tả về bệnh án
+	    private String files;             // Dữ liệu file (nếu có)
+	    private java.util.Date createdAt;           // Thời gian tạo lịch sử
+	    private java.util.Date updatedAt;
 }
