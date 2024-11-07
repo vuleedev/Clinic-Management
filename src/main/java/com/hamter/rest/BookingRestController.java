@@ -22,7 +22,7 @@ import com.hamter.service.ScheduleService;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/rest/bookings")
 public class BookingRestController {
 
@@ -47,18 +47,26 @@ public class BookingRestController {
     
     @PostMapping
     public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
-        boolean isAvailable = scheduleService.isTimeSlotAvailable(
-            booking.getDoctorId(),
-            booking.getDate(), 
-            booking.getTimeType()
-        );
-        if (isAvailable == true) {
-        	bookingService.create(booking);
-            return ResponseEntity.ok("Tạo cuộc hẹn thành công, chờ xác nhận. Nếu cuộc hẹn được xác nhận sẽ không thể hủy");
-        } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-            	.body("Bác sĩ bận, vui lòng tạo cuộc hẹn khác");
+    	try {
+            boolean isAvailable = scheduleService.isTimeSlotAvailable(
+                booking.getDoctorId(),
+                booking.getDate(),
+                booking.getTimeType()
+            );
+            if (isAvailable) {
+                bookingService.create(booking);
+                return ResponseEntity.ok("Tạo cuộc hẹn thành công, chờ xác nhận. Nếu cuộc hẹn được xác nhận sẽ không thể hủy");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Bác sĩ bận, vui lòng tạo cuộc hẹn khác");
+            }
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Đã xảy ra lỗi khi tạo cuộc hẹn");
         }
+        
     }
     
     @PostMapping("/confirm/{id}")
@@ -99,11 +107,17 @@ public class BookingRestController {
     //CUSTOMERS
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBooking(@PathVariable("id") Long id) {
-        Booking booking = bookingService.cancelBookingPending(id);
-        if (booking == null) {
+    	try {
+            Booking booking = bookingService.cancelBookingPending(id);
+            bookingService.delete(id);
+            return ResponseEntity.ok("Xóa cuộc hẹn thành công");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy cuộc hẹn");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("Đã xảy ra lỗi khi xóa cuộc hẹn");
         }
-        bookingService.delete(id);
-        return ResponseEntity.ok("Xóa cuộc hẹn thành công");
     }
 }
