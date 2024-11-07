@@ -23,5 +23,8 @@ public interface BookingService {
 	void sendReminders();
 	
 	Booking cancelBookingPending(Long id);
-
+	
+	boolean canCreateNewBooking(String patientId);
+	
+	Booking completeBooking(Long id);
 }

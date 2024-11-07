@@ -62,7 +62,7 @@ public class BookingRestController {
     }
     
     @PostMapping("/confirm/{id}")
-    public ResponseEntity<String> confirmBooking(@PathVariable Long id) {
+    public ResponseEntity<String> confirmBooking(@PathVariable("id") Long id) {
         Booking confirmedBooking = bookingService.confirmBooking(id);
         String subject = "Thông báo về cuộc hẹn";
         String body = "Lịch hẹn đã được xác nhận. Ngày khám bệnh của bạn là " + confirmedBooking.getDate();
@@ -72,7 +72,7 @@ public class BookingRestController {
     
     //ADMIN
     @PostMapping("/cancel/{id}")
-    public ResponseEntity<String> cancelBooking(@PathVariable Long id) {
+    public ResponseEntity<String> cancelBooking(@PathVariable("id") Long id) {
         Booking cancelBooking = bookingService.cancelBooking(id);
         String subject = "Thông báo về cuộc hẹn";
         String body = "cuộc hẹn của bạn đã bị hủy, phòng khám đã từ chối cuộc hẹn";
@@ -86,12 +86,22 @@ public class BookingRestController {
         return bookingService.update(booking);
     }
     
+    @PutMapping("/complete/{id}")
+    public ResponseEntity<String> completeBooking(@PathVariable("id") Long id) {
+        Booking completedBooking = bookingService.completeBooking(id);
+        if (completedBooking != null) {
+            return ResponseEntity.ok("Cuộc hẹn đã được hoàn thành");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cuộc hẹn không tồn tại");
+        }
+    }
+    
     //CUSTOMERS
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBooking(@PathVariable("id") Long id) {
         Booking booking = bookingService.cancelBookingPending(id);
-        if (booking.getStatusId().equals("CONFIRMED")) {
-            throw new IllegalStateException("Không thể xóa cuộc hẹn đã xác nhận");
+        if (booking == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy cuộc hẹn");
         }
         bookingService.delete(id);
         return ResponseEntity.ok("Xóa cuộc hẹn thành công");

@@ -17,6 +17,8 @@ public class Booking implements Serializable {
     private Long id;
 
     private String statusId;
+    
+    private String status2Id;
 
     private Integer doctorId;
 
