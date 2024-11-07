@@ -1,0 +1,1 @@
+thêm @EnableScheduling cho ClinicManagementApplication
