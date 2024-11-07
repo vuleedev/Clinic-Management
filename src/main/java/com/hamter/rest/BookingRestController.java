@@ -17,46 +17,107 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.model.Booking;
 import com.hamter.service.BookingService;
+import com.hamter.service.EmailService;
+import com.hamter.service.ScheduleService;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/rest/bookings")
 public class BookingRestController {
 
     @Autowired
     private BookingService bookingService;
     
+    @Autowired
+    private ScheduleService scheduleService;
+    
+    @Autowired
+    private EmailService emailService;
+    
     @GetMapping
     public List<Booking> getAllBookings() {
         return bookingService.findAll();
     }
+    
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable("id") Long id) {
-        Booking booking = bookingService.findById(id);
-        if (booking != null) {
-            return ResponseEntity.ok(booking);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public Booking getBookingById(@PathVariable("id") Long id) {
+        return bookingService.findById(id);
     }
+    
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
-        Booking newBooking = bookingService.create(booking);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newBooking);
+    public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
+    	try {
+            boolean isAvailable = scheduleService.isTimeSlotAvailable(
+                booking.getDoctorId(),
+                booking.getDate(),
+                booking.getTimeType()
+            );
+            if (isAvailable) {
+                bookingService.create(booking);
+                return ResponseEntity.ok("Tạo cuộc hẹn thành công, chờ xác nhận. Nếu cuộc hẹn được xác nhận sẽ không thể hủy");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Bác sĩ bận, vui lòng tạo cuộc hẹn khác");
+            }
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Đã xảy ra lỗi khi tạo cuộc hẹn");
+        }
+        
     }
+    
+    @PostMapping("/confirm/{id}")
+    public ResponseEntity<String> confirmBooking(@PathVariable("id") Long id) {
+        Booking confirmedBooking = bookingService.confirmBooking(id);
+        String subject = "Thông báo về cuộc hẹn";
+        String body = "Lịch hẹn đã được xác nhận. Ngày khám bệnh của bạn là " + confirmedBooking.getDate();
+        emailService.SendMailBooking(confirmedBooking.getEmail(), subject, body);
+        return ResponseEntity.ok("Cuộc hẹn đã được xác nhận và email đã được gửi");
+    }
+    
+    //ADMIN
+    @PostMapping("/cancel/{id}")
+    public ResponseEntity<String> cancelBooking(@PathVariable("id") Long id) {
+        Booking cancelBooking = bookingService.cancelBooking(id);
+        String subject = "Thông báo về cuộc hẹn";
+        String body = "cuộc hẹn của bạn đã bị hủy, phòng khám đã từ chối cuộc hẹn";
+        emailService.SendMailBooking(cancelBooking.getEmail(), subject, body);
+        return ResponseEntity.ok("Cuộc hẹn đã bị hủy");
+    }
+    
     @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable("id") Long id, @RequestBody Booking bookingDetails) {
-        Booking updatedBooking = bookingService.update(bookingDetails);
-        if (updatedBooking != null) {
-            return ResponseEntity.ok(updatedBooking);
+    public Booking updateBooking(@PathVariable("id") Long id, @RequestBody Booking booking) {
+    	booking.setId(id);
+        return bookingService.update(booking);
+    }
+    
+    @PutMapping("/complete/{id}")
+    public ResponseEntity<String> completeBooking(@PathVariable("id") Long id) {
+        Booking completedBooking = bookingService.completeBooking(id);
+        if (completedBooking != null) {
+            return ResponseEntity.ok("Cuộc hẹn đã được hoàn thành");
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cuộc hẹn không tồn tại");
         }
     }
+    
+    //CUSTOMERS
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBooking(@PathVariable("id") Long id) {
-        bookingService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteBooking(@PathVariable("id") Long id) {
+    	try {
+            Booking booking = bookingService.cancelBookingPending(id);
+            bookingService.delete(id);
+            return ResponseEntity.ok("Xóa cuộc hẹn thành công");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy cuộc hẹn");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("Đã xảy ra lỗi khi xóa cuộc hẹn");
+        }
     }
 }

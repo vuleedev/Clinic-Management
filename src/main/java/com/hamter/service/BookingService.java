@@ -12,7 +12,19 @@ public interface BookingService {
 	
 	Booking create(Booking booking);
 	
-	Booking update(Booking bookingDetails);
+	Booking update(Booking booking);
 	
 	void delete(Long id);
+	
+	Booking confirmBooking(Long id);
+	
+	Booking cancelBooking(Long id);
+	
+	void sendReminders();
+	
+	Booking cancelBookingPending(Long id);
+	
+	boolean canCreateNewBooking(String patientId);
+	
+	Booking completeBooking(Long id);
 }

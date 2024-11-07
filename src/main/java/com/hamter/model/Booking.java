@@ -17,10 +17,14 @@ public class Booking implements Serializable {
     private Long id;
 
     private String statusId;
+    
+    private String status2Id;
 
     private Integer doctorId;
 
     private String patientId;
+    
+    private String email;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
