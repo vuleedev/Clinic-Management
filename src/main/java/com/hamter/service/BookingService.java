@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-package com.hamter.service;
-
-public class BookingService {
-
-}
-=======
 package com.hamter.service;
 
 import java.util.List;
@@ -30,6 +23,8 @@ public interface BookingService {
 	void sendReminders();
 	
 	Booking cancelBookingPending(Long id);
-
+	
+	boolean canCreateNewBooking(String patientId);
+	
+	Booking completeBooking(Long id);
 }
->>>>>>> 545840a2952baa7f9c05c319d3d612e18e74e73a
