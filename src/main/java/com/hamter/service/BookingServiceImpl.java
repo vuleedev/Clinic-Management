@@ -50,7 +50,8 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public boolean canCreateNewBooking(String patientId) {
         Optional<Booking> lastBooking = bookingRepository.findTopByPatientIdOrderByDateDesc(patientId);
-        return lastBooking.isEmpty() || "COMPLETE".equals(lastBooking.get().getStatus2Id());
+        return lastBooking.isEmpty() || "COMPLETE".equals(lastBooking.get().getStatus2Id()) || 
+                						"CANCELED".equals(lastBooking.get().getStatus2Id());
     }
 	
 	@Override
@@ -78,8 +79,7 @@ public class BookingServiceImpl implements BookingService {
 	public Booking cancelBooking(Long id) {
 		Booking booking = bookingRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("không tìm thấy cuộc hẹn"));
-		booking.setStatusId("CANCEL");
-		booking.setStatus2Id("COMPLETE");
+		booking.setStatusId("CANCELED");
 		return bookingRepository.save(booking);
 	}
 	
