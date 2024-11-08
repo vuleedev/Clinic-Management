@@ -38,7 +38,7 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public Booking create(Booking booking) {
 		if (!canCreateNewBooking(booking.getPatientId())) {
-            throw new IllegalStateException("Không thể tạo cuộc hẹn mới. Vui lòng hoàn thành cuộc hẹn trước.");
+            throw new IllegalStateException("Tạo cuộc hẹn thất bại. Bạn còn cuộc hẹn chưa khám, tạo cuộc hẹn khác sau");
         }
         booking.setCreatedAt(new java.util.Date());
         booking.setUpdatedAt(new java.util.Date());
