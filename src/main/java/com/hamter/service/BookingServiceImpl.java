@@ -29,7 +29,7 @@ public class BookingServiceImpl implements BookingService {
 	public List<Booking> findAll() {
 		return bookingRepository.findAll();
 	}
-
+	
 	@Override
 	public Booking findById(Long id) {
 		return bookingRepository.findById(id).orElse(null);
@@ -79,6 +79,7 @@ public class BookingServiceImpl implements BookingService {
 		Booking booking = bookingRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("không tìm thấy cuộc hẹn"));
 		booking.setStatusId("CANCEL");
+		booking.setStatus2Id("COMPLETE");
 		return bookingRepository.save(booking);
 	}
 	
@@ -121,4 +122,5 @@ public class BookingServiceImpl implements BookingService {
 	public void delete(Long id) {
 		bookingRepository.deleteById(id);
 	}
+
 }
