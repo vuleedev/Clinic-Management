@@ -54,23 +54,6 @@ public class ScheduleService implements IScheduleService {
 	}
 
 	@Override
-	public Optional<ScheduleDTO> getScheduleById(Long id) {
-		Optional<Schedules> schedule = scheduleRepository.findById(id);
-        if (schedule.isPresent()) {
-            ScheduleDTO scheduleDTO = new ScheduleDTO(
-                    schedule.get().getId(),
-                    schedule.get().getCurrentNumber(),
-                    schedule.get().getMaxNumber(),
-                    schedule.get().getDate(),
-                    schedule.get().getTimeType(),
-                    schedule.get().getDoctorId()
-            );
-            return Optional.of(scheduleDTO);
-        }
-        return Optional.empty();
-	}
-
-	@Override
 	public List<ScheduleDTO> getAllScheduleById(Long id) {
 		List<Schedules> schedules = scheduleRepository.findAll();
         return schedules.stream().map(schedule -> new ScheduleDTO(

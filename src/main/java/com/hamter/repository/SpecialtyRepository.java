@@ -1,5 +1,9 @@
 package com.hamter.repository;
 
-public interface SpecialtyRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.hamter.model.Specialties;
+
+public interface SpecialtyRepository extends JpaRepository<Specialties, Long> {
 
 }

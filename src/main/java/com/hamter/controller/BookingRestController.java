@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hamster.interfaceService.IBookingService;
 import com.hamter.model.Booking;
-import com.hamter.service.BookingService;
+import com.hamter.model.Bookings;
 import com.hamter.service.EmailService;
 import com.hamter.service.ScheduleService;
 
@@ -27,7 +28,7 @@ import com.hamter.service.ScheduleService;
 public class BookingRestController {
 
     @Autowired
-    private BookingService bookingService;
+    private IBookingService bookingService;
     
     @Autowired
     private ScheduleService scheduleService;
@@ -36,17 +37,17 @@ public class BookingRestController {
     private EmailService emailService;
     
     @GetMapping
-    public List<Booking> getAllBookings() {
+    public List<Bookings> getAllBookings() {
         return bookingService.findAll();
     }
     
     @GetMapping("/{id}")
-    public Booking getBookingById(@PathVariable("id") Long id) {
+    public Bookings getBookingById(@PathVariable("id") Long id) {
         return bookingService.findById(id);
     }
     
     @PostMapping
-    public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
+    public ResponseEntity<String> createBooking(@RequestBody Bookings booking) {
         boolean isAvailable = scheduleService.isTimeSlotAvailable(
             booking.getDoctorId(),
             booking.getDate(), 
@@ -63,7 +64,7 @@ public class BookingRestController {
     
     @PostMapping("/confirm/{id}")
     public ResponseEntity<String> confirmBooking(@PathVariable Long id) {
-        Booking confirmedBooking = bookingService.confirmBooking(id);
+        Bookings confirmedBooking = bookingService.confirmBooking(id);
         String subject = "Thông báo về cuộc hẹn";
         String body = "Lịch hẹn đã được xác nhận. Ngày khám bệnh của bạn là " + confirmedBooking.getDate();
         emailService.SendMailBooking(confirmedBooking.getEmail(), subject, body);
@@ -73,7 +74,7 @@ public class BookingRestController {
     //ADMIN
     @PostMapping("/cancel/{id}")
     public ResponseEntity<String> cancelBooking(@PathVariable Long id) {
-        Booking cancelBooking = bookingService.cancelBooking(id);
+        Bookings cancelBooking = bookingService.cancelBooking(id);
         String subject = "Thông báo về cuộc hẹn";
         String body = "cuộc hẹn của bạn đã bị hủy, phòng khám đã từ chối cuộc hẹn";
         emailService.SendMailBooking(cancelBooking.getEmail(), subject, body);
@@ -81,7 +82,7 @@ public class BookingRestController {
     }
     
     @PutMapping("/{id}")
-    public Booking updateBooking(@PathVariable("id") Long id, @RequestBody Booking booking) {
+    public Bookings updateBooking(@PathVariable("id") Long id, @RequestBody Bookings booking) {
     	booking.setId(id);
         return bookingService.update(booking);
     }
@@ -89,7 +90,7 @@ public class BookingRestController {
     //CUSTOMERS
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBooking(@PathVariable("id") Long id) {
-        Booking booking = bookingService.cancelBookingPending(id);
+        Bookings booking = bookingService.cancelBookingPending(id);
         if (booking.getStatusId().equals("CONFIRMED")) {
             throw new IllegalStateException("Không thể xóa cuộc hẹn đã xác nhận");
         }

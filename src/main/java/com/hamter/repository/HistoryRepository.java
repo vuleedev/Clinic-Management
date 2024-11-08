@@ -1,5 +1,9 @@
 package com.hamter.repository;
 
-public interface HistoryRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.hamter.model.Histories;
+
+public interface HistoryRepository extends JpaRepository<Histories, Long> {
 
 }

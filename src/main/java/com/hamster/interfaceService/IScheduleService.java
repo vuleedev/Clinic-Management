@@ -11,9 +11,7 @@ public interface IScheduleService {
 	ScheduleDTO createSchedule(ScheduleDTO scheduleDTO) throws Exception;
 	
 	ScheduleDTO updateSchedule(Long id, ScheduleDTO scheduleDTO);
-	
-	Optional<ScheduleDTO> getScheduleById(Long id);
-	
+
 	List<ScheduleDTO> getAllScheduleById(Long id);
 	
 	void deleteSchedule(Long id);

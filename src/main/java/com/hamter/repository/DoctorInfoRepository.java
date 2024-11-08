@@ -1,5 +1,9 @@
 package com.hamter.repository;
 
-public interface DoctorInfoRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.hamter.model.DoctorInfo;
+
+public interface DoctorInfoRepository extends JpaRepository<DoctorInfo, Long> {
 
 }

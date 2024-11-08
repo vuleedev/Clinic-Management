@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hamster.interfaceService.IAllCodeService;
 import com.hamter.model.AllCode;
-import com.hamter.service.AllCodeService;
+import com.hamter.model.Allcodes;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -23,25 +24,25 @@ import com.hamter.service.AllCodeService;
 public class AllCodeRestController {
 	
 	@Autowired
-    private AllCodeService allCodeService;
+    private IAllCodeService allCodeService;
 
     @GetMapping
-    public List<AllCode> getAllCodes() {
+    public List<Allcodes> getAllCodes() {
         return allCodeService.findAll();
     }
 
     @GetMapping("/{id}")
-    public AllCode findByIdAllCode(@PathVariable Long id) {
+    public Allcodes findByIdAllCode(@PathVariable Long id) {
         return allCodeService.findById(id);            
     }
 
     @PostMapping
-    public AllCode createAllCode(@RequestBody AllCode allCode) {
+    public Allcodes createAllCode(@RequestBody Allcodes allCode) {
         return allCodeService.create(allCode);
     }
 
     @PutMapping("/{id}")
-    public AllCode updateAllCode(@PathVariable Long id, @RequestBody AllCode allCode) {
+    public Allcodes updateAllCode(@PathVariable Long id, @RequestBody Allcodes allCode) {
         return allCodeService.update(allCode);
     }
 
