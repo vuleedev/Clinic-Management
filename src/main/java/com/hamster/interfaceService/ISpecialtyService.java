@@ -11,7 +11,7 @@ public interface ISpecialtyService {
 	
 	SpecialtyDTO updateSpecialty(Long id, SpecialtyDTO specialtyDTO);
 	
-	List<SpecialtyDTO> getAllSpecialtyById(Long id);
+	Optional<SpecialtyDTO> getSpecialtyById(Long id);
 	
 	void deleteSpecialty(Long id);
 }
