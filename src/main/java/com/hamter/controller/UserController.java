@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.dto.UserDTO;
 import com.hamter.dto.UserLoginDTO;
+import com.hamter.model.Roles;
 import com.hamter.model.User;
+import com.hamter.repository.RoleRepository;
 import com.hamter.service.UserService;
 
 import jakarta.validation.Valid;
@@ -29,6 +31,8 @@ import jakarta.validation.Valid;
 public class UserController {
 	@Autowired
 	private UserService userService;
+	@Autowired
+    private RoleRepository roleRepository;
 	// đăng ký
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO, BindingResult rs) {
@@ -40,7 +44,11 @@ public class UserController {
 			if(!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
 				return ResponseEntity.badRequest().body("Passwords do not match");
 			}
-			User user = userService.register(userDTO);
+			Optional<Roles> roleOptional = roleRepository.findByName(userDTO.getRoleId());
+            if (roleOptional.isEmpty()) {
+                return ResponseEntity.badRequest().body("Invalid role");
+            }
+			User user = userService.register(userDTO, roleOptional.get());
 			return ResponseEntity.ok(user);
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

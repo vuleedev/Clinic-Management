@@ -15,7 +15,7 @@ public class ScheduleDTO {
 	private Long id;               
     private Integer currentNumber; 
     private Integer maxNumber;     
-    private Date date;           
+    private java.util.Date date;           
     private String timeType;       
     private Long doctorId;
     private java.util.Date createdAt;        

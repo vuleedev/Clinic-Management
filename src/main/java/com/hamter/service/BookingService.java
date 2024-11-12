@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package com.hamter.service;
 
 import java.sql.Timestamp;

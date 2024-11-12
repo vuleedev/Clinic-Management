@@ -28,7 +28,7 @@ public class Schedules {
 
     private String timeType;
 
-    private Integer doctorId;
+    private Long doctorId;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt", nullable = false)
@@ -78,11 +78,11 @@ public class Schedules {
         this.timeType = timeType;
     }
 
-    public Integer getDoctorId() {
+    public Long getDoctorId() {
         return doctorId;
     }
 
-    public void setDoctorId(Integer doctorId) {
+    public void setDoctorId(Long doctorId) {
         this.doctorId = doctorId;
     }
 

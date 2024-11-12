@@ -32,11 +32,11 @@ public class JwtTokenUtil {
 	private String secretKey;
 	public String generateToken(User user) throws Exception{
 		Map<String, Object> claims = new HashMap<>();
-		claims.put("email", user.getEmail());
+		claims.put("email", user.getUsername());
 		try {
 			String token = Jwts.builder()
 					.setClaims(claims)
-					.setSubject(user.getEmail())
+					.setSubject(user.getUsername())
 					.setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
 					.signWith(getSignInKey(),SignatureAlgorithm.HS256)
 					.compact();

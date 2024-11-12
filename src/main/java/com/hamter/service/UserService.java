@@ -1,7 +1,9 @@
 package com.hamter.service;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,13 +15,17 @@ import org.springframework.stereotype.Service;
 import com.hamster.component.JwtTokenUtil;
 import com.hamster.interfaceService.IUserService;
 import com.hamter.dto.UserDTO;
+import com.hamter.model.Roles;
 import com.hamter.model.User;
+import com.hamter.repository.RoleRepository;
 import com.hamter.repository.UserRepository;
 
 @Service
 public class UserService implements IUserService {
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+    private RoleRepository roleRepository;
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -28,7 +34,7 @@ public class UserService implements IUserService {
 	private JwtTokenUtil jwtTokenUtil;
 	
 	@Override
-	public User register(UserDTO userDTO) throws Exception {
+	public User register(UserDTO userDTO, Roles role) throws Exception {
 		String email = userDTO.getEmail();
 		
 		// Check email
@@ -43,8 +49,8 @@ public class UserService implements IUserService {
 				.password(userDTO.getPassword())
 				.address(userDTO.getAddress())
 				.gender(userDTO.getGender())
-				.roleId(userDTO.getRoleId())
 				.phoneNumber(userDTO.getPhoneNumber())
+				.roles(Set.of(role))
 				.positionId(userDTO.getPositionId())
 				.image(userDTO.getImage())
 				.createdAt(new Date())

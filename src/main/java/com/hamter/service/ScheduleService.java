@@ -3,6 +3,7 @@ package com.hamter.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -62,7 +63,9 @@ public class ScheduleService implements IScheduleService {
                 schedule.getMaxNumber(),
                 schedule.getDate(),
                 schedule.getTimeType(),
-                schedule.getDoctorId()
+                schedule.getDoctorId(),
+                schedule.getCreatedAt(),
+                schedule.getUpdatedAt()
         )).toList();
 	}
 
@@ -82,8 +85,25 @@ List<Schedules> schedules = scheduleRepository.findAll();
                 schedule.getMaxNumber(),
                 schedule.getDate(),
                 schedule.getTimeType(),
-                schedule.getDoctorId()
+                schedule.getDoctorId(),
+                schedule.getCreatedAt(),
+                schedule.getUpdatedAt()
         )).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<ScheduleDTO> getScheduleById(Long id) {
+		return scheduleRepository.findById(id)
+	            .map(schedule -> new ScheduleDTO(
+	                schedule.getId(),
+	                schedule.getCurrentNumber(),
+	                schedule.getMaxNumber(),
+	                schedule.getDate(),
+	                schedule.getTimeType(),
+	                schedule.getDoctorId(),  // Hoặc tùy chỉnh theo cấu trúc `doctor`
+	                schedule.getCreatedAt(),
+	                schedule.getUpdatedAt()
+	            ));
 	}
 	
 
