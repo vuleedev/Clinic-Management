@@ -19,5 +19,5 @@ public interface ScheduleService {
 	
 	boolean isTimeSlotAvailable(Integer doctorId, Date date, String timeType);
 	
-	
+	List<String> getAvailableTimesForDoctor(Integer doctorId, Date date);
 }

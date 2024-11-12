@@ -1,8 +1,10 @@
 package com.hamter.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.hamter.model.Booking;
+import com.hamter.model.Schedule;
 
 public interface BookingService {
 	
@@ -18,7 +20,7 @@ public interface BookingService {
 	
 	Booking confirmBooking(Long id);
 	
-	Booking cancelBooking(Long id);
+	Booking cancelBooking(Long id, String reason);
 	
 	void sendReminders();
 	
@@ -27,4 +29,10 @@ public interface BookingService {
 	boolean canCreateNewBooking(String patientId);
 	
 	Booking completeBooking(Long id);
+	
+	Booking notAttendedBooking(Long id);
+	
+	void checkStatusNotAttendedBooking(Long id, String status2Id);
+	
+	void sendWarningEmail(Booking booking);
 }

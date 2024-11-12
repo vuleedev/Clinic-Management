@@ -1,6 +1,7 @@
 package com.hamter.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,13 @@ public class ScheduleServiceImpl implements ScheduleService {
 	public boolean isTimeSlotAvailable(Integer doctorId, Date date, String timeType) {
 		List<Schedule> schedules = scheduleRepository.findByDoctorIdAndDateAndTimeType(doctorId, date, timeType);
 	    return schedules.isEmpty();
+	}
+	
+	public List<String> getAvailableTimesForDoctor(Integer doctorId, Date date) {
+	    List<Schedule> schedules = scheduleRepository.findByDoctorIdAndDateAndCurrentNumberLessThan(doctorId, date, 0);
+	    return schedules.stream()
+	                    .map(Schedule::getTimeType) //timetype luu gio hen
+	                    .collect(Collectors.toList());
 	}
 
 }
