@@ -70,7 +70,11 @@ public class BookingServiceImpl implements BookingService {
 		Booking booking = bookingRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("không tìm thấy cuộc hẹn"));
 		booking.setStatusId("WAIT");
-		return bookingRepository.save(booking);
+		booking = bookingRepository.save(booking);
+        String subject = "Thông báo về cuộc hẹn";
+        String body = "Lịch hẹn đã được xác nhận. Ngày khám bệnh của bạn là " + booking.getDate();
+        emailService.SendMailBooking(booking.getEmail(), subject, body);
+        return booking;
 	}
 	
 	@Override
@@ -79,6 +83,9 @@ public class BookingServiceImpl implements BookingService {
 				.orElseThrow(() -> new RuntimeException("không tìm thấy cuộc hẹn"));
 		booking.setStatusId("CANCELED");
 		booking.setCancelReason(reason);
+		String subject = "Thông báo về cuộc hẹn";
+        String body = "Cuộc hẹn của bạn đã bị hủy. Phòng khám đã từ chối cuộc hẹn với lý do: " + reason;
+        emailService.SendMailBooking(booking.getEmail(), subject, body);
 		return bookingRepository.save(booking);
 	}
 	

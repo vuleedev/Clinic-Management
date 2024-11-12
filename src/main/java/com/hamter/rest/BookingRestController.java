@@ -54,7 +54,7 @@ public class BookingRestController {
         return ResponseEntity.ok(availableTimes);
     }
     
-    @PostMapping
+    @PostMapping("/create-booking")
     public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
     	try {
             boolean isAvailable = scheduleService.isTimeSlotAvailable(
@@ -78,23 +78,25 @@ public class BookingRestController {
         
     }
     
-    @PostMapping("/confirm/{id}")
+    @PutMapping("/confirm/{id}")
     public ResponseEntity<String> confirmBooking(@PathVariable("id") Long id) {
-        Booking confirmedBooking = bookingService.confirmBooking(id);
-        String subject = "Thông báo về cuộc hẹn";
-        String body = "Lịch hẹn đã được xác nhận. Ngày khám bệnh của bạn là " + confirmedBooking.getDate();
-        emailService.SendMailBooking(confirmedBooking.getEmail(), subject, body);
-        return ResponseEntity.ok("Cuộc hẹn đã được xác nhận và email đã được gửi");
+    	try {
+            Booking confirmedBooking = bookingService.confirmBooking(id);
+            return ResponseEntity.ok("Cuộc hẹn đã được xác nhận và email đã được gửi.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi, không thể xác nhận cuộc hẹn.");
+        }
     }
     
     //ADMIN
-    @PostMapping("/cancel/{id}")
+    @PutMapping("/cancel/{id}")
     public ResponseEntity<String> cancelBooking(@PathVariable("id") Long id, @RequestParam("reason") String reason) {
-        Booking cancelBooking = bookingService.cancelBooking(id, reason);
-        String subject = "Thông báo về cuộc hẹn";
-        String body = "Cuộc hẹn của bạn đã bị hủy. Phòng khám đã từ chối cuộc hẹn với lý do: " + reason;
-        emailService.SendMailBooking(cancelBooking.getEmail(), subject, body);
-        return ResponseEntity.ok("Cuộc hẹn đã bị hủy");
+    	try {
+            Booking cancelBooking = bookingService.cancelBooking(id, reason);
+            return ResponseEntity.ok("Cuộc hẹn đã bị hủy và email thông báo đã được gửi.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi, không thể hủy cuộc hẹn.");
+        }
     }
     
     @PutMapping("/complete/{id}")
@@ -124,7 +126,7 @@ public class BookingRestController {
     }
     
     //CUSTOMERS
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<String> deleteBooking(@PathVariable("id") Long id) {
     	try {
             Booking booking = bookingService.cancelBookingPending(id);
