@@ -97,12 +97,6 @@ public class BookingRestController {
         return ResponseEntity.ok("Cuộc hẹn đã bị hủy");
     }
     
-    @PutMapping("/{id}")
-    public Booking updateBooking(@PathVariable("id") Long id, @RequestBody Booking booking) {
-    	booking.setId(id);
-        return bookingService.update(booking);
-    }
-    
     @PutMapping("/complete/{id}")
     public ResponseEntity<String> completeBooking(@PathVariable("id") Long id) {
         Booking completedBooking = bookingService.completeBooking(id);
@@ -121,6 +115,12 @@ public class BookingRestController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cuộc hẹn không tồn tại");
         }
+    }
+    
+    @PutMapping("/{id}")
+    public Booking updateBooking(@PathVariable("id") Long id, @RequestBody Booking booking) {
+    	booking.setId(id);
+        return bookingService.update(booking);
     }
     
     //CUSTOMERS

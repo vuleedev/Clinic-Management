@@ -14,7 +14,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.hamter.repository.BookingRepository;
-import com.hamter.repository.ScheduleRepository;
 import com.hamter.model.Booking;
 import com.hamter.service.BookingService;
 import com.hamter.service.EmailService;
@@ -47,55 +46,30 @@ public class BookingServiceImpl implements BookingService {
         booking.setCreatedAt(new java.util.Date());
         booking.setUpdatedAt(new java.util.Date());
         booking.setStatusId("PENDING");
-        booking.setStatus2Id("WAIT");
         return bookingRepository.save(booking);
 	}
 	
 	@Override
 	public boolean canCreateNewBooking(String patientId) {
-        Optional<Booking> lastBooking = bookingRepository.findTopByPatientIdOrderByIdDesc(patientId);
-        if (lastBooking.isPresent()) {
-            Booking booking = lastBooking.get();
-            boolean isStatusValid = "CONFIRMED".equals(booking.getStatusId()) || "CANCELED".equals(booking.getStatusId());
-            boolean isStatus2Valid = "COMPLETE".equals(booking.getStatus2Id()) || "NOT_ATTENDED".equals(booking.getStatus2Id());
-            if (!isStatusValid || !isStatus2Valid) {
-                System.out.println("tạo không thành công");
-                return false;
-            }
-        }
-        return true;
+		Optional<Booking> lastBooking = bookingRepository.findTopByPatientIdOrderByIdDesc(patientId);
+	    if (lastBooking.isPresent()) {
+	        Booking booking = lastBooking.get();
+	        boolean isStatusValid = "COMPLETE".equals(booking.getStatusId()) || 
+	                                "NOT_ATTENDED".equals(booking.getStatusId()) || 
+	                                "CANCELED".equals(booking.getStatusId());
+	        if (!isStatusValid) {
+	            System.out.println("Tạo không thành công do trạng thái không hợp lệ");
+	            return false;
+	        }
+	    }
+	    return true;
     }
-	
-	@Override
-	public Booking completeBooking(Long id) {
-        Optional<Booking> booking = bookingRepository.findById(id);
-        if (booking.isPresent()) {
-            Booking updatedBooking = booking.get();
-            updatedBooking.setStatus2Id("COMPLETE");
-            updatedBooking.setUpdatedAt(new java.util.Date());
-            return bookingRepository.save(updatedBooking);
-        }
-        return null;
-    }
-	
-	@Override
-	public Booking notAttendedBooking(Long id) {
-		Optional<Booking> booking = bookingRepository.findById(id);
-        if (booking.isPresent()) {
-            Booking updatedBooking = booking.get();
-            updatedBooking.setStatus2Id("NOT_ATTENDED");
-            updatedBooking.setUpdatedAt(new java.util.Date());
-            return bookingRepository.save(updatedBooking);
-        }
-        return null;
-	}
 	
 	@Override
 	public Booking confirmBooking(Long id) {
 		Booking booking = bookingRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("không tìm thấy cuộc hẹn"));
-		booking.setStatusId("CONFIRMED");
-		booking.setStatus2Id("WAIT");
+		booking.setStatusId("WAIT");
 		return bookingRepository.save(booking);
 	}
 	
@@ -109,13 +83,37 @@ public class BookingServiceImpl implements BookingService {
 	}
 	
 	@Override
+	public Booking completeBooking(Long id) {
+        Optional<Booking> booking = bookingRepository.findById(id);
+        if (booking.isPresent()) {
+            Booking updatedBooking = booking.get();
+            updatedBooking.setStatusId("COMPLETE");
+            updatedBooking.setUpdatedAt(new java.util.Date());
+            return bookingRepository.save(updatedBooking);
+        }
+        return null;
+    }
+	
+	@Override
+	public Booking notAttendedBooking(Long id) {
+		Optional<Booking> booking = bookingRepository.findById(id);
+        if (booking.isPresent()) {
+            Booking updatedBooking = booking.get();
+            updatedBooking.setStatusId("NOT_ATTENDED");
+            updatedBooking.setUpdatedAt(new java.util.Date());
+            return bookingRepository.save(updatedBooking);
+        }
+        return null;
+	}
+	
+	@Override
 	public Booking cancelBookingPending(Long id) {
 		Booking booking = bookingRepository.findById(id)
-		        .orElseThrow(() -> new RuntimeException("không tìm thấy cuộc hẹn"));
-		    if ("CONFIRMED".equals(booking.getStatusId())) {
-		        throw new IllegalStateException("Không thể xóa cuộc hẹn đã xác nhận");
-		    }
-		    return booking;
+	            .orElseThrow(() -> new RuntimeException("Không tìm thấy cuộc hẹn"));
+	    if (!"PENDING".equals(booking.getStatusId())) { 
+	        throw new IllegalStateException("Chỉ có thể xóa cuộc hẹn có trạng thái chờ xác nhận");
+	    }
+	    return booking;
 	}
 	
 	@Override
@@ -136,17 +134,17 @@ public class BookingServiceImpl implements BookingService {
     }
 	
 	@Override
-	public void checkStatusNotAttendedBooking(Long id, String status2Id) {
+	public void checkStatusNotAttendedBooking(Long id, String statusId) {
 		Optional<Booking> checkBooking = bookingRepository.findById(id);
         if (checkBooking.isPresent()) {
             Booking booking = checkBooking.get(); 
-            booking.setStatus2Id(status2Id);
+            booking.setStatusId(statusId);
             booking.setUpdatedAt(new Date());
             bookingRepository.save(booking);
 
-            if ("NOT_ATTENDED".equals(status2Id)) {
-                int notAttendedCount = bookingRepository.countByPatientIdAndStatus2Id(booking.getPatientId(), "NOT_ATTENDED");
-                if (notAttendedCount >= 2) {
+            if ("NOT_ATTENDED".equals(statusId)) {
+                int notAttendedCount = bookingRepository.countByPatientIdAndStatusId(booking.getPatientId(), "NOT_ATTENDED");
+                if (notAttendedCount == 2) {
                     sendWarningEmail(booking);
                 }
             }
@@ -156,9 +154,9 @@ public class BookingServiceImpl implements BookingService {
 	@Override
 	public void sendWarningEmail(Booking booking) {
 		String subject = "Cảnh báo: Không tham gia cuộc hẹn khám bệnh";
-        String message = "Chúng tôi xin thông báo rằng bạn đã không tham gia cuộc hẹn của mình 2 lần. "
-        			   + "Nếu quá 3 lần tài khoản sẽ bị khóa";
-        emailService.SendMailBooking(booking.getEmail(), subject, message);
+        String body = "Chúng tôi xin thông báo rằng bạn đã không tham gia cuộc hẹn của mình 2 lần. "
+        			   +"Nếu quá 3 lần tài khoản sẽ bị khóa";
+        emailService.SendMailBooking(booking.getEmail(), subject, body);
 	}
 	
 	@Override

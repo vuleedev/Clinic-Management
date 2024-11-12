@@ -32,7 +32,7 @@ public interface BookingService {
 	
 	Booking notAttendedBooking(Long id);
 	
-	void checkStatusNotAttendedBooking(Long id, String status2Id);
+	void checkStatusNotAttendedBooking(Long id, String statusId);
 	
 	void sendWarningEmail(Booking booking);
 }
