@@ -5,12 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hamster.interfaceService.IAllCodeService;
+import com.hamster.interfaceService.IAllcodeService;
 import com.hamter.model.Allcodes;
 import com.hamter.repository.AllCodeRepository;
 
 @Service
-public class AllCodeService implements IAllCodeService {
+public class AllCodeService implements IAllcodeService {
 	
 	@Autowired
     private AllCodeRepository allCodeRepository;

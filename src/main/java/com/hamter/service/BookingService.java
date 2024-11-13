@@ -126,4 +126,3 @@ public interface BookingService {
 	
 	Booking completeBooking(Long id);
 }
->>>>>>> 5fb944f1f4a053db8ba3b8c811043d66612133cb
