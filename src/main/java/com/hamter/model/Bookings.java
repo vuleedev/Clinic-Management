@@ -30,20 +30,24 @@ public class Bookings {
     private Long id;
 
     private String statusId;
-    
-    private String status2Id;
 
     private Integer doctorId;
 
     private String patientId;
     
     private String email;
+    
+    private String cancelReason;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
     private String timeType;
-
+    
+    @ManyToOne
+    @JoinColumn(name = "timeSlot_id", nullable = false)
+    private TimeSlot timeSlot;
+    
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt", nullable = false)
     private Date createdAt;
