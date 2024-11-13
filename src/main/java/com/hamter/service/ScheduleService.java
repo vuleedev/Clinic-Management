@@ -17,7 +17,4 @@ public interface ScheduleService {
 	
 	void delete (Long id);
 	
-	boolean isTimeSlotAvailable(Integer doctorId, Date date, String timeType);
-	
-	List<String> getAvailableTimesForDoctor(Integer doctorId, Date date);
 }

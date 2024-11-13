@@ -42,17 +42,4 @@ public class ScheduleServiceImpl implements ScheduleService {
 		scheduleRepository.deleteById(id);
 	}
 
-	@Override
-	public boolean isTimeSlotAvailable(Integer doctorId, Date date, String timeType) {
-		List<Schedule> schedules = scheduleRepository.findByDoctorIdAndDateAndTimeType(doctorId, date, timeType);
-	    return schedules.isEmpty();
-	}
-	
-	public List<String> getAvailableTimesForDoctor(Integer doctorId, Date date) {
-	    List<Schedule> schedules = scheduleRepository.findByDoctorIdAndDateAndCurrentNumberLessThan(doctorId, date, 0);
-	    return schedules.stream()
-	                    .map(Schedule::getTimeType) //timetype luu gio hen
-	                    .collect(Collectors.toList());
-	}
-
 }

@@ -19,9 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.model.Booking;
+import com.hamter.model.TimeSlot;
 import com.hamter.service.BookingService;
-import com.hamter.service.EmailService;
 import com.hamter.service.ScheduleService;
+import com.hamter.service.TimeSlotService;
 
 
 @RestController
@@ -36,7 +37,7 @@ public class BookingRestController {
     private ScheduleService scheduleService;
     
     @Autowired
-    private EmailService emailService;
+    private TimeSlotService timeSlotService;
     
     @GetMapping
     public List<Booking> getAllBookings() {
@@ -48,32 +49,25 @@ public class BookingRestController {
         return bookingService.findById(id);
     }
     
-    @GetMapping("/available-times/{doctorId}")
-    public ResponseEntity<List<String>> getAvailableTimes(@PathVariable Integer doctorId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-        List<String> availableTimes = scheduleService.getAvailableTimesForDoctor(doctorId, date);
-        return ResponseEntity.ok(availableTimes);
+    @GetMapping("/available-times")
+    public ResponseEntity<List<TimeSlot>> getAvailableTimeSlots(@RequestParam Long doctorId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        List<TimeSlot> availableTimeSlots = timeSlotService.findAvailableTimeSlots(doctorId, date);
+        if (availableTimeSlots.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(availableTimeSlots);
     }
     
     @PostMapping("/create-booking")
     public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
     	try {
-            boolean isAvailable = scheduleService.isTimeSlotAvailable(
-                booking.getDoctorId(),
-                booking.getDate(),
-                booking.getTimeType()
-            );
-            if (isAvailable) {
-                bookingService.create(booking);
-                return ResponseEntity.ok("Tạo cuộc hẹn thành công, chờ xác nhận. Nếu cuộc hẹn được xác nhận sẽ không thể hủy");
-            } else {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Bác sĩ bận, vui lòng tạo cuộc hẹn khác");
-            }
+    		Booking createBooking = bookingService.create(booking);
+            return ResponseEntity.ok("Tạo cuộc hẹn thành công, chờ xác nhận. Nếu cuộc hẹn được xác nhận sẽ không thể hủy");  	
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Đã xảy ra lỗi khi tạo cuộc hẹn");
+                .body("Đã xảy ra lỗi khi tạo cuộc hẹn " + e);
         }
         
     }
@@ -89,7 +83,7 @@ public class BookingRestController {
     }
     
     //ADMIN
-    @PutMapping("/cancel/{id}")
+    @PostMapping("/cancel/{id}")
     public ResponseEntity<String> cancelBooking(@PathVariable("id") Long id, @RequestParam("reason") String reason) {
     	try {
             Booking cancelBooking = bookingService.cancelBooking(id, reason);

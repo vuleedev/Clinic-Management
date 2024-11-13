@@ -14,7 +14,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.hamter.repository.BookingRepository;
+import com.hamter.repository.TimeSlotRepository;
 import com.hamter.model.Booking;
+import com.hamter.model.TimeSlot;
 import com.hamter.service.BookingService;
 import com.hamter.service.EmailService;
 
@@ -27,6 +29,9 @@ public class BookingServiceImpl implements BookingService {
 	@Autowired
 	private EmailService emailService;
 	
+	@Autowired
+	private TimeSlotRepository timeslotRepository;
+	
 	@Override
 	public List<Booking> findAll() {
 		return bookingRepository.findAll();
@@ -38,14 +43,28 @@ public class BookingServiceImpl implements BookingService {
 	}
 	
 	@Override
-	@Transactional
 	public Booking create(Booking booking) {
 		if (!canCreateNewBooking(booking.getPatientId())) {
             throw new IllegalStateException("Tạo cuộc hẹn thất bại. Bạn còn cuộc hẹn chưa khám, tạo cuộc hẹn khác sau");
         }
+		TimeSlot timeSlot = timeslotRepository.findById(booking.getTimeSlot().getId())
+		        .orElseThrow(() -> new IllegalStateException("TimeSlot không tồn tại."));
+	    if (!timeSlot.getIsAvailable()) {
+	        throw new IllegalStateException("Khung giờ này đã được đặt. Vui lòng chọn khung giờ khác.");
+	    }
+
+	    timeSlot.setIsAvailable(false);
+	    timeslotRepository.save(timeSlot);
+	    
         booking.setCreatedAt(new java.util.Date());
         booking.setUpdatedAt(new java.util.Date());
         booking.setStatusId("PENDING");
+        
+        String toEmail = "chiennhpd09284@fpt.edu.vn";  
+        String subject = "Cuộc hẹn mới từ bệnh nhân";
+        String body = "Bệnh nhân " + booking.getPatientId() + " đã tạo cuộc hẹn vào lúc " + booking.getCreatedAt() + ".\n" +
+                      "Vui lòng xác nhận cuộc hẹn.";
+        emailService.SendMailBooking(toEmail, subject, body);
         return bookingRepository.save(booking);
 	}
 	
@@ -71,6 +90,7 @@ public class BookingServiceImpl implements BookingService {
 				.orElseThrow(() -> new RuntimeException("không tìm thấy cuộc hẹn"));
 		booking.setStatusId("WAIT");
 		booking = bookingRepository.save(booking);
+		
         String subject = "Thông báo về cuộc hẹn";
         String body = "Lịch hẹn đã được xác nhận. Ngày khám bệnh của bạn là " + booking.getDate();
         emailService.SendMailBooking(booking.getEmail(), subject, body);
@@ -83,6 +103,11 @@ public class BookingServiceImpl implements BookingService {
 				.orElseThrow(() -> new RuntimeException("không tìm thấy cuộc hẹn"));
 		booking.setStatusId("CANCELED");
 		booking.setCancelReason(reason);
+		
+		TimeSlot timeSlot = booking.getTimeSlot();
+		timeSlot.setIsAvailable(true);
+	    timeslotRepository.save(timeSlot);
+	    
 		String subject = "Thông báo về cuộc hẹn";
         String body = "Cuộc hẹn của bạn đã bị hủy. Phòng khám đã từ chối cuộc hẹn với lý do: " + reason;
         emailService.SendMailBooking(booking.getEmail(), subject, body);
@@ -120,6 +145,10 @@ public class BookingServiceImpl implements BookingService {
 	    if (!"PENDING".equals(booking.getStatusId())) { 
 	        throw new IllegalStateException("Chỉ có thể xóa cuộc hẹn có trạng thái chờ xác nhận");
 	    }
+	    TimeSlot timeSlot = booking.getTimeSlot();
+	    timeSlot.setIsAvailable(false);
+	    timeslotRepository.save(timeSlot);
+	    
 	    return booking;
 	}
 	

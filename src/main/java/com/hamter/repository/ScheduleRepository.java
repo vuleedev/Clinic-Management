@@ -9,7 +9,6 @@ import com.hamter.model.Schedule;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 		
-	List<Schedule> findByDoctorIdAndDateAndTimeType(Integer doctorId, Date date, String timeType);
 	
-	List<Schedule> findByDoctorIdAndDateAndCurrentNumberLessThan(Integer doctorId, Date date, Integer currentNumber);
+	
 }

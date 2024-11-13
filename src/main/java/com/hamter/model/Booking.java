@@ -30,7 +30,11 @@ public class Booking implements Serializable {
     private Date date;
 
     private String timeType;
-
+    
+    @ManyToOne
+    @JoinColumn(name = "timeSlot_id", nullable = false)
+    private TimeSlot timeSlot;
+    
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt", nullable = false)
     private Date createdAt;
