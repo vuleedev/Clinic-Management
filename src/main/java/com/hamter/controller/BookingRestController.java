@@ -47,7 +47,6 @@ public class BookingRestController {
     }
     
     @PostMapping
-<<<<<<< HEAD
     public ResponseEntity<String> createBooking(@RequestBody Bookings booking) {
         boolean isAvailable = scheduleService.isTimeSlotAvailable(
             booking.getDoctorId(),
@@ -60,7 +59,7 @@ public class BookingRestController {
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT)
             	.body("Bác sĩ bận, vui lòng tạo cuộc hẹn khác");
-=======
+        }
     public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
     	try {
             boolean isAvailable = scheduleService.isTimeSlotAvailable(

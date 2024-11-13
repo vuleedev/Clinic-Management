@@ -1,4 +1,4 @@
-package com.hamter.rest;
+package com.hamter.controller;
 
 import java.util.List;
 
@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.hamster.interfaceService.IAllCodeService;
-import com.hamter.model.AllCode;
+import com.hamster.interfaceService.IAllcodeService;
 import com.hamter.model.Allcodes;
 
 @RestController
@@ -24,7 +22,7 @@ import com.hamter.model.Allcodes;
 public class AllCodeRestController {
 	
 	@Autowired
-    private IAllCodeService allCodeService;
+    private IAllcodeService allCodeService;
 
     @GetMapping
     public List<Allcodes> getAllCodes() {

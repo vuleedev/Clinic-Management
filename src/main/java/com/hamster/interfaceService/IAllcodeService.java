@@ -3,7 +3,7 @@ package com.hamster.interfaceService;
 import java.util.List;
 import com.hamter.model.Allcodes;
 
-public interface IAllCodeService {
+public interface IAllcodeService {
 	
 	List<Allcodes> findAll();
 	
