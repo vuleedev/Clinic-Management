@@ -18,6 +18,7 @@ import io.jsonwebtoken.security.Keys;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.hamter.model.User;
 
@@ -28,7 +29,9 @@ import lombok.Value;
 @RequiredArgsConstructor
 public class JwtTokenUtil {
 	private List<String> blacklist = new ArrayList<>();
+	@org.springframework.beans.factory.annotation.Value("${jwt.expiration}")
 	private int expiration;
+	@org.springframework.beans.factory.annotation.Value("${jwt.secret-key}")
 	private String secretKey;
 	public String generateToken(User user) throws Exception{
 		Map<String, Object> claims = new HashMap<>();

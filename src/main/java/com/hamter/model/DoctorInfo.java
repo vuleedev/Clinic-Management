@@ -36,10 +36,6 @@ public class DoctorInfo {
 
     private Long doctorId;             
 
-    private Long specialtyId;          // ID chuyên khoa (liên kết với bảng Specialty)
-
-    private Long clinicId;             // ID phòng khám (liên kết với bảng Clinic)
-
     private String priceId;            // ID giá dịch vụ (liên kết với bảng Price)
 
     private Long provinceId;           // ID tỉnh thành nơi bác sĩ làm việc

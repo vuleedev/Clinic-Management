@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hamter.model.Clinic;
+import com.hamter.model.Clinics;
 import com.hamter.repository.ClinicRepository;
 
 @Service
@@ -13,19 +13,19 @@ public class ClinicService {
 @Autowired
 	private ClinicRepository clinicRepository;
 	
-	public List<Clinic> findAll() {
+	public List<Clinics> findAll() {
 		return clinicRepository.findAll();
 	}
 
-	public Clinic findById(Long id) {
+	public Clinics findById(Long id) {
 		return clinicRepository.findById(id).orElse(null);
 	}
 
-	public Clinic create(Clinic clinic) {
+	public Clinics create(Clinics clinic) {
 		return clinicRepository.save(clinic);
 	}
 
-	public Clinic update(Clinic clinic) {
+	public Clinics update(Clinics clinic) {
 		return clinicRepository.save(clinic);
 	}
 

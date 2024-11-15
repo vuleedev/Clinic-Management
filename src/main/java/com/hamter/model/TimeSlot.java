@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "TimeSlots")
-public class TimeSlot implements Serializable {
+public class TimeSlot {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +18,7 @@ public class TimeSlot implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "schedule_id", nullable = false)
-    private Schedule schedule;
+    private Schedules schedule;
 
     @Temporal(TemporalType.TIME)
     @Column(name = "start_time", nullable = false)

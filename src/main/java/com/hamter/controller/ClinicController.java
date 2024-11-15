@@ -3,8 +3,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import com.hamter.model.Clinic;
+import com.hamter.model.Clinics;
 import com.hamter.service.ClinicService;
 
 @RestController
@@ -12,26 +11,26 @@ import com.hamter.service.ClinicService;
 @RequestMapping("/rest/clinic")
 public class ClinicController {
   
-@Autowired
+	@Autowired
 	private ClinicService clinicService;
-	
+
 	@GetMapping
-    public List<Clinic> getAllClinic() {
+	public List<Clinics> getAllClinic() {
         return clinicService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Clinic getClinicById(@PathVariable("id") Long id) {
+    public Clinics getClinicById(@PathVariable("id") Long id) {
         return clinicService.findById(id);
     }
 
     @PostMapping
-    public Clinic createClinic(@RequestBody Clinic clinic) {
+    public Clinics createClinic(@RequestBody Clinics clinic) {
         return clinicService.create(clinic);
     }
 
     @PutMapping("/{id}")
-    public Clinic updateClinic(@PathVariable("id") Long id, @RequestBody Clinic clinic) {
+    public Clinics updateClinic(@PathVariable("id") Long id, @RequestBody Clinics clinic) {
     	clinic.setId(id);
         return clinicService.update(clinic);
     }
