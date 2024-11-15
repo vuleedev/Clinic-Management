@@ -18,7 +18,11 @@ public interface BookingService {
 	
 	Booking confirmBooking(Long id);
 	
-	Booking cancelBooking(Long id);
+	Booking cancelBooking(Long id, String reason);
+	
+	Booking completeBooking(Long id);
+	
+	Booking notAttendedBooking(Long id);
 	
 	void sendReminders();
 	
@@ -26,5 +30,7 @@ public interface BookingService {
 	
 	boolean canCreateNewBooking(String patientId);
 	
-	Booking completeBooking(Long id);
+	void checkStatusNotAttendedBooking(Long id, String statusId);
+	
+	void sendWarningEmail(Booking booking);
 }

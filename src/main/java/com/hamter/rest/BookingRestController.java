@@ -1,8 +1,10 @@
 package com.hamter.rest;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,12 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.model.Booking;
+import com.hamter.model.TimeSlot;
 import com.hamter.service.BookingService;
-import com.hamter.service.EmailService;
 import com.hamter.service.ScheduleService;
+import com.hamter.service.TimeSlotService;
 
 
 @RestController
@@ -33,7 +37,7 @@ public class BookingRestController {
     private ScheduleService scheduleService;
     
     @Autowired
-    private EmailService emailService;
+    private TimeSlotService timeSlotService;
     
     @GetMapping
     public List<Booking> getAllBookings() {
@@ -45,47 +49,68 @@ public class BookingRestController {
         return bookingService.findById(id);
     }
     
-    @PostMapping
+    @GetMapping("/available-times")
+    public ResponseEntity<List<TimeSlot>> getAvailableTimeSlots(@RequestParam Long doctorId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        List<TimeSlot> availableTimeSlots = timeSlotService.findAvailableTimeSlots(doctorId, date);
+        if (availableTimeSlots.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(availableTimeSlots);
+    }
+    
+    @PostMapping("/create-booking")
     public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
     	try {
-            boolean isAvailable = scheduleService.isTimeSlotAvailable(
-                booking.getDoctorId(),
-                booking.getDate(),
-                booking.getTimeType()
-            );
-            if (isAvailable) {
-                bookingService.create(booking);
-                return ResponseEntity.ok("Tạo cuộc hẹn thành công, chờ xác nhận. Nếu cuộc hẹn được xác nhận sẽ không thể hủy");
-            } else {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Bác sĩ bận, vui lòng tạo cuộc hẹn khác");
-            }
+    		Booking createBooking = bookingService.create(booking);
+            return ResponseEntity.ok("Tạo cuộc hẹn thành công, chờ xác nhận. Nếu cuộc hẹn được xác nhận sẽ không thể hủy");  	
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Đã xảy ra lỗi khi tạo cuộc hẹn");
+                .body("Đã xảy ra lỗi khi tạo cuộc hẹn " + e);
         }
         
     }
     
-    @PostMapping("/confirm/{id}")
+    @PutMapping("/confirm/{id}")
     public ResponseEntity<String> confirmBooking(@PathVariable("id") Long id) {
-        Booking confirmedBooking = bookingService.confirmBooking(id);
-        String subject = "Thông báo về cuộc hẹn";
-        String body = "Lịch hẹn đã được xác nhận. Ngày khám bệnh của bạn là " + confirmedBooking.getDate();
-        emailService.SendMailBooking(confirmedBooking.getEmail(), subject, body);
-        return ResponseEntity.ok("Cuộc hẹn đã được xác nhận và email đã được gửi");
+    	try {
+            Booking confirmedBooking = bookingService.confirmBooking(id);
+            return ResponseEntity.ok("Cuộc hẹn đã được xác nhận và email đã được gửi.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi, không thể xác nhận cuộc hẹn.");
+        }
     }
     
     //ADMIN
     @PostMapping("/cancel/{id}")
-    public ResponseEntity<String> cancelBooking(@PathVariable("id") Long id) {
-        Booking cancelBooking = bookingService.cancelBooking(id);
-        String subject = "Thông báo về cuộc hẹn";
-        String body = "cuộc hẹn của bạn đã bị hủy, phòng khám đã từ chối cuộc hẹn";
-        emailService.SendMailBooking(cancelBooking.getEmail(), subject, body);
-        return ResponseEntity.ok("Cuộc hẹn đã bị hủy");
+    public ResponseEntity<String> cancelBooking(@PathVariable("id") Long id, @RequestParam("reason") String reason) {
+    	try {
+            Booking cancelBooking = bookingService.cancelBooking(id, reason);
+            return ResponseEntity.ok("Cuộc hẹn đã bị hủy và email thông báo đã được gửi.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi, không thể hủy cuộc hẹn.");
+        }
+    }
+    
+    @PutMapping("/complete/{id}")
+    public ResponseEntity<String> completeBooking(@PathVariable("id") Long id) {
+        Booking completedBooking = bookingService.completeBooking(id);
+        if (completedBooking != null) {
+            return ResponseEntity.ok("Cập nhật trạng thái cuộc hẹn thành công");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cuộc hẹn không tồn tại");
+        }
+    }
+    
+    @PutMapping("/not-attended/{id}")
+    public ResponseEntity<String> notAttendedBooking(@PathVariable("id") Long id) {
+        Booking completedBooking = bookingService.notAttendedBooking(id);
+        if (completedBooking != null) {
+            return ResponseEntity.ok("Cập nhật trạng thái cuộc hẹn thành công");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cuộc hẹn không tồn tại");
+        }
     }
     
     @PutMapping("/{id}")
@@ -94,18 +119,8 @@ public class BookingRestController {
         return bookingService.update(booking);
     }
     
-    @PutMapping("/complete/{id}")
-    public ResponseEntity<String> completeBooking(@PathVariable("id") Long id) {
-        Booking completedBooking = bookingService.completeBooking(id);
-        if (completedBooking != null) {
-            return ResponseEntity.ok("Cuộc hẹn đã được hoàn thành");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cuộc hẹn không tồn tại");
-        }
-    }
-    
     //CUSTOMERS
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<String> deleteBooking(@PathVariable("id") Long id) {
     	try {
             Booking booking = bookingService.cancelBookingPending(id);

@@ -1,6 +1,7 @@
 package com.hamter.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,12 +40,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 	@Override
 	public void delete(Long id) {
 		scheduleRepository.deleteById(id);
-	}
-
-	@Override
-	public boolean isTimeSlotAvailable(Integer doctorId, Date date, String timeType) {
-		List<Schedule> schedules = scheduleRepository.findByDoctorIdAndDateAndTimeType(doctorId, date, timeType);
-	    return schedules.isEmpty();
 	}
 
 }
