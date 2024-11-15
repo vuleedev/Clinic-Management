@@ -43,7 +43,7 @@ public class UserController {
 			if(!userDTO.getPassword().equals(userDTO.getRetypePassword())) {
 				return ResponseEntity.badRequest().body("Passwords do not match");
 			}
-			Optional<Roles> roleOptional = roleRepository.findByName(userDTO.getRoleId());
+			Optional<Roles> roleOptional = roleRepository.findByName(userDTO.getRoleName());
             if (roleOptional.isEmpty()) {
                 return ResponseEntity.badRequest().body("Invalid role");
             }
