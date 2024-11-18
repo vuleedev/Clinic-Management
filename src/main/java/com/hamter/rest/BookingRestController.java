@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.model.Booking;
+import com.hamter.model.Doctor;
 import com.hamter.model.TimeSlot;
 import com.hamter.service.BookingService;
+import com.hamter.service.DoctorService;
 import com.hamter.service.ScheduleService;
 import com.hamter.service.TimeSlotService;
 
@@ -39,6 +41,9 @@ public class BookingRestController {
     @Autowired
     private TimeSlotService timeSlotService;
     
+    @Autowired
+    private DoctorService doctorService;
+    
     @GetMapping
     public List<Booking> getAllBookings() {
         return bookingService.findAll();
@@ -47,6 +52,15 @@ public class BookingRestController {
     @GetMapping("/{id}")
     public Booking getBookingById(@PathVariable("id") Long id) {
         return bookingService.findById(id);
+    }
+    
+    @GetMapping("/by-specialty")
+    public ResponseEntity<List<Doctor>> getDoctorsBySpecialty(@RequestParam Long specialtyId) {
+        List<Doctor> doctors = doctorService.findDoctorsBySpecialty(specialtyId);
+        if (doctors.isEmpty()) {
+            return ResponseEntity.noContent().build(); 
+        }
+        return ResponseEntity.ok(doctors);
     }
     
     @GetMapping("/available-times")

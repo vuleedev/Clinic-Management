@@ -2,41 +2,38 @@ package com.hamter.model;
 
 import javax.persistence.*;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
-@Table(name = "bookings")
-public class Booking implements Serializable {
+@Table(name = "doctors")
+public class Doctor implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String statusId;
+    private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "doctor_id", nullable = false)
-    private Doctor doctor;
-
-    private String patientId;
-    
     private String email;
-    
-    private String cancelReason;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date date;
-
-    private String timeType;
+    private String phoneNumber;
     
+    private String gender;
+
+    @Lob
+    private String profilePicture;
+
     @ManyToOne
-    @JoinColumn(name = "timeSlot_id", nullable = false)
-    private TimeSlot timeSlot;
-    
+    @JoinColumn(name = "specialty_id", nullable = false)
+    @JsonBackReference
+    private Specialty specialty;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt", nullable = false)
     private Date createdAt;
@@ -44,5 +41,4 @@ public class Booking implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updatedAt", nullable = false)
     private Date updatedAt;
-
 }

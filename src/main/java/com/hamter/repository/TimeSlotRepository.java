@@ -11,9 +11,22 @@ import com.hamter.model.TimeSlot;
 
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
 
-	@Query("SELECT ts FROM TimeSlot ts JOIN ts.schedule s " +
-	       "WHERE s.doctorId = :doctorId AND s.date = :date " +
-	       "AND ts.isAvailable = true " +
-	       "AND ts.id NOT IN (SELECT b.timeSlot.id FROM Booking b WHERE b.date = :date AND b.doctorId = :doctorId)")
-	List<TimeSlot> findAvailableTimeSlots(@Param("doctorId") Long doctorId, @Param("date") Date date);
+	@Query("SELECT ts FROM TimeSlot ts " +
+	           "JOIN ts.schedule s " +
+	           "WHERE s.doctor.id = :doctorId " +
+	           "AND s.date = :date " +
+	           "AND ts.isAvailable = true")
+	    List<TimeSlot> findAvailableTimeSlots(@Param("doctorId") Long doctorId, 
+	                                          @Param("date") Date date);
+	
+//	@Query("SELECT ts FROM TimeSlot ts " +
+//	           "JOIN ts.schedule s " +
+//	           "JOIN s.doctor d " +
+//	           "JOIN d.specialty sp " +  // Liên kết với Specialty
+//	           "WHERE sp.id = :specialtyId " +  // Lọc theo chuyên khoa
+//	           "AND s.date = :date " +
+//	           "AND ts.isAvailable = true")
+//	List<TimeSlot> findAvailableTimeSlots(@Param("specialtyId") Long specialtyId, 
+//	                                      @Param("date") Date date);
+	
 }

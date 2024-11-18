@@ -2,17 +2,37 @@ package com.hamter.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hamter.repository.HistoryRepository;
 import com.hamter.model.History;
 
-public interface HistoryService {
+@Service
+public class HistoryService {
 	
-	List<History> findAll();
+	@Autowired
+	private HistoryRepository historyRepository;
 	
-	History findById(Long id);
-	
-	History create(History history);
-	
-	History update(History history);
-	
-	void delete(Long id);
+	public List<History> findAll() {
+		return historyRepository.findAll() ;
+	}
+
+	public History findById(Long id) {
+		return historyRepository.findById(id).orElse(null);
+	}
+
+	public History create(History history) {
+		return historyRepository.save(history);
+	}
+
+	public History update(History history) {
+		return historyRepository.save(history);
+	}
+
+	public void delete(Long id) {
+		historyRepository.deleteById(id);
+		
+	}
+
 }

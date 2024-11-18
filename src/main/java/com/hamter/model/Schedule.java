@@ -17,13 +17,15 @@ public class Schedule implements Serializable {
     private Integer currentNumber;
 
     private Integer maxNumber;
-
+    
     @Temporal(TemporalType.DATE)
     private Date date;
 
     private String timeType;
-
-    private Integer doctorId;
+    
+    @ManyToOne
+    @JoinColumn(name = "doctor_id", nullable = false)
+    private Doctor doctor;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt", nullable = false)

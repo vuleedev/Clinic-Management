@@ -2,17 +2,38 @@ package com.hamter.service;
 
 import java.util.List;
 
-import com.hamter.model.Clinic;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public interface ClinicService {
+import com.hamter.repository.ClinicRepository;
+import com.hamter.model.Clinic;
+import com.hamter.service.ClinicService;
+
+@Service
+public class ClinicService {
 	
-	List<Clinic> findAll();
+	@Autowired
+	private ClinicRepository clinicRepository;
 	
-	Clinic findById(Long id);
-	
-	Clinic create(Clinic clinic);
-	
-	Clinic update(Clinic clinic);
-	
-	void delete(Long id);
+	public List<Clinic> findAll() {
+		return clinicRepository.findAll();
+	}
+
+	public Clinic findById(Long id) {
+		return clinicRepository.findById(id).orElse(null);
+	}
+
+	public Clinic create(Clinic clinic) {
+		return clinicRepository.save(clinic);
+	}
+
+	public Clinic update(Clinic clinic) {
+		return clinicRepository.save(clinic);
+	}
+
+	public void delete(Long id) {
+		clinicRepository.deleteById(id);
+		
+	}
+
 }

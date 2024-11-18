@@ -2,17 +2,36 @@ package com.hamter.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hamter.repository.UserRepository;
 import com.hamter.model.User;
 
-public interface UserService {
+@Service
+public class UserService {
 	
-	List<User> findAll();
+	@Autowired
+	private UserRepository userRepository;
 	
-	User findById(Long id);
-	
-	User create (User user);
-	
-	User update (User user);
-	
-	void delete (Long id);
+	public List<User> findAll() {
+		return userRepository.findAll();
+	}
+
+	public User findById(Long id) {
+		return userRepository.findById(id).orElse(null);
+	}
+
+	public User create(User user) {
+		return userRepository.save(user);
+	}
+
+	public User update(User user) {
+		return userRepository.save(user);
+	}
+
+	public void delete(Long id) {
+		userRepository.deleteById(id);
+	}
+
 }
