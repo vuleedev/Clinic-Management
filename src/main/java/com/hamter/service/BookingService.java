@@ -12,7 +12,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.hamter.repository.BookingRepository;
+import com.hamter.repository.DoctorRepository;
 import com.hamter.repository.TimeSlotRepository;
+import com.hamter.repository.UserRepository;
+import com.hamter.dto.BookingDTO;
+import com.hamter.mapper.BookingMapper;
 import com.hamter.model.Booking;
 import com.hamter.model.TimeSlot;
 import com.hamter.service.BookingService;
@@ -29,6 +33,15 @@ public class BookingService {
 	@Autowired
 	private TimeSlotRepository timeslotRepository;
 	
+	@Autowired
+    private DoctorRepository doctorRepository;
+	
+	@Autowired
+    private TimeSlotRepository timeSlotRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
 	public List<Booking> findAll() {
 		return bookingRepository.findAll();
 	}
@@ -37,32 +50,37 @@ public class BookingService {
 		return bookingRepository.findById(id).orElse(null);
 	}
 	
-	public Booking create(Booking booking) {
-		if (!canCreateNewBooking(booking.getPatientId())) {
+	public BookingDTO create(BookingDTO bookingDTO) {
+        if (!canCreateNewBooking(bookingDTO.getPatientId())) {
             throw new IllegalStateException("Tạo cuộc hẹn thất bại. Bạn còn cuộc hẹn chưa khám, tạo cuộc hẹn khác sau");
         }
-		TimeSlot timeSlot = timeslotRepository.findById(booking.getTimeSlot().getId())
-		        .orElseThrow(() -> new IllegalStateException("TimeSlot không tồn tại."));
-	    if (!timeSlot.getIsAvailable()) {
-	        throw new IllegalStateException("Khung giờ này đã được đặt. Vui lòng chọn khung giờ khác.");
-	    }
 
-	    timeSlot.setIsAvailable(false);
-	    timeslotRepository.save(timeSlot);
-	    
-        booking.setCreatedAt(new java.util.Date());
-        booking.setUpdatedAt(new java.util.Date());
+        TimeSlot timeSlot = timeSlotRepository.findById(bookingDTO.getTimeSlotId())
+                .orElseThrow(() -> new IllegalStateException("TimeSlot không tồn tại."));
+        if (!timeSlot.getIsAvailable()) {
+            throw new IllegalStateException("Khung giờ này đã được đặt. Vui lòng chọn khung giờ khác.");
+        }
+
+        timeSlot.setIsAvailable(false);
+        timeSlotRepository.save(timeSlot);
+
+        Booking booking = BookingMapper.toEntity(bookingDTO, doctorRepository, timeSlotRepository, userRepository);
+        booking.setCreatedAt(new Date());
+        booking.setUpdatedAt(new Date());
         booking.setStatusId("PENDING");
-        
+
         String toEmail = "chiennhpd09284@fpt.edu.vn";  
         String subject = "Cuộc hẹn mới từ bệnh nhân";
-        String body = "Bệnh nhân " + booking.getPatientId() + " đã tạo cuộc hẹn vào lúc " + booking.getCreatedAt() + ".\n" +
+        String body = "Bệnh nhân " + bookingDTO.getPatientId() + " đã tạo cuộc hẹn vào lúc " + booking.getCreatedAt() + ".\n" +
                       "Vui lòng xác nhận cuộc hẹn.";
         emailService.SendMailBooking(toEmail, subject, body);
-        return bookingRepository.save(booking);
-	}
+
+        Booking savedBooking = bookingRepository.save(booking);
+        return BookingMapper.toDTO(savedBooking); 
+    }
+
 	
-	public boolean canCreateNewBooking(String patientId) {
+	public boolean canCreateNewBooking(Long patientId) {
 		Optional<Booking> lastBooking = bookingRepository.findTopByPatientIdOrderByIdDesc(patientId);
 	    if (lastBooking.isPresent()) {
 	        Booking booking = lastBooking.get();
@@ -165,7 +183,8 @@ public class BookingService {
             bookingRepository.save(booking);
 
             if ("NOT_ATTENDED".equals(statusId)) {
-                int notAttendedCount = bookingRepository.countByPatientIdAndStatusId(booking.getPatientId(), "NOT_ATTENDED");
+            	Long patientId = booking.getPatient().getId();
+                int notAttendedCount = bookingRepository.countByPatientIdAndStatusId(patientId, "NOT_ATTENDED");
                 if (notAttendedCount == 2) {
                     sendWarningEmail(booking);
                 }

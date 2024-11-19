@@ -2,10 +2,6 @@ package com.hamter.model;
 
 import javax.persistence.*;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import lombok.Data;
 
 import java.io.Serializable;
@@ -26,8 +22,7 @@ public class Specialty implements Serializable {
     @Lob
     private String description;
     
-    @OneToMany(mappedBy = "specialty", cascade = CascadeType.ALL, orphanRemoval = true)// xoa speciatly se xoa luon doctor
-    @JsonManagedReference
+    @OneToMany(mappedBy = "specialty", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Doctor> doctors;
     
     @Lob

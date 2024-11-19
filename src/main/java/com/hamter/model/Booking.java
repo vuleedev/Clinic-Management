@@ -21,11 +21,14 @@ public class Booking implements Serializable {
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
-
-    private String patientId;
+    
+    @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)
+    private User patient;
     
     private String email;
     
+    @Column(columnDefinition = "nvarchar(255)")
     private String cancelReason;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -34,7 +37,7 @@ public class Booking implements Serializable {
     private String timeType;
     
     @ManyToOne
-    @JoinColumn(name = "timeSlot_id", nullable = false)
+    @JoinColumn(name = "time_slot_id", nullable = false)
     private TimeSlot timeSlot;
     
     @Temporal(TemporalType.TIMESTAMP)

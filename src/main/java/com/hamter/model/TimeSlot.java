@@ -4,6 +4,7 @@ import javax.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -15,7 +16,11 @@ public class TimeSlot implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+	
+	@ManyToOne
+    @JoinColumn(name = "doctor_id", nullable = false)
+    private Doctor doctor;
+	
     @ManyToOne
     @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;

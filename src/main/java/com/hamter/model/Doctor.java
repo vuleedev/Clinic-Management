@@ -2,12 +2,9 @@ package com.hamter.model;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity
@@ -31,7 +28,6 @@ public class Doctor implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "specialty_id", nullable = false)
-    @JsonBackReference
     private Specialty specialty;
 
     @Temporal(TemporalType.TIMESTAMP)

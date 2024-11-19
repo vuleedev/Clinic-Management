@@ -30,6 +30,7 @@ public class User implements Serializable {
     
     @NotBlank(message = "Không được để trống")
     private String lastName;
+    
     private String address;
 
     private Boolean gender; 

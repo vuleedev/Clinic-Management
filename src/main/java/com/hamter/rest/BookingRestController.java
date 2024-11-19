@@ -2,6 +2,7 @@ package com.hamter.rest;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,6 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hamter.dto.BookingDTO;
+import com.hamter.dto.DoctorDTO;
+import com.hamter.dto.TimeSlotDTO;
+import com.hamter.mapper.DoctorMapper;
+import com.hamter.mapper.TimeSlotMapper;
 import com.hamter.model.Booking;
 import com.hamter.model.Doctor;
 import com.hamter.model.TimeSlot;
@@ -49,42 +55,46 @@ public class BookingRestController {
         return bookingService.findAll();
     }
     
+    
     @GetMapping("/{id}")
     public Booking getBookingById(@PathVariable("id") Long id) {
         return bookingService.findById(id);
     }
     
+    
     @GetMapping("/by-specialty")
-    public ResponseEntity<List<Doctor>> getDoctorsBySpecialty(@RequestParam Long specialtyId) {
+    public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialty(@RequestParam Long specialtyId) {
         List<Doctor> doctors = doctorService.findDoctorsBySpecialty(specialtyId);
         if (doctors.isEmpty()) {
             return ResponseEntity.noContent().build(); 
         }
-        return ResponseEntity.ok(doctors);
+        List<DoctorDTO> doctorDTOs = doctors.stream().map(DoctorMapper::toDTO) .collect(Collectors.toList());
+        return ResponseEntity.ok(doctorDTOs);
     }
     
+    
     @GetMapping("/available-times")
-    public ResponseEntity<List<TimeSlot>> getAvailableTimeSlots(@RequestParam Long doctorId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+    public ResponseEntity<List<TimeSlotDTO>> getAvailableTimeSlots(@RequestParam Long doctorId,@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
         List<TimeSlot> availableTimeSlots = timeSlotService.findAvailableTimeSlots(doctorId, date);
         if (availableTimeSlots.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(availableTimeSlots);
+        List<TimeSlotDTO> timeSlotDTOs = availableTimeSlots.stream().map(TimeSlotMapper::toDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(timeSlotDTOs);
     }
     
+    
     @PostMapping("/create-booking")
-    public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
-    	try {
-    		Booking createBooking = bookingService.create(booking);
-            return ResponseEntity.ok("Tạo cuộc hẹn thành công, chờ xác nhận. Nếu cuộc hẹn được xác nhận sẽ không thể hủy");  	
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    public ResponseEntity<String> createBooking(@RequestBody BookingDTO bookingDTO) {
+        try {
+            BookingDTO createdBookingDTO = bookingService.create(bookingDTO);
+            return ResponseEntity.ok("Cuộc hẹn đã được tạo thành công, có thể hủy cuộc hẹn trước khi được xác nhận");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Đã xảy ra lỗi khi tạo cuộc hẹn " + e);
+                    .body(e.getMessage());
         }
-        
     }
+    
     
     @PutMapping("/confirm/{id}")
     public ResponseEntity<String> confirmBooking(@PathVariable("id") Long id) {
@@ -95,6 +105,7 @@ public class BookingRestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi, không thể xác nhận cuộc hẹn.");
         }
     }
+    
     
     //ADMIN
     @PostMapping("/cancel/{id}")
@@ -107,6 +118,7 @@ public class BookingRestController {
         }
     }
     
+    
     @PutMapping("/complete/{id}")
     public ResponseEntity<String> completeBooking(@PathVariable("id") Long id) {
         Booking completedBooking = bookingService.completeBooking(id);
@@ -116,6 +128,7 @@ public class BookingRestController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cuộc hẹn không tồn tại");
         }
     }
+    
     
     @PutMapping("/not-attended/{id}")
     public ResponseEntity<String> notAttendedBooking(@PathVariable("id") Long id) {
@@ -127,11 +140,13 @@ public class BookingRestController {
         }
     }
     
+    
     @PutMapping("/{id}")
     public Booking updateBooking(@PathVariable("id") Long id, @RequestBody Booking booking) {
     	booking.setId(id);
         return bookingService.update(booking);
     }
+    
     
     //CUSTOMERS
     @DeleteMapping("{id}")

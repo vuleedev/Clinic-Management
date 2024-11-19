@@ -15,7 +15,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 	@Query("SELECT b FROM Booking b WHERE b.date BETWEEN :start AND :end AND b.statusId = 'WAIT'")
     List<Booking> findBookingsBetweenDates(Date start, Date end);
 	
-    Optional<Booking> findTopByPatientIdOrderByIdDesc(String patientId);
+    Optional<Booking> findTopByPatientIdOrderByIdDesc(Long patientId);
     
-    int countByPatientIdAndStatusId(String patientId, String statusId);
+    int countByPatientIdAndStatusId(Long patientId, String statusId);
 }
