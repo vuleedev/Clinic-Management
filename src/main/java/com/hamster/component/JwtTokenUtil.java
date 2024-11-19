@@ -20,7 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import com.hamter.model.User;
+import com.hamster.model.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

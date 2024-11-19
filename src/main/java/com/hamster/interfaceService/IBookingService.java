@@ -3,7 +3,7 @@ package com.hamster.interfaceService;
 
 import java.util.List;
 
-import com.hamter.model.Bookings;
+import com.hamster.model.Bookings;
 
 public interface IBookingService {
 	

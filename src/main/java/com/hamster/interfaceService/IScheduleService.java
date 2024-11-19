@@ -3,7 +3,7 @@ package com.hamster.interfaceService;
 import java.util.List;
 import java.util.Optional;
 
-import com.hamter.dto.ScheduleDTO;
+import com.hamster.dto.ScheduleDTO;
 
 public interface IScheduleService {
 	List<ScheduleDTO> getAllSchedules();

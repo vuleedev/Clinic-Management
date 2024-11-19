@@ -1,7 +1,8 @@
 package com.hamster.interfaceService;
 
 import java.util.List;
-import com.hamter.model.Allcodes;
+
+import com.hamster.model.Allcodes;
 
 public interface IAllcodeService {
 	

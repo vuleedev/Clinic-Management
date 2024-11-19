@@ -2,7 +2,8 @@ package com.hamster.interfaceService;
 
 import java.util.List;
 import java.util.Optional;
-import com.hamter.dto.SpecialtyDTO;
+
+import com.hamster.dto.SpecialtyDTO;
 
 public interface ISpecialtyService {
 	List<SpecialtyDTO> getAllSpecialty();

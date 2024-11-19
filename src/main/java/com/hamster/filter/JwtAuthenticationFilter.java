@@ -30,6 +30,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+		
+		if (request.getRequestURI().equals("/api/users/register") && request.getMethod().equals("POST")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+		
 		final String authorizationHeader = request.getHeader("Authorization");
 
         String email = null;
@@ -39,12 +45,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwtToken = authorizationHeader.substring(7);
             email = jwtTokenUtil.extractEmail(jwtToken);
+            System.out.println("Token received: " + jwtToken);
         }
 
         // Kiểm tra và xác thực người dùng
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
-
+            
             // Kiểm tra tính hợp lệ của token
             if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
