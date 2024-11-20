@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -21,7 +22,6 @@ public class User implements Serializable {
     @Column(nullable = false, unique = true)
     private String email;
     
-    @Size(min = 6, max = 20, message = "Mật khẩu phải từ 6 đến 20 ký tự")
     @Column(nullable = false) 
     private String password;
     
@@ -34,9 +34,6 @@ public class User implements Serializable {
     private String address;
 
     private Boolean gender; 
-
-    @Column(name = "roleId") 
-    private String roleId;
 
     @Column(name = "phoneNumber") 
     private String phoneNumber;
@@ -53,4 +50,7 @@ public class User implements Serializable {
     @Temporal(TemporalType.TIMESTAMP) 
     @Column(name = "updatedAt", nullable = false)
     private Date updatedAt;
+    
+    @OneToMany(mappedBy = "user")
+    private List<Authority> authorities;
 }

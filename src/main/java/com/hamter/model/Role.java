@@ -18,8 +18,9 @@ import lombok.Data;
 public class Role implements Serializable {
 	
 	@Id
-	private String id;
-	private String name;
+	private String roleId;
+	
+	private String roleName;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "role")

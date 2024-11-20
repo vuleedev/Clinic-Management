@@ -19,6 +19,7 @@ import com.hamter.dto.BookingDTO;
 import com.hamter.mapper.BookingMapper;
 import com.hamter.model.Booking;
 import com.hamter.model.TimeSlot;
+import com.hamter.model.User;
 import com.hamter.service.BookingService;
 
 @Service
@@ -51,16 +52,18 @@ public class BookingService {
 	}
 	
 	public BookingDTO create(BookingDTO bookingDTO) {
+		Optional<User> patientOpt = userRepository.findById(bookingDTO.getPatientId());
+	    if (!patientOpt.isPresent()) {
+	        throw new IllegalStateException("Bệnh nhân không tồn tại.");
+	    }
         if (!canCreateNewBooking(bookingDTO.getPatientId())) {
             throw new IllegalStateException("Tạo cuộc hẹn thất bại. Bạn còn cuộc hẹn chưa khám, tạo cuộc hẹn khác sau");
         }
-
         TimeSlot timeSlot = timeSlotRepository.findById(bookingDTO.getTimeSlotId())
-                .orElseThrow(() -> new IllegalStateException("TimeSlot không tồn tại."));
+                .orElseThrow(() -> new IllegalStateException("Khung giờ không tồn tại."));
         if (!timeSlot.getIsAvailable()) {
             throw new IllegalStateException("Khung giờ này đã được đặt. Vui lòng chọn khung giờ khác.");
         }
-
         timeSlot.setIsAvailable(false);
         timeSlotRepository.save(timeSlot);
 
