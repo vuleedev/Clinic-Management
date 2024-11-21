@@ -37,8 +37,7 @@ public class AuthRestController {
             authService.registerUser(
                 registerRequest.getEmail(),
                 registerRequest.getPassword(),
-                registerRequest.getFirstName(),
-                registerRequest.getLastName(),
+                registerRequest.getRetypePassword(),
                 defaultRole
             );
             return ResponseEntity.ok("Đăng ký tài khoản thành công!");

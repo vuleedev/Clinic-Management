@@ -27,20 +27,18 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void registerUser(String email, String password, String firstName, String lastName, Role role) {
+    public void registerUser(String email, String password, String retypePassword, Role role) {
         
+    	if (!password.equals(retypePassword)) {
+            throw new IllegalArgumentException("Mật khẩu và mật khẩu nhập lại không khớp.");
+        }
+    	
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setPassword(password);  
-        newUser.setFirstName(firstName);
-        newUser.setLastName(lastName);
         newUser.setCreatedAt(new Date());
         newUser.setUpdatedAt(new Date());
-
-       
         userRepository.save(newUser);
-
-        
         Authority authority = new Authority();
         authority.setUser(newUser);
         authority.setRole(role);
