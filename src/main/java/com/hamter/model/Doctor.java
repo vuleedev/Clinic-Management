@@ -14,14 +14,15 @@ public class Doctor implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @Column(columnDefinition = "nvarchar(255)")
     private String name;
 
     private String email;
 
     private String phoneNumber;
     
-    private String gender;
+    private Boolean gender;
 
     @Lob
     private String profilePicture;

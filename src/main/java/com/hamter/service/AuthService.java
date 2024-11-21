@@ -1,15 +1,23 @@
 package com.hamter.service;
 
 import org.springframework.stereotype.Service;
+
+import com.hamter.model.Authority;
+import com.hamter.model.Role;
 import com.hamter.model.User;
+import com.hamter.repository.AuthorityRepository;
 import com.hamter.repository.UserRepository;
 
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class AuthService {
+	
+	@Autowired
+	private AuthorityRepository authorityRepository;
 	
 	private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -19,20 +27,26 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User registerUser(String email, String password, String firstName, String lastName) {
-        if (userRepository.existsByEmail(email)) {
-            throw new RuntimeException("email đã được sử dụng");
-        }
+    public void registerUser(String email, String password, String firstName, String lastName, Role role) {
+        
+        User newUser = new User();
+        newUser.setEmail(email);
+        newUser.setPassword(password);  
+        newUser.setFirstName(firstName);
+        newUser.setLastName(lastName);
+        newUser.setCreatedAt(new Date());
+        newUser.setUpdatedAt(new Date());
 
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setCreatedAt(new Date());
-        user.setUpdatedAt(new Date());
+       
+        userRepository.save(newUser);
 
-        return userRepository.save(user);
+        
+        Authority authority = new Authority();
+        authority.setUser(newUser);
+        authority.setRole(role);
+
+        
+        authorityRepository.save(authority);
     }
 
     public void changePassword(String email, String oldPassword, String newPassword) {

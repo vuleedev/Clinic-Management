@@ -15,12 +15,15 @@ public class Clinic implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @Column(columnDefinition = "nvarchar(255)")
     private String name;
-
+    
+    @Column(columnDefinition = "nvarchar(255)")
     private String address;
 
     @Lob
+    @Column(columnDefinition = "nvarchar(255)")
     private String description;
 
     private String image;

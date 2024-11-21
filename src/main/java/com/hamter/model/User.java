@@ -26,11 +26,14 @@ public class User implements Serializable {
     private String password;
     
     @NotBlank(message = "Không được để trống")
+    @Column(columnDefinition = "nvarchar(255)")
     private String firstName;
     
     @NotBlank(message = "Không được để trống")
+    @Column(columnDefinition = "nvarchar(255)")
     private String lastName;
     
+    @Column(columnDefinition = "nvarchar(255)")
     private String address;
 
     private Boolean gender; 
@@ -51,6 +54,6 @@ public class User implements Serializable {
     @Column(name = "updatedAt", nullable = false)
     private Date updatedAt;
     
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Authority> authorities;
 }
