@@ -2,6 +2,7 @@ package com.hamter.util;
 
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.security.Keys;
@@ -12,21 +13,24 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwTokenUtil {
 
-	private final String SECRET_KEY = "your_secret_key";
-    private final long EXPIRATION_TIME = 86400000; // 1 day
+	@Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.expiration}")
+    private long jwtExpiration;
 
     public String generateToken(String username) {
-        Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public String extractUsername(String token) {
-        Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -40,7 +44,7 @@ public class JwTokenUtil {
     }
 
     private Date extractExpiration(String token) {
-    	Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -48,6 +52,7 @@ public class JwTokenUtil {
                 .getBody()
                 .getExpiration();
     }
+
 
     public boolean validateToken(String token, String username) {
         return (username.equals(extractUsername(token)) && !isTokenExpired(token));
