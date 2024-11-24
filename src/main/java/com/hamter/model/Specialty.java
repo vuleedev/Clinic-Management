@@ -17,11 +17,9 @@ public class Specialty implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(columnDefinition = "nvarchar(255)")
     private String name;
 
     @Lob
-    @Column(columnDefinition = "nvarchar(255)")
     private String description;
     
     @OneToMany(mappedBy = "specialty", cascade = CascadeType.ALL, orphanRemoval = true)

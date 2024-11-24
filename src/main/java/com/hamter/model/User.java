@@ -25,11 +25,9 @@ public class User implements Serializable {
     @Column(nullable = false) 
     private String password;
     
-    @NotBlank(message = "Không được để trống")
     @Column(columnDefinition = "nvarchar(255)")
     private String firstName;
     
-    @NotBlank(message = "Không được để trống")
     @Column(columnDefinition = "nvarchar(255)")
     private String lastName;
     
