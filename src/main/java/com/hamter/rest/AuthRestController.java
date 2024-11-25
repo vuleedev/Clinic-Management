@@ -49,6 +49,10 @@ public class AuthRestController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         try {
+        	authService.loginUser(
+        			loginRequest.getEmail(),
+        			loginRequest.getPassword()
+        	);
             String token = jwtUtil.generateToken(loginRequest.getEmail());
             return ResponseEntity.ok(token);
         } catch (Exception e) {

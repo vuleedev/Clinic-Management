@@ -26,9 +26,10 @@ public class Booking implements Serializable {
     @JoinColumn(name = "patient_id", nullable = false)
     private User patient;
     
+    @JoinColumn(nullable = false)
     private String email;
     
-    @Column(columnDefinition = "nvarchar(255)")
+    @Column(columnDefinition = "nvarchar(max)")
     private String cancelReason;
 
     @Temporal(TemporalType.TIMESTAMP)

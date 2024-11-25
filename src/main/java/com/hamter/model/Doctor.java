@@ -5,6 +5,7 @@ import javax.persistence.*;
 import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -15,7 +16,7 @@ public class Doctor implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(columnDefinition = "nvarchar(255)")
+    @Column(columnDefinition = "nvarchar(50)")
     private String name;
 
     private String email;
@@ -35,9 +36,8 @@ public class Doctor implements Serializable {
     @JoinColumn(name = "clinic_id", nullable = false)
     private Clinic clinic;
     
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; 
+    @OneToMany(mappedBy = "doctor", fetch = FetchType.EAGER)
+    private List<Authority> authorities; 
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt", nullable = false)

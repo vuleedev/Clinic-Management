@@ -23,10 +23,10 @@ public class User implements Serializable {
     @Column(nullable = false) 
     private String password;
     
-    @Column(columnDefinition = "nvarchar(255)")
+    @Column(columnDefinition = "nvarchar(50)")
     private String UserName;
     
-    @Column(columnDefinition = "nvarchar(255)")
+    @Column(columnDefinition = "nvarchar(100)")
     private String address;
 
     private Boolean gender; 

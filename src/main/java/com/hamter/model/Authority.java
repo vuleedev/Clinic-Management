@@ -9,24 +9,27 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "Authorities", uniqueConstraints = { @UniqueConstraint(columnNames = { "userId", "roleId" }) })
+@Table(name = "Authorities")
 public class Authority implements Serializable {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	@ManyToOne
-	@JoinColumn(name = "userId", referencedColumnName = "id")
-	private User user; 
-	
-	@ManyToOne
-	@JoinColumn(name = "roleId", referencedColumnName = "roleId")
-	private Role role; 
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "doctorId", referencedColumnName = "id")
+    private Doctor doctor;
+
+    @ManyToOne
+    @JoinColumn(name = "roleId", referencedColumnName = "roleId")
+    private Role role;
 }

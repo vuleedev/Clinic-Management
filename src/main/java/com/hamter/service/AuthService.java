@@ -27,15 +27,24 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public void loginUser(String email, String password) {
+    	User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Email không tồn tại"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Mật khẩu không đúng");
+        }
+    }
+    
     public void registerUser(String email, String password, String retypePassword, Role role) {
         
     	if (!password.equals(retypePassword)) {
             throw new IllegalArgumentException("Mật khẩu và mật khẩu nhập lại không khớp.");
         }
+    	String encodedPassword = passwordEncoder.encode(password);
     	
         User newUser = new User();
         newUser.setEmail(email);
-        newUser.setPassword(password);  
+        newUser.setPassword(encodedPassword);  
         newUser.setCreatedAt(new Date());
         newUser.setUpdatedAt(new Date());
         userRepository.save(newUser);
