@@ -1,24 +1,26 @@
 package com.hamter.model;
 
 import javax.persistence.*;
-
 import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @Entity
 @Table(name = "histories")
-public class History implements Serializable{
+public class History implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer patientId;
+    @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)
+    private User patient;
 
-    private Integer doctorId;
+    @ManyToOne
+    @JoinColumn(name = "doctor_id", nullable = false)
+    private Doctor doctor;
 
     @Lob
     private String description;
@@ -33,5 +35,5 @@ public class History implements Serializable{
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updatedAt", nullable = false)
     private Date updatedAt;
-
+    
 }

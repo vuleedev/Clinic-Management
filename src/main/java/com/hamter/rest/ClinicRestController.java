@@ -9,8 +9,7 @@ import com.hamter.model.Clinic;
 import com.hamter.service.ClinicService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/rest/clinic")
+@RequestMapping("/api/clinic")
 public class ClinicRestController {
 	
 	@Autowired

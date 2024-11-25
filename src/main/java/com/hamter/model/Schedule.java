@@ -29,7 +29,7 @@ public class Schedule implements Serializable {
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
     
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "schedule")
     private List<TimeSlot> timeSlots;
 
     @Temporal(TemporalType.TIMESTAMP)

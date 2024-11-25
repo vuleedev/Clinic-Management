@@ -1,8 +1,6 @@
 package com.hamter.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 import lombok.Data;
 
@@ -26,10 +24,7 @@ public class User implements Serializable {
     private String password;
     
     @Column(columnDefinition = "nvarchar(255)")
-    private String firstName;
-    
-    @Column(columnDefinition = "nvarchar(255)")
-    private String lastName;
+    private String UserName;
     
     @Column(columnDefinition = "nvarchar(255)")
     private String address;
@@ -38,9 +33,6 @@ public class User implements Serializable {
 
     @Column(name = "phoneNumber") 
     private String phoneNumber;
-
-    @Column(name = "positionId")
-    private String positionId;
 
     private String image;
 

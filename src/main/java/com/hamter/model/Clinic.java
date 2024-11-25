@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -27,6 +28,9 @@ public class Clinic implements Serializable {
     private String description;
 
     private String image;
+    
+    @OneToMany(mappedBy = "clinic")
+    private List<Doctor> doctors;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt", nullable = false)

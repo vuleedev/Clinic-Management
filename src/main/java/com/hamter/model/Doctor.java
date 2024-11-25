@@ -30,6 +30,14 @@ public class Doctor implements Serializable {
     @ManyToOne
     @JoinColumn(name = "specialty_id", nullable = false)
     private Specialty specialty;
+    
+    @ManyToOne
+    @JoinColumn(name = "clinic_id", nullable = false)
+    private Clinic clinic;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user; 
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt", nullable = false)

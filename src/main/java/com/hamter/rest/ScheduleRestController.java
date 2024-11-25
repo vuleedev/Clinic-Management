@@ -9,8 +9,7 @@ import com.hamter.service.ScheduleService;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/rest/schedules")
+@RequestMapping("/api/schedules")
 public class ScheduleRestController {
 
     @Autowired

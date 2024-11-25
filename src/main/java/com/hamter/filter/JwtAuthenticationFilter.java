@@ -35,19 +35,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String username = null;
         String jwtToken = null;
 
-        // Lấy token từ header Authorization
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwtToken = authorizationHeader.substring(7); // Bỏ chữ "Bearer "
+            jwtToken = authorizationHeader.substring(7);
             try {
                 username = jwtTokenUtil.extractUsername(jwtToken);
             } catch (ExpiredJwtException e) {
-                System.out.println("Token expired: " + e.getMessage());
+                System.out.println("Token đã hết hạn: " + e.getMessage());
             } catch (Exception e) {
-                System.out.println("Error parsing token: " + e.getMessage());
+                System.out.println("Lỗi phân tích token: " + e.getMessage());
             }
         }
 
-        // Xác thực người dùng nếu token hợp lệ
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 

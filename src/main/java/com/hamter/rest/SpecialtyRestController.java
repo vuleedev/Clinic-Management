@@ -9,8 +9,7 @@ import com.hamter.service.SpecialtyService;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/rest/specialties")
+@RequestMapping("/api/specialties")
 public class SpecialtyRestController {
 
     @Autowired

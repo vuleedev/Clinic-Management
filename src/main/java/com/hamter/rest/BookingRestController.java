@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,20 +28,15 @@ import com.hamter.model.Doctor;
 import com.hamter.model.TimeSlot;
 import com.hamter.service.BookingService;
 import com.hamter.service.DoctorService;
-import com.hamter.service.ScheduleService;
 import com.hamter.service.TimeSlotService;
 
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/rest/bookings")
+@RequestMapping("/api/bookings")
 public class BookingRestController {
 
     @Autowired
     private BookingService bookingService;
-    
-    @Autowired
-    private ScheduleService scheduleService;
     
     @Autowired
     private TimeSlotService timeSlotService;

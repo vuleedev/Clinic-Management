@@ -22,7 +22,7 @@ public class Specialty implements Serializable {
     @Lob
     private String description;
     
-    @OneToMany(mappedBy = "specialty", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "specialty")
     private List<Doctor> doctors;
     
     @Lob

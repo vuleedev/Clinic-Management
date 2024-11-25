@@ -1,38 +1,65 @@
 package com.hamter.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hamter.repository.DoctorRepository;
 import com.hamter.repository.HistoryRepository;
+import com.hamter.repository.UserRepository;
+import com.hamter.dto.HistoryDTO;
+import com.hamter.mapper.HistoryMapper;
 import com.hamter.model.History;
 
 @Service
 public class HistoryService {
 	
 	@Autowired
-	private HistoryRepository historyRepository;
-	
-	public List<History> findAll() {
-		return historyRepository.findAll() ;
-	}
+    private HistoryRepository historyRepository;
 
-	public History findById(Long id) {
-		return historyRepository.findById(id).orElse(null);
-	}
+    @Autowired
+    private UserRepository userRepository;
 
-	public History create(History history) {
-		return historyRepository.save(history);
-	}
+    @Autowired
+    private DoctorRepository doctorRepository;
 
-	public History update(History history) {
-		return historyRepository.save(history);
-	}
+    public List<HistoryDTO> findAll() {
+        return historyRepository.findAll()
+                .stream()
+                .map(HistoryMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 
-	public void delete(Long id) {
-		historyRepository.deleteById(id);
-		
-	}
+    public HistoryDTO findById(Long id) {
+        History history = historyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch sử khám bệnh"));
+        return HistoryMapper.toDTO(history);
+    }
+
+    public HistoryDTO create(HistoryDTO historyDTO) {
+        History history = HistoryMapper.toEntity(historyDTO, userRepository, doctorRepository);
+        history.setCreatedAt(new java.util.Date());
+        history.setUpdatedAt(new java.util.Date());
+        return HistoryMapper.toDTO(historyRepository.save(history));
+    }
+
+    public HistoryDTO update(Long id, HistoryDTO historyDTO) {
+        History existingHistory = historyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch sử khám bệnh"));
+        History history = HistoryMapper.toEntity(historyDTO, userRepository, doctorRepository);
+        history.setId(existingHistory.getId());
+        history.setCreatedAt(existingHistory.getCreatedAt());
+        history.setUpdatedAt(new java.util.Date());
+        return HistoryMapper.toDTO(historyRepository.save(history));
+    }
+
+    public void delete(Long id) {
+        if (!historyRepository.existsById(id)) {
+            throw new RuntimeException("Không tìm thấy lịch sử khám bệnh");
+        }
+        historyRepository.deleteById(id);
+    }
 
 }
