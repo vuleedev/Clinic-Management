@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "Users") 
+@Table(name = "users") //U
 public class User implements Serializable {
 
     @Id
@@ -24,7 +24,7 @@ public class User implements Serializable {
     private String password;
     
     @Column(columnDefinition = "nvarchar(50)")
-    private String UserName;
+    private String userName;
     
     @Column(columnDefinition = "nvarchar(100)")
     private String address;

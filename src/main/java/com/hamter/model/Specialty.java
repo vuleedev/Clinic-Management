@@ -17,6 +17,7 @@ public class Specialty implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Column(columnDefinition = "nvarchar(50)")
     private String name;
 
     @Lob
