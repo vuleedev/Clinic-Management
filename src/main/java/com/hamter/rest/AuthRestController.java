@@ -37,11 +37,11 @@ public class AuthRestController {
             authService.registerUser(
                 registerRequest.getEmail(),
                 registerRequest.getPassword(),
-                registerRequest.getRetypePassword(),
                 defaultRole
             );
             return ResponseEntity.ok("Đăng ký tài khoản thành công!");
         } catch (Exception e) {
+        	System.out.println(e);
             return ResponseEntity.status(500).body("Lỗi trong quá trình đăng ký: " + e.getMessage());
         }
     }

@@ -35,13 +35,11 @@ public class AuthService {
         }
     }
     
-    public void registerUser(String email, String password, String retypePassword, Role role) {
+    public void registerUser(String email, String password, Role role) {
         
-    	if (!password.equals(retypePassword)) {
-            throw new IllegalArgumentException("Mật khẩu và mật khẩu nhập lại không khớp.");
-        }
-    	String encodedPassword = passwordEncoder.encode(password);
     	
+    	String encodedPassword = passwordEncoder.encode(password);
+
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setPassword(encodedPassword);  
