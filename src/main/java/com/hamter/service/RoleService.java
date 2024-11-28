@@ -12,7 +12,10 @@ public class RoleService {
 	@Autowired
 	private RoleRepository roleRepository;
 	
-	public Role findByRoleId(String id) {
+	public Role findByRoleId(Long id) {
 		return roleRepository.findById(id).orElse(null);
 	}
+	public Role findByRoleName(String roleName) {
+        return roleRepository.findByRoleName(roleName).orElse(null);
+    }
 }

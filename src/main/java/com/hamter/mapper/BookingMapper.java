@@ -10,10 +10,6 @@ import com.hamter.repository.UserRepository;
 public class BookingMapper {
 	
     public static BookingDTO toDTO(Booking booking) {
-        if (booking == null) {
-            return null;
-        }
-
         BookingDTO dto = new BookingDTO();
         dto.setId(booking.getId());
         dto.setStatusId(booking.getStatusId());
@@ -30,10 +26,6 @@ public class BookingMapper {
     }
 
     public static Booking toEntity(BookingDTO dto, DoctorRepository doctorRepository, TimeSlotRepository timeSlotRepository, UserRepository userRepository) {
-        if (dto == null) {
-            return null;
-        }
-
         Booking booking = new Booking();
         booking.setId(dto.getId());
         booking.setStatusId(dto.getStatusId());
@@ -44,7 +36,6 @@ public class BookingMapper {
         booking.setDate(dto.getDate());
         booking.setTimeType(dto.getTimeType());
         booking.setTimeSlot(timeSlotRepository.findById(dto.getTimeSlotId()).get());
-        
         return booking;
     }
 }

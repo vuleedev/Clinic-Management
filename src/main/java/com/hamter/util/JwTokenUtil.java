@@ -1,9 +1,9 @@
 package com.hamter.util;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
@@ -19,24 +19,36 @@ public class JwTokenUtil {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    public String generateToken(String username) {
+    public String generateToken(Long userId, List<String> roles) {
         Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(String.valueOf(userId))
+                .claim("roles", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String extractUsername(String token) {
+    public List<String> extractRoles(String token) {
         Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-        return Jwts.parserBuilder()
+        return (List<String>) Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("roles");
+    }
+
+    public Long extractUserId(String token) {
+        Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        String userIdStr = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+        return Long.parseLong(userIdStr); 
     }
 
     public boolean isTokenExpired(String token) {
@@ -53,8 +65,9 @@ public class JwTokenUtil {
                 .getExpiration();
     }
 
-
     public boolean validateToken(String token, String username) {
-        return (username.equals(extractUsername(token)) && !isTokenExpired(token));
+        Long userIdFromToken = extractUserId(token);
+        List<String> rolesFromToken = extractRoles(token);
+        return (username.equals(String.valueOf(userIdFromToken)) && !isTokenExpired(token));
     }
 }

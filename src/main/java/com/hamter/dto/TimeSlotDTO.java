@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class TimeSlotDTO {
-
 	private Long id;
     private Long doctorId;  
     private Long scheduleId;  

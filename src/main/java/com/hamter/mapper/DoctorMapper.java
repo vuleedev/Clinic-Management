@@ -6,10 +6,6 @@ import com.hamter.model.Doctor;
 public class DoctorMapper {
 
 	public static DoctorDTO toDTO(Doctor doctor) {
-        if (doctor == null) {
-            return null;
-        }
-
         DoctorDTO dto = new DoctorDTO();
         dto.setId(doctor.getId());
         dto.setName(doctor.getName());
@@ -24,10 +20,6 @@ public class DoctorMapper {
     }
 
     public static Doctor toEntity(DoctorDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-
         Doctor doctor = new Doctor();
         doctor.setId(dto.getId());
         doctor.setName(dto.getName());
@@ -35,7 +27,6 @@ public class DoctorMapper {
         doctor.setPhoneNumber(dto.getPhoneNumber());
         doctor.setGender(dto.getGender());
         doctor.setProfilePicture(dto.getProfilePicture());
-
         return doctor;
     }
 }

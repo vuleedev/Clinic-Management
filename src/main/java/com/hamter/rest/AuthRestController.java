@@ -1,5 +1,7 @@
 package com.hamter.rest;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +13,7 @@ import com.hamter.dto.auth.CPasswordRequest;
 import com.hamter.dto.auth.LoginRequest;
 import com.hamter.dto.auth.RegisterRequest;
 import com.hamter.model.Role;
+import com.hamter.model.User;
 import com.hamter.service.AuthService;
 import com.hamter.service.RoleService;
 import com.hamter.util.JwTokenUtil;
@@ -19,12 +22,10 @@ import com.hamter.util.JwTokenUtil;
 @RequestMapping("/api/auth")
 public class AuthRestController {
 	
-	@Autowired
-	private RoleService roleService;
-	
 	private final AuthService authService;
     private final JwTokenUtil jwtUtil;
 
+    @Autowired
     public AuthRestController(AuthService authService, JwTokenUtil jwtUtil) {
         this.authService = authService;
         this.jwtUtil = jwtUtil;
@@ -33,15 +34,9 @@ public class AuthRestController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
         try {
-        	Role defaultRole = roleService.findByRoleId("CUST");
-            authService.registerUser(
-                registerRequest.getEmail(),
-                registerRequest.getPassword(),
-                defaultRole
-            );
+            authService.registerUser(registerRequest.getEmail(), registerRequest.getPassword());
             return ResponseEntity.ok("Đăng ký tài khoản thành công!");
         } catch (Exception e) {
-        	System.out.println(e);
             return ResponseEntity.status(500).body("Lỗi trong quá trình đăng ký: " + e.getMessage());
         }
     }
@@ -49,11 +44,12 @@ public class AuthRestController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         try {
-        	authService.loginUser(
-        			loginRequest.getEmail(),
-        			loginRequest.getPassword()
-        	);
-            String token = jwtUtil.generateToken(loginRequest.getEmail());
+            // Perform login
+            User user = authService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+            String role = authService.getUserRole(user);
+
+            // Generate JWT token with user ID and role
+            String token = jwtUtil.generateToken(user.getId(), List.of(role));
             return ResponseEntity.ok(token);
         } catch (Exception e) {
             return ResponseEntity.status(401).body("Đăng nhập không thành công: " + e.getMessage());
@@ -63,11 +59,7 @@ public class AuthRestController {
     @PostMapping("/changePassword")
     public ResponseEntity<String> changePassword(@RequestBody CPasswordRequest changePasswordRequest) {
         try {
-            authService.changePassword(
-                changePasswordRequest.getEmail(),
-                changePasswordRequest.getOldPassword(),
-                changePasswordRequest.getNewPassword()
-            );
+            authService.changePassword(changePasswordRequest.getEmail(), changePasswordRequest.getOldPassword(), changePasswordRequest.getNewPassword());
             return ResponseEntity.ok("Đổi mật khẩu thành công!");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Lỗi trong quá trình thay đổi mật khẩu: " + e.getMessage());

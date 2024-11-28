@@ -4,12 +4,8 @@ import com.hamter.dto.SpecialtyDTO;
 import com.hamter.model.Specialty;
 
 public class SpecialtyMapper {
-
+	
 	public static SpecialtyDTO toDTO(Specialty specialty) {
-        if (specialty == null) {
-            return null;
-        }
-
         SpecialtyDTO dto = new SpecialtyDTO();
         dto.setId(specialty.getId());
         dto.setName(specialty.getName());
@@ -20,12 +16,7 @@ public class SpecialtyMapper {
         return dto;
     }
 
-    
     public static Specialty toEntity(SpecialtyDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-
         Specialty specialty = new Specialty();
         specialty.setId(dto.getId());
         specialty.setName(dto.getName());

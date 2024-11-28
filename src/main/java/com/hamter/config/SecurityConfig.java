@@ -63,7 +63,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeRequests()
-            .antMatchers("/api/auth/register", "/api/auth/login", "/api/auth/changePassword").permitAll() 
+            .antMatchers("/api/auth/register", "/api/auth/login", "/api/auth/changePassword").permitAll()
+            .antMatchers("/api/bookings/create-booking/**").hasRole("CUST")
+            .antMatchers("/api/bookings/**").hasRole("MANAGE")
             .anyRequest().authenticated() 
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

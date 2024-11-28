@@ -6,10 +6,6 @@ import com.hamter.model.TimeSlot;
 public class TimeSlotMapper {
 
 	public static TimeSlotDTO toDTO(TimeSlot timeSlot) {
-        if (timeSlot == null) {
-            return null;
-        }
-
         TimeSlotDTO dto = new TimeSlotDTO();
         dto.setId(timeSlot.getId());
         dto.setDoctorId(timeSlot.getDoctor().getId()); 
@@ -23,16 +19,11 @@ public class TimeSlotMapper {
     }
 
     public static TimeSlot toEntity(TimeSlotDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-
         TimeSlot timeSlot = new TimeSlot();
         timeSlot.setId(dto.getId());
         timeSlot.setStartTime(dto.getStartTime());
         timeSlot.setEndTime(dto.getEndTime());
         timeSlot.setIsAvailable(dto.getIsAvailable());
-
         return timeSlot;
     }
 }
