@@ -20,11 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.dto.BookingDTO;
-import com.hamter.dto.BookingStatusDTO;
-import com.hamter.dto.ElementBookingDTO;
+import com.hamter.dto.booking.BookingStatusDTO;
+import com.hamter.dto.booking.ElementBookingDTO;
 import com.hamter.model.Booking;
 import com.hamter.service.BookingService;
-import com.hamter.service.DoctorService;
 import com.hamter.util.JwTokenUtil;
 
 @RestController
@@ -38,13 +37,13 @@ public class BookingRestController {
     private JwTokenUtil jwTokenUtil;
       
     @GetMapping
-    @PreAuthorize("hasRole('MANAGE')")
+    @PreAuthorize("hasAuthority('MANAGE')")
     public List<Booking> getAllBookings() {
         return bookingService.findAll();
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('MANAGE')")
+    @PreAuthorize("hasAuthority('MANAGE')")
     public ResponseEntity<Booking> getBookingById(@PathVariable("id") Long id) {
         Booking booking = bookingService.findById(id);
         if (booking != null) {
@@ -54,7 +53,7 @@ public class BookingRestController {
     }
     
     @PutMapping("/booking/{id}/status")
-    @PreAuthorize("hasRole('MANAGE')")
+    @PreAuthorize("hasAuthority('MANAGE')")
     public ResponseEntity<String> updateBookingStatus(@PathVariable("id") Long id, @RequestBody BookingStatusDTO request) {
         try {
             Booking updatedBooking = bookingService.updateBookingStatus(id, request); 
@@ -70,12 +69,12 @@ public class BookingRestController {
     }
 
     @GetMapping("/doctorsWithAvailableTimes")
-    @PreAuthorize("hasRole('CUST')")
+    @PreAuthorize("hasAuthority('CUST')")
     public ResponseEntity<List<ElementBookingDTO>> getDoctorsWithAvailableTimes(
     		@RequestHeader("Authorization") String authorizationHeader,
             @RequestParam Long specialtyId,
-            @RequestParam(required = false) Long doctorId,
-            @RequestParam Date date) {
+            @RequestParam Long doctorId,
+            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
     	Long userId = getUserIdFromToken(authorizationHeader);
         List<ElementBookingDTO> doctorsWithAvailableTimes = bookingService.getDoctorsWithAvailableTimes(specialtyId, doctorId, date);   
         if (doctorsWithAvailableTimes.isEmpty()) {
@@ -85,7 +84,7 @@ public class BookingRestController {
     }
     
     @PostMapping("/create-booking")
-    @PreAuthorize("hasRole('CUST')")
+    @PreAuthorize("hasAuthority('CUST')")
     public ResponseEntity<String> createBooking(@RequestBody BookingDTO bookingDTO, @RequestHeader("Authorization") String authorizationHeader) {
         Long userId = getUserIdFromToken(authorizationHeader);
         try {
@@ -98,7 +97,7 @@ public class BookingRestController {
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasRole('CUST')")
+    @PreAuthorize("hasAuthority('CUST')")
     public ResponseEntity<String> deleteBooking(@PathVariable("id") Long id, @RequestHeader("Authorization") String authorizationHeader) {
         Long userId = getUserIdFromToken(authorizationHeader); 
         try {

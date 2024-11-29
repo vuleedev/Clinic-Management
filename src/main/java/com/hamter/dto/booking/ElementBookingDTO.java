@@ -1,6 +1,9 @@
-package com.hamter.dto;
+package com.hamter.dto.booking;
 
 import java.util.List;
+
+import com.hamter.dto.DoctorDTO;
+import com.hamter.dto.TimeSlotDTO;
 
 import lombok.Data;
 

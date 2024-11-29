@@ -5,15 +5,16 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class DoctorDTO {
+public class UserDTO {
 	
 	private Long id;
-    private String name;
     private String email;
-    private String phoneNumber;
+    private String password;
+    private String userName;
+    private String address;
     private Boolean gender;
-    private String profilePicture;
-    private Long specialtyId;  
+    private String phoneNumber;
+    private Long roleId;  
     private Date createdAt;
     private Date updatedAt;
 }

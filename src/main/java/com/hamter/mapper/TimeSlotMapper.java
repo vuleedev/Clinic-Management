@@ -1,29 +1,26 @@
 package com.hamter.mapper;
 
+import org.modelmapper.ModelMapper;
+
 import com.hamter.dto.TimeSlotDTO;
 import com.hamter.model.TimeSlot;
+import com.hamter.repository.DoctorRepository;
+import com.hamter.repository.ScheduleRepository;
 
 public class TimeSlotMapper {
 
-	public static TimeSlotDTO toDTO(TimeSlot timeSlot) {
-        TimeSlotDTO dto = new TimeSlotDTO();
-        dto.setId(timeSlot.getId());
-        dto.setDoctorId(timeSlot.getDoctor().getId()); 
-        dto.setScheduleId(timeSlot.getSchedule().getId()); 
-        dto.setStartTime(timeSlot.getStartTime());
-        dto.setEndTime(timeSlot.getEndTime());
-        dto.setIsAvailable(timeSlot.getIsAvailable());
-        dto.setCreatedAt(timeSlot.getCreatedAt());
-        dto.setUpdatedAt(timeSlot.getUpdatedAt());
-        return dto;
+    private static final ModelMapper modelMapper = new ModelMapper();
+
+    public static TimeSlotDTO toDTO(TimeSlot timeSlot) {
+        return modelMapper.map(timeSlot, TimeSlotDTO.class);
     }
 
-    public static TimeSlot toEntity(TimeSlotDTO dto) {
-        TimeSlot timeSlot = new TimeSlot();
-        timeSlot.setId(dto.getId());
-        timeSlot.setStartTime(dto.getStartTime());
-        timeSlot.setEndTime(dto.getEndTime());
-        timeSlot.setIsAvailable(dto.getIsAvailable());
+    public static TimeSlot toEntity(TimeSlotDTO dto, DoctorRepository doctorRepository, ScheduleRepository scheduleRepository) {
+        TimeSlot timeSlot = modelMapper.map(dto, TimeSlot.class);
+
+        timeSlot.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElseThrow(() -> new RuntimeException("Doctor not found")));
+        timeSlot.setSchedule(scheduleRepository.findById(dto.getScheduleId()).orElseThrow(() -> new RuntimeException("Schedule not found")));
+
         return timeSlot;
     }
 }

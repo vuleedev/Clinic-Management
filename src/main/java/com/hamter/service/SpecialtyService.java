@@ -1,37 +1,32 @@
 package com.hamter.service;
 
-import java.util.List;
-
+import com.hamter.model.Specialty;
+import com.hamter.repository.SpecialtyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hamter.repository.SpecialtyRepository;
-import com.hamter.model.Specialty;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SpecialtyService {
-	
-	@Autowired
-	private SpecialtyRepository specialtyRepository;
-	
-	public List<Specialty> findAll() {
-		return specialtyRepository.findAll();
-	}
 
-	public Specialty findById(Long id) {
-		return specialtyRepository.findById(id).orElse(null);
-	}
+    @Autowired
+    private SpecialtyRepository specialtyRepository;
 
-	public Specialty create(Specialty specialty) {
-		return specialtyRepository.save(specialty);
-	}
+    public List<Specialty> getAllSpecialties() {
+        return specialtyRepository.findAll();
+    }
 
-	public Specialty update(Specialty specialty) {
-		return specialtyRepository.save(specialty);
-	}
+    public Specialty getSpecialtyById(Long id) {
+        return specialtyRepository.findById(id).orElse(null);
+    }
 
-	public void delete(Long id) {
-		specialtyRepository.deleteById(id);
-	}
+    public Specialty saveOrUpdateSpecialty(Specialty specialty) {
+        return specialtyRepository.save(specialty);
+    }
 
+    public void deleteSpecialty(Long id) {
+        specialtyRepository.deleteById(id);
+    }
 }

@@ -26,8 +26,7 @@ public class AuthService {
     }
 
     public User loginUser(String email, String password) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Email không tồn tại"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Email không tồn tại"));
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Mật khẩu không đúng");
         }
@@ -35,30 +34,19 @@ public class AuthService {
     }
 
     public void registerUser(String email, String password) {
-        // Encode password
         String encodedPassword = passwordEncoder.encode(password);
-
-        // Create new user and assign default role
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setPassword(encodedPassword);
         newUser.setCreatedAt(new Date());
         newUser.setUpdatedAt(new Date());
-
-        // Assign the "CUST" role
         Role defaultRole = roleService.findByRoleName("CUST");
-        if (defaultRole == null) {
-            throw new RuntimeException("Vai trò mặc định không tồn tại");
-        }
         newUser.setRole(defaultRole);
-
-        // Save the user to the repository
         userRepository.save(newUser);
     }
 
     public void changePassword(String email, String oldPassword, String newPassword) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Không thấy người dùng"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Không thấy người dùng"));
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new RuntimeException("Mật khẩu không đúng");
         }

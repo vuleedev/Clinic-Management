@@ -1,5 +1,7 @@
 package com.hamter.mapper;
 
+import org.modelmapper.ModelMapper;
+
 import com.hamter.dto.HistoryDTO;
 import com.hamter.model.History;
 import com.hamter.repository.DoctorRepository;
@@ -7,27 +9,18 @@ import com.hamter.repository.UserRepository;
 
 public class HistoryMapper {
 
-	public static HistoryDTO toDTO(History history) {
-        HistoryDTO dto = new HistoryDTO();
-        dto.setId(history.getId());
-        dto.setPatientId(history.getPatient().getId());
-        dto.setPatientName(history.getPatient().getUserName());
-        dto.setDoctorId(history.getDoctor().getId());
-        dto.setDoctorName(history.getDoctor().getName());
-        dto.setDescription(history.getDescription());
-        dto.setFiles(history.getFiles());
-        dto.setCreatedAt(history.getCreatedAt());
-        dto.setUpdatedAt(history.getUpdatedAt());
-        return dto;
+    private static final ModelMapper modelMapper = new ModelMapper();
+
+    public static HistoryDTO toDTO(History history) {
+        return modelMapper.map(history, HistoryDTO.class);
     }
 
     public static History toEntity(HistoryDTO dto, UserRepository userRepository, DoctorRepository doctorRepository) {
-        History history = new History();
-        history.setId(dto.getId());
-        history.setDescription(dto.getDescription());
-        history.setFiles(dto.getFiles());
-        history.setPatient(userRepository.findById(dto.getPatientId()).get());
-        history.setDoctor(doctorRepository.findById(dto.getDoctorId()).get());
+        History history = modelMapper.map(dto, History.class);
+
+        history.setPatient(userRepository.findById(dto.getPatientId()).orElseThrow(() -> new RuntimeException("User not found")));
+        history.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElseThrow(() -> new RuntimeException("Doctor not found")));
+
         return history;
     }
 }

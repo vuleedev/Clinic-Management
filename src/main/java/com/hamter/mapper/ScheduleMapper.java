@@ -1,30 +1,24 @@
 package com.hamter.mapper;
 
+import org.modelmapper.ModelMapper;
+
 import com.hamter.dto.ScheduleDTO;
 import com.hamter.model.Schedule;
+import com.hamter.repository.DoctorRepository;
 
 public class ScheduleMapper {
 
-	public static ScheduleDTO toDTO(Schedule schedule) {
-        ScheduleDTO dto = new ScheduleDTO();
-        dto.setId(schedule.getId());
-        dto.setCurrentNumber(schedule.getCurrentNumber());
-        dto.setMaxNumber(schedule.getMaxNumber());
-        dto.setDate(schedule.getDate());
-        dto.setTimeType(schedule.getTimeType());
-        dto.setDoctorId(schedule.getDoctor().getId()); 
-        dto.setCreatedAt(schedule.getCreatedAt());
-        dto.setUpdatedAt(schedule.getUpdatedAt());
-        return dto;
+    private static final ModelMapper modelMapper = new ModelMapper();
+
+    public static ScheduleDTO toDTO(Schedule schedule) {
+        return modelMapper.map(schedule, ScheduleDTO.class);
     }
 
-    public static Schedule toEntity(ScheduleDTO dto) {
-        Schedule schedule = new Schedule();
-        schedule.setId(dto.getId());
-        schedule.setCurrentNumber(dto.getCurrentNumber());
-        schedule.setMaxNumber(dto.getMaxNumber());
-        schedule.setDate(dto.getDate());
-        schedule.setTimeType(dto.getTimeType());
+    public static Schedule toEntity(ScheduleDTO dto, DoctorRepository doctorRepository) {
+        Schedule schedule = modelMapper.map(dto, Schedule.class);
+
+        schedule.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElseThrow(() -> new RuntimeException("Doctor not found")));
+
         return schedule;
     }
 }

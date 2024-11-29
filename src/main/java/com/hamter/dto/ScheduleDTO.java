@@ -7,6 +7,7 @@ import lombok.Data;
 
 @Data
 public class ScheduleDTO {
+	
 	private Long id;
     private Integer currentNumber;
     private Integer maxNumber;

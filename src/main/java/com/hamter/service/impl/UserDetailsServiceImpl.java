@@ -10,21 +10,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-	private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng"));
+    public UserDetails loadUserByUsername(String userIdStr) throws UsernameNotFoundException {
+        Long userId = Long.parseLong(userIdStr);
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng với ID: " + userId));
         return org.springframework.security.core.userdetails.User
                 .builder()
-                .username(user.getEmail())
-                .password(user.getPassword()) 
-                .roles(user.getRole().getRoleName()) 
+                .username(user.getEmail()) 
+                .password(user.getPassword())
+                .roles(user.getRole().getRoleName())
                 .build();
     }
+
+
+
 }

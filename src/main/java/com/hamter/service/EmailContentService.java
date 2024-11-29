@@ -4,7 +4,7 @@ import java.util.Date;
 import org.springframework.stereotype.Service;
 
 import com.hamter.dto.BookingDTO;
-import com.hamter.dto.EmailDTO;
+import com.hamter.dto.email.EmailDTO;
 import com.hamter.model.Booking;
 
 @Service

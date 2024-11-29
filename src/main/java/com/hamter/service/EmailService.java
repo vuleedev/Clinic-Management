@@ -5,7 +5,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.hamter.dto.EmailDTO;
+import com.hamter.dto.email.EmailDTO;
 import com.hamter.service.EmailService;
 
 @Service

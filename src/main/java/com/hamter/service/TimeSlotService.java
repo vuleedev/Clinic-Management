@@ -18,5 +18,21 @@ public class TimeSlotService {
 	public List<TimeSlot> findAvailableTimeSlots(Long doctorId, Date date) {
 		return timeSlotRepository.findAvailableTimeSlots(doctorId, date);
 	}
+	
+	public List<TimeSlot> getAllTimeSlots() {
+        return timeSlotRepository.findAll();
+    }
+
+    public TimeSlot getTimeSlotById(Long id) {
+        return timeSlotRepository.findById(id).orElse(null);
+    }
+
+    public TimeSlot saveOrUpdateTimeSlot(TimeSlot timeSlot) {
+        return timeSlotRepository.save(timeSlot);
+    }
+
+    public void deleteTimeSlot(Long id) {
+        timeSlotRepository.deleteById(id);
+    }
 
 }
