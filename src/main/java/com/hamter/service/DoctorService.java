@@ -32,6 +32,6 @@ public class DoctorService {
     }
 	
     public List<Doctor> findDoctorsBySpecialty(Long specialtyId) {
-        return doctorRepository.findBySpecialtyId(specialtyId);
+        return doctorRepository.findDoctorsBySpecialty(specialtyId);
     }
 }

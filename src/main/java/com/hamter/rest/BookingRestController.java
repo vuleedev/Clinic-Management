@@ -2,6 +2,7 @@ package com.hamter.rest;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,10 +21,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.dto.BookingDTO;
+import com.hamter.dto.DoctorDTO;
+import com.hamter.dto.SpecialtyDTO;
 import com.hamter.dto.booking.BookingStatusDTO;
 import com.hamter.dto.booking.ElementBookingDTO;
+import com.hamter.mapper.DoctorMapper;
+import com.hamter.mapper.SpecialtyMapper;
 import com.hamter.model.Booking;
+import com.hamter.model.Doctor;
+import com.hamter.model.Specialty;
 import com.hamter.service.BookingService;
+import com.hamter.service.DoctorService;
+import com.hamter.service.SpecialtyService;
 import com.hamter.util.JwTokenUtil;
 
 @RestController
@@ -32,6 +41,12 @@ public class BookingRestController {
 
     @Autowired
     private BookingService bookingService;
+    
+    @Autowired
+    private SpecialtyService specialtyService;
+    
+    @Autowired
+    private DoctorService doctorService;
     
     @Autowired
     private JwTokenUtil jwTokenUtil;
@@ -67,7 +82,35 @@ public class BookingRestController {
                     .body("Lỗi, không thể cập nhật trạng thái cuộc hẹn: " + e.getMessage());
         }
     }
-
+    
+    @GetMapping("/specialties")
+    @PreAuthorize("hasAuthority('CUST')")
+    public ResponseEntity<List<SpecialtyDTO>> getAllSpecialties(@RequestHeader("Authorization") String authorizationHeader) {
+    	Long userId = getUserIdFromToken(authorizationHeader);
+    	List<Specialty> specialties = specialtyService.getAllSpecialties();
+        if (specialties.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<SpecialtyDTO> specialtyDTOs = specialties.stream()
+                .map(SpecialtyMapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(specialtyDTOs);
+    }
+    
+    @GetMapping("/doctors")
+    @PreAuthorize("hasAuthority('CUST')")
+    public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialty(@RequestParam Long specialtyId, @RequestHeader("Authorization") String authorizationHeader) {
+    	Long userId = getUserIdFromToken(authorizationHeader);
+    	List<Doctor> doctors = doctorService.findDoctorsBySpecialty(specialtyId);
+        if (doctors.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<DoctorDTO> doctorDTOs = doctors.stream()
+                .map(DoctorMapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(doctorDTOs);
+    }
+    
     @GetMapping("/doctorsWithAvailableTimes")
     @PreAuthorize("hasAuthority('CUST')")
     public ResponseEntity<List<ElementBookingDTO>> getDoctorsWithAvailableTimes(
