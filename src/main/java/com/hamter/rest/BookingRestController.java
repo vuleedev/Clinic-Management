@@ -1,5 +1,6 @@
 package com.hamter.rest;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -111,21 +112,18 @@ public class BookingRestController {
         return ResponseEntity.ok(doctorDTOs);
     }
     
-    @GetMapping("/doctorsWithAvailableTimes")
+    @GetMapping("/available-times")
     @PreAuthorize("hasAuthority('CUST')")
-    public ResponseEntity<List<ElementBookingDTO>> getDoctorsWithAvailableTimes(
-    		@RequestHeader("Authorization") String authorizationHeader,
-            @RequestParam Long specialtyId,
-            @RequestParam Long doctorId,
-            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-    	Long userId = getUserIdFromToken(authorizationHeader);
+    public ResponseEntity<List<ElementBookingDTO>> getDoctorsWithAvailableTimes(@RequestHeader("Authorization") String authorizationHeader,@RequestParam Long specialtyId,@RequestParam Long doctorId,@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {  
+        Long userId = getUserIdFromToken(authorizationHeader);
         List<ElementBookingDTO> doctorsWithAvailableTimes = bookingService.getDoctorsWithAvailableTimes(specialtyId, doctorId, date);   
         if (doctorsWithAvailableTimes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(doctorsWithAvailableTimes);
+        
     }
-    
+
     @PostMapping("/create-booking")
     @PreAuthorize("hasAuthority('CUST')")
     public ResponseEntity<String> createBooking(@RequestBody BookingDTO bookingDTO, @RequestHeader("Authorization") String authorizationHeader) {

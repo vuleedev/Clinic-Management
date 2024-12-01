@@ -1,5 +1,7 @@
 package com.hamter.rest;
 
+import com.hamter.dto.SpecialtyDTO;
+import com.hamter.mapper.SpecialtyMapper;
 import com.hamter.model.Specialty;
 import com.hamter.model.User;
 import com.hamter.service.SpecialtyService;
@@ -12,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/specialties")
@@ -24,8 +27,17 @@ public class SpecialtyRestController {
     private JwTokenUtil jwTokenUtil;
     
     @GetMapping
-    public List<Specialty> getAllSpecialtys() {
-        return specialtyService.getAllSpecialties();
+    @PreAuthorize("hasAuthority('CUST')")
+    public ResponseEntity<List<SpecialtyDTO>> getAllSpecialties(@RequestHeader("Authorization") String authorizationHeader) {
+    	Long userId = getUserIdFromToken(authorizationHeader);
+    	List<Specialty> specialties = specialtyService.getAllSpecialties();
+        if (specialties.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<SpecialtyDTO> specialtyDTOs = specialties.stream()
+                .map(SpecialtyMapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(specialtyDTOs);
     }
 
     @GetMapping("/{id}")
@@ -47,5 +59,13 @@ public class SpecialtyRestController {
     @DeleteMapping("/{id}")
     public void deleteSpecialty(@PathVariable("id") Long id) {
     	specialtyService.deleteSpecialty(id);
+    }
+    
+    private Long getUserIdFromToken(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String jwtToken = authorizationHeader.substring(7);
+            return jwTokenUtil.extractUserId(jwtToken);
+        }
+        throw new RuntimeException("Không tìm thấy token");
     }
 }

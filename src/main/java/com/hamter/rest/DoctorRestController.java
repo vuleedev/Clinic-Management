@@ -1,13 +1,19 @@
 package com.hamter.rest;
 
+import com.hamter.dto.DoctorDTO;
+import com.hamter.mapper.DoctorMapper;
 import com.hamter.model.Doctor;
 import com.hamter.service.DoctorService;
+import com.hamter.util.JwTokenUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/doctors")
@@ -15,12 +21,22 @@ public class DoctorRestController {
 
     @Autowired
     private DoctorService doctorService;
-
-    // Lấy tất cả bác sĩ
+    
+    @Autowired
+    private JwTokenUtil jwTokenUtil;
+    
     @GetMapping
-    public ResponseEntity<List<Doctor>> getAllDoctors() {
-        List<Doctor> doctors = doctorService.getAllDoctors();
-        return new ResponseEntity<>(doctors, HttpStatus.OK);
+    @PreAuthorize("hasAuthority('CUST')")
+    public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialty(@RequestParam Long specialtyId, @RequestHeader("Authorization") String authorizationHeader) {
+    	Long userId = getUserIdFromToken(authorizationHeader);
+    	List<Doctor> doctors = doctorService.findDoctorsBySpecialty(specialtyId);
+        if (doctors.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<DoctorDTO> doctorDTOs = doctors.stream()
+                .map(DoctorMapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(doctorDTOs);
     }
 
     // Lấy bác sĩ theo ID
@@ -57,5 +73,13 @@ public class DoctorRestController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    
+    private Long getUserIdFromToken(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String jwtToken = authorizationHeader.substring(7);
+            return jwTokenUtil.extractUserId(jwtToken);
+        }
+        throw new RuntimeException("Không tìm thấy token");
     }
 }
