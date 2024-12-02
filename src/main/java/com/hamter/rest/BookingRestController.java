@@ -2,7 +2,9 @@ package com.hamter.rest;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,31 +128,40 @@ public class BookingRestController {
 
     @PostMapping("/create-booking")
     @PreAuthorize("hasAuthority('CUST')")
-    public ResponseEntity<String> createBooking(@RequestBody BookingDTO bookingDTO, @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<Map<String, String>> createBooking(@RequestBody BookingDTO bookingDTO, @RequestHeader("Authorization") String authorizationHeader) {
         Long userId = getUserIdFromToken(authorizationHeader);
         try {
             BookingDTO createdBookingDTO = bookingService.create(bookingDTO, userId);
-            return ResponseEntity.ok("Cuộc hẹn đã được tạo thành công, có thể hủy cuộc hẹn trước khi được xác nhận");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Cuộc hẹn đã được tạo thành công, có thể hủy cuộc hẹn trước khi được xác nhận");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
+            Map<String, String> response = new HashMap<>();
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
+
     @DeleteMapping("{id}")
     @PreAuthorize("hasAuthority('CUST')")
-    public ResponseEntity<String> deleteBooking(@PathVariable("id") Long id, @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<Map<String, String>> deleteBooking(@PathVariable("id") Long id, @RequestHeader("Authorization") String authorizationHeader) {
         Long userId = getUserIdFromToken(authorizationHeader); 
+        Map<String, String> response = new HashMap<>();
         try {
-            Booking booking = bookingService.cancelBookingPending(id, userId);  
-            bookingService.delete(id);  
-            return ResponseEntity.ok("Xóa cuộc hẹn thành công");
+            Booking booking = bookingService.cancelBookingPending(id, userId); 
+            bookingService.delete(id);
+            response.put("message", "Xóa cuộc hẹn thành công");
+            return ResponseEntity.ok(response);
         } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy cuộc hẹn");
+            response.put("message", "Không tìm thấy cuộc hẹn");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi khi xóa cuộc hẹn");
+            response.put("message", "Đã xảy ra lỗi khi xóa cuộc hẹn");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 

@@ -49,7 +49,7 @@ public class SecurityConfig {
         http.csrf().disable()
             .authorizeRequests()
             .antMatchers("/api/auth/register", "/api/auth/login", "/api/auth/changePassword").permitAll()
-            .antMatchers("/api/bookings/api/bookings/doctors/**").hasAuthority("CUST")
+            .antMatchers("/api/bookings/**").hasAuthority("CUST")
             .antMatchers("/api/specialties/**").hasAuthority("CUST")
             .antMatchers("/api/doctors/**").hasAuthority("CUST")
             .antMatchers("/api/histories/**").hasAuthority("CUST")

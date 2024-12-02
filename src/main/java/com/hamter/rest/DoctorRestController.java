@@ -39,7 +39,6 @@ public class DoctorRestController {
         return ResponseEntity.ok(doctorDTOs);
     }
 
-    // Lấy bác sĩ theo ID
     @GetMapping("/{id}")
     public ResponseEntity<Doctor> getDoctorById(@PathVariable Long id) {
         return doctorService.getDoctorById(id)
@@ -47,7 +46,6 @@ public class DoctorRestController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // Tạo mới hoặc cập nhật bác sĩ
     @PostMapping
     public ResponseEntity<Doctor> createDoctor(@RequestBody Doctor doctor) {
         Doctor savedDoctor = doctorService.saveOrUpdateDoctor(doctor);
@@ -58,14 +56,13 @@ public class DoctorRestController {
     public ResponseEntity<Doctor> updateDoctor(@PathVariable Long id, @RequestBody Doctor doctor) {
         return doctorService.getDoctorById(id)
                 .map(existingDoctor -> {
-                    doctor.setId(id); // Đảm bảo ID không thay đổi
+                    doctor.setId(id); 
                     Doctor updatedDoctor = doctorService.saveOrUpdateDoctor(doctor);
                     return new ResponseEntity<>(updatedDoctor, HttpStatus.OK);
                 })
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // Xóa bác sĩ theo ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDoctor(@PathVariable Long id) {
         if (doctorService.getDoctorById(id).isPresent()) {
