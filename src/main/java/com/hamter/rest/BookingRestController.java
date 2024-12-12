@@ -83,8 +83,7 @@ public class BookingRestController {
 
     @GetMapping("/doctors")
     @PreAuthorize("hasAuthority('CUST')")
-    public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialty(@RequestParam Long specialtyId, @RequestHeader("Authorization") String authorizationHeader) {
-    	Long userId = getUserIdFromToken(authorizationHeader);
+    public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialty(@RequestParam Long specialtyId) {
     	List<Doctor> doctors = doctorService.findDoctorsBySpecialty(specialtyId);
         if (doctors.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -97,8 +96,7 @@ public class BookingRestController {
     
     @GetMapping("/available-times")
     @PreAuthorize("hasAuthority('CUST')")
-    public ResponseEntity<List<ElementBookingDTO>> getDoctorsWithAvailableTimes(@RequestHeader("Authorization") String authorizationHeader,@RequestParam Long specialtyId,@RequestParam Long doctorId,@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {  
-        Long userId = getUserIdFromToken(authorizationHeader);
+    public ResponseEntity<List<ElementBookingDTO>> getDoctorsWithAvailableTimes(@RequestParam Long specialtyId,@RequestParam Long doctorId,@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {  
         List<ElementBookingDTO> doctorsWithAvailableTimes = bookingService.getDoctorsWithAvailableTimes(specialtyId, doctorId, date);   
         if (doctorsWithAvailableTimes.isEmpty()) {
             return ResponseEntity.noContent().build();
