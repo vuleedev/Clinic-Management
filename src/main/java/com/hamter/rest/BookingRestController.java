@@ -62,7 +62,8 @@ public class BookingRestController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('MANAGE')")
-    public ResponseEntity<Booking> getBookingById(@PathVariable("id") Long id) {
+    public ResponseEntity<Booking> getBookingById(@PathVariable("id") Long id, @RequestHeader("Authorization") String authorizationHeader) {
+    	Long userId = getUserIdFromToken(authorizationHeader);
         Booking booking = bookingService.findById(id);
         if (booking != null) {
             return ResponseEntity.ok(booking);
@@ -72,8 +73,9 @@ public class BookingRestController {
     
     @PutMapping("/booking/{id}/status")
     @PreAuthorize("hasAuthority('MANAGE')")
-    public ResponseEntity<String> updateBookingStatus(@PathVariable("id") Long id, @RequestBody BookingStatusDTO request) {
+    public ResponseEntity<String> updateBookingStatus(@PathVariable("id") Long id, @RequestBody BookingStatusDTO request, @RequestHeader("Authorization") String authorizationHeader) {
         try {
+        	Long userId = getUserIdFromToken(authorizationHeader);
             Booking updatedBooking = bookingService.updateBookingStatus(id, request); 
             if (updatedBooking != null) {
                 return ResponseEntity.ok("Trạng thái cuộc hẹn đã được cập nhật thành công.");
@@ -86,20 +88,7 @@ public class BookingRestController {
         }
     }
     
-    @GetMapping("/specialties")
-    @PreAuthorize("hasAuthority('CUST')")
-    public ResponseEntity<List<SpecialtyDTO>> getAllSpecialties(@RequestHeader("Authorization") String authorizationHeader) {
-    	Long userId = getUserIdFromToken(authorizationHeader);
-    	List<Specialty> specialties = specialtyService.getAllSpecialties();
-        if (specialties.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        List<SpecialtyDTO> specialtyDTOs = specialties.stream()
-                .map(SpecialtyMapper::toDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(specialtyDTOs);
-    }
-    
+
     @GetMapping("/doctors")
     @PreAuthorize("hasAuthority('CUST')")
     public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialty(@RequestParam Long specialtyId, @RequestHeader("Authorization") String authorizationHeader) {

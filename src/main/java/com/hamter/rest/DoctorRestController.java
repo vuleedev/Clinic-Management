@@ -26,7 +26,7 @@ public class DoctorRestController {
     private JwTokenUtil jwTokenUtil;
     
     @GetMapping
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('CUST', 'MANAGE')")
     public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialty(@RequestParam Long specialtyId, @RequestHeader("Authorization") String authorizationHeader) {
     	Long userId = getUserIdFromToken(authorizationHeader);
     	List<Doctor> doctors = doctorService.findDoctorsBySpecialty(specialtyId);
@@ -46,7 +46,7 @@ public class DoctorRestController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping
+    @PostMapping("/create-doctor")
     public ResponseEntity<Doctor> createDoctor(@RequestBody Doctor doctor) {
         Doctor savedDoctor = doctorService.saveOrUpdateDoctor(doctor);
         return new ResponseEntity<>(savedDoctor, HttpStatus.CREATED);

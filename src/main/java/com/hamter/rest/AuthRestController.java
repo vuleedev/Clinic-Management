@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +26,9 @@ public class AuthRestController {
 	
 	private final AuthService authService;
     private final JwTokenUtil jwtUtil;
+    
+    @Autowired
+    private JwTokenUtil jwTokenUtil;
 
     public AuthRestController(AuthService authService, JwTokenUtil jwtUtil) {
         this.authService = authService;
@@ -61,8 +67,10 @@ public class AuthRestController {
     }
 
     @PostMapping("/changePassword")
-    public ResponseEntity<Map<String, String>> changePassword(@RequestBody CPasswordRequest changePasswordRequest) {
-        try {
+    @PreAuthorize("hasAnyAuthority('CUST', 'STAFF', 'MANAGE')")
+    public ResponseEntity<Map<String, String>> changePassword(@RequestBody CPasswordRequest changePasswordRequest, @RequestHeader("Authorization") String authorizationHeader) {
+    	Long userId = getUserIdFromToken(authorizationHeader);
+    	try {
             authService.changePassword(changePasswordRequest.getEmail(), changePasswordRequest.getOldPassword(), changePasswordRequest.getNewPassword());
             Map<String, String> response = new HashMap<>();
             response.put("message", "Đổi mật khẩu thành công!");
@@ -72,5 +80,13 @@ public class AuthRestController {
             response.put("message", "Lỗi trong quá trình thay đổi mật khẩu: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
+    }
+    
+    private Long getUserIdFromToken(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String jwtToken = authorizationHeader.substring(7);
+            return jwTokenUtil.extractUserId(jwtToken);
+        }
+        throw new RuntimeException("Không tìm thấy token");
     }
 }

@@ -48,14 +48,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeRequests()
-            .antMatchers("/api/auth/register", "/api/auth/login", "/api/auth/changePassword").permitAll()
-            .antMatchers("/api/bookings/**").hasAuthority("CUST")
-            .antMatchers("/api/specialties/**").hasAuthority("CUST")
-            .antMatchers("/api/doctors/**").hasAuthority("CUST")
-            .antMatchers("/api/histories/**").hasAuthority("CUST")
-            .antMatchers("/api/schedules/**").hasAuthority("CUST")
-            .antMatchers("/api/time-slots/**").hasAuthority("CUST")
-            .antMatchers("/api/users/**").hasAuthority("CUST")
+            .antMatchers("/api/auth/register", "/api/auth/login", "/api/auth/changePassword", "/api/resetpass/password-reset").permitAll()
+            .antMatchers("/reset-password", "/p-reset-password").permitAll()
+            .antMatchers("/api/bookings/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
+            .antMatchers("/api/specialties/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
+            .antMatchers("/api/doctors/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
+            .antMatchers("/api/histories/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
+            .antMatchers("/api/schedules/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
+            .antMatchers("/api/time-slots/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
+            .antMatchers("/api/users/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
             .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -64,7 +65,7 @@ public class SecurityConfig {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowCredentials(true);
             config.addAllowedOriginPattern("http://localhost:4200");
-            config.addAllowedHeader("Authorization");  // Make sure to allow Authorization header
+            config.addAllowedHeader("Authorization"); 
             config.addAllowedHeader("*");
             config.addAllowedMethod("*");
             return config;
