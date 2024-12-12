@@ -20,7 +20,7 @@ public class Specialty implements Serializable {
     @Column(columnDefinition = "nvarchar(50)")
     private String name;
 
-    @Lob
+    @Column(columnDefinition = "nvarchar(200)")
     private String description;
     
     @OneToMany(mappedBy = "specialty")
