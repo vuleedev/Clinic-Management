@@ -17,7 +17,7 @@ public class ScheduleMapper {
     public static Schedule toEntity(ScheduleDTO dto, DoctorRepository doctorRepository) {
         Schedule schedule = modelMapper.map(dto, Schedule.class);
 
-        schedule.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElseThrow(() -> new RuntimeException("Doctor not found")));
+        schedule.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElseThrow(() -> new RuntimeException("không tìm thấy doctor")));
 
         return schedule;
     }

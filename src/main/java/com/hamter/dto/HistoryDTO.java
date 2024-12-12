@@ -8,7 +8,7 @@ import lombok.Data;
 public class HistoryDTO {
 	
 	private Long id;
-    private Long patientId;
+    private Long userId;
     private String patientName;
     private Long doctorId;
     private String doctorName;

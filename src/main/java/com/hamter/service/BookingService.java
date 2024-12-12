@@ -1,7 +1,6 @@
 package com.hamter.service;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -115,8 +114,8 @@ public class BookingService {
 	    return BookingMapper.toDTO(savedBooking);
 	}
 
-    public boolean canCreateNewBooking(Long patientId) {
-        Optional<Booking> lastBooking = bookingRepository.findTopByPatientIdOrderByIdDesc(patientId);
+    public boolean canCreateNewBooking(Long userId) {
+        Optional<Booking> lastBooking = bookingRepository.findTopByUserIdOrderByIdDesc(userId);
         if (lastBooking.isPresent()) {
             Booking booking = lastBooking.get();
             boolean isStatusValid = "COMPLETE".equals(booking.getStatusId()) || 
@@ -176,8 +175,8 @@ public class BookingService {
             booking.setUpdatedAt(new Date());
             bookingRepository.save(booking);
             if ("NOT_ATTENDED".equals(statusId)) {
-                Long patientId = booking.getPatient().getId();
-                int notAttendedCount = bookingRepository.countByPatientIdAndStatusId(patientId, "NOT_ATTENDED");
+                Long userId = booking.getUser().getId();
+                int notAttendedCount = bookingRepository.countByUserIdAndStatusId(userId, "NOT_ATTENDED");
                 if (notAttendedCount == 2) {
                     EmailDTO emailContent = emailContentService.getWarningEmailContent();
                     emailService.SendMailBooking(booking.getEmail(), emailContent);

@@ -23,8 +23,8 @@ public class Booking implements Serializable {
     private Doctor doctor;
     
     @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false)
-    private User patient;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
     
     @JoinColumn(nullable = false)
     private String email;

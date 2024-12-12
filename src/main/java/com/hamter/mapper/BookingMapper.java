@@ -20,9 +20,9 @@ public class BookingMapper {
     public static Booking toEntity(BookingDTO dto, DoctorRepository doctorRepository, TimeSlotRepository timeSlotRepository, UserRepository userRepository) {
         Booking booking = modelMapper.map(dto, Booking.class);
 
-        booking.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElseThrow(() -> new RuntimeException("Doctor not found")));
-        booking.setPatient(userRepository.findById(dto.getPatientId()).orElseThrow(() -> new RuntimeException("User not found")));
-        booking.setTimeSlot(timeSlotRepository.findById(dto.getTimeSlotId()).orElseThrow(() -> new RuntimeException("TimeSlot not found")));
+        booking.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElseThrow(() -> new RuntimeException("không tìm thấy doctor")));
+        booking.setUser(userRepository.findById(dto.getUserId()).orElseThrow(() -> new RuntimeException("không tìm thấy user")));
+        booking.setTimeSlot(timeSlotRepository.findById(dto.getTimeSlotId()).orElseThrow(() -> new RuntimeException("không tìm thấy timeslot")));
 
         return booking;
     }

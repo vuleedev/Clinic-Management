@@ -1,6 +1,5 @@
 package com.hamter.rest;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,17 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.dto.BookingDTO;
 import com.hamter.dto.DoctorDTO;
-import com.hamter.dto.SpecialtyDTO;
 import com.hamter.dto.booking.BookingStatusDTO;
 import com.hamter.dto.booking.ElementBookingDTO;
 import com.hamter.mapper.DoctorMapper;
-import com.hamter.mapper.SpecialtyMapper;
 import com.hamter.model.Booking;
 import com.hamter.model.Doctor;
-import com.hamter.model.Specialty;
 import com.hamter.service.BookingService;
 import com.hamter.service.DoctorService;
-import com.hamter.service.SpecialtyService;
 import com.hamter.util.JwTokenUtil;
 
 @RestController
@@ -44,9 +39,6 @@ public class BookingRestController {
 
     @Autowired
     private BookingService bookingService;
-    
-    @Autowired
-    private SpecialtyService specialtyService;
     
     @Autowired
     private DoctorService doctorService;
@@ -120,6 +112,7 @@ public class BookingRestController {
     public ResponseEntity<Map<String, String>> createBooking(@RequestBody BookingDTO bookingDTO, @RequestHeader("Authorization") String authorizationHeader) {
         Long userId = getUserIdFromToken(authorizationHeader);
         try {
+            bookingDTO.setUserId(userId); 
             BookingDTO createdBookingDTO = bookingService.create(bookingDTO, userId);
             Map<String, String> response = new HashMap<>();
             response.put("message", "Cuộc hẹn đã được tạo thành công, có thể hủy cuộc hẹn trước khi được xác nhận");
@@ -130,7 +123,6 @@ public class BookingRestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
 
     @DeleteMapping("{id}")
     @PreAuthorize("hasAuthority('CUST')")

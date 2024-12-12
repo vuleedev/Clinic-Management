@@ -15,8 +15,8 @@ public class History implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false)
-    private User patient;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)

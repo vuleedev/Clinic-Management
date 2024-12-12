@@ -18,8 +18,8 @@ public class TimeSlotMapper {
     public static TimeSlot toEntity(TimeSlotDTO dto, DoctorRepository doctorRepository, ScheduleRepository scheduleRepository) {
         TimeSlot timeSlot = modelMapper.map(dto, TimeSlot.class);
 
-        timeSlot.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElseThrow(() -> new RuntimeException("Doctor not found")));
-        timeSlot.setSchedule(scheduleRepository.findById(dto.getScheduleId()).orElseThrow(() -> new RuntimeException("Schedule not found")));
+        timeSlot.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElseThrow(() -> new RuntimeException("không tìm thấy doctor")));
+        timeSlot.setSchedule(scheduleRepository.findById(dto.getScheduleId()).orElseThrow(() -> new RuntimeException("không tìm thấy schedule")));
 
         return timeSlot;
     }

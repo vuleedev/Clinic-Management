@@ -10,9 +10,6 @@ import com.hamter.model.User;
 import com.hamter.repository.PassResetTokenRepository;
 import com.hamter.repository.UserRepository;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 @Service
 public class ResetPassService {
 
@@ -38,7 +35,6 @@ public class ResetPassService {
 
         User user = resetToken.getUser();
 
-        // Mã hóa mật khẩu mới
         String encodedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encodedPassword);
         userRepository.save(user);

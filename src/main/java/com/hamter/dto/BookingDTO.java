@@ -10,7 +10,7 @@ public class BookingDTO {
 	private Long id;
     private String statusId;
     private Long doctorId;
-    private Long patientId;
+    private Long userId;
     private String email;
     private String cancelReason;
     private Date date;

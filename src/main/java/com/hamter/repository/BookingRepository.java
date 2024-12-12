@@ -6,15 +6,17 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.hamter.model.Booking;
 
+@Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 	
 	@Query("SELECT b FROM Booking b WHERE b.date BETWEEN :start AND :end AND b.statusId = 'WAIT'")
     List<Booking> findBookingsBetweenDates(Date start, Date end);
 	
-    Optional<Booking> findTopByPatientIdOrderByIdDesc(Long patientId);
+    Optional<Booking> findTopByUserIdOrderByIdDesc(Long userId);
     
-    int countByPatientIdAndStatusId(Long patientId, String statusId);
+    int countByUserIdAndStatusId(Long userId, String statusId);
 }

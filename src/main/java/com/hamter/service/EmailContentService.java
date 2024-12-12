@@ -1,4 +1,5 @@
 package com.hamter.service;
+
 import java.util.Date;
 
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ public class EmailContentService {
 	public EmailDTO getNewBookingEmailContent(BookingDTO bookingDTO, Date createdAt) {
         String subject = "Cuộc hẹn mới từ bệnh nhân";
         String body = String.format("Bệnh nhân với ID %d đã tạo cuộc hẹn vào lúc %s. Vui lòng xác nhận cuộc hẹn.",
-                                    bookingDTO.getPatientId(), createdAt.toString());
+                                    bookingDTO.getUserId(), createdAt.toString());
         return new EmailDTO(subject, body);
     }
 	public EmailDTO getReminderEmailContent(Booking booking) {
