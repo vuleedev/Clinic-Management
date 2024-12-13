@@ -37,11 +37,9 @@ public class TimeSlot implements Serializable {
     @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;
 
-    @Temporal(TemporalType.TIME)
     @Column(name = "start_time", nullable = false)
     private LocalTime startTime;
 
-    @Temporal(TemporalType.TIME)
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 

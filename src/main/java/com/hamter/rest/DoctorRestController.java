@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hamter.dto.DoctorDTO;
 import com.hamter.mapper.DoctorMapper;
 import com.hamter.model.Doctor;
+import com.hamter.repository.SpecialtyRepository;
 import com.hamter.service.DoctorService;
 import com.hamter.util.JwTokenUtil;
 
@@ -33,7 +34,10 @@ public class DoctorRestController {
 
     @Autowired
     private JwTokenUtil jwTokenUtil;
-
+    
+    @Autowired
+    private SpecialtyRepository specialtyRepository;
+    
     @GetMapping
     @PreAuthorize("hasAnyAuthority('CUST', 'MANAGE')")
     public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialty(@RequestParam Long specialtyId, @RequestHeader("Authorization") String authorizationHeader) {
@@ -66,22 +70,37 @@ public class DoctorRestController {
 
     @PreAuthorize("hasAuthority('CUST')")
     @PostMapping("/create-doctor")
-    public ResponseEntity<Doctor> createDoctor(@RequestBody Doctor doctor) {
+    public ResponseEntity<DoctorDTO> createDoctor(@RequestBody DoctorDTO doctorDTO) {
+        // Chuyển đổi từ DTO sang entity
+        Doctor doctor = DoctorMapper.toEntity(doctorDTO, specialtyRepository);
+
+        // Lưu hoặc cập nhật đối tượng Doctor
         Doctor savedDoctor = doctorService.saveOrUpdateDoctor(doctor);
-        return new ResponseEntity<>(savedDoctor, HttpStatus.CREATED);
+
+        // Chuyển đổi lại từ entity sang DTO để trả về
+        DoctorDTO savedDoctorDTO = DoctorMapper.toDTO(savedDoctor);
+
+        return new ResponseEntity<>(savedDoctorDTO, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAuthority('CUST')")
     @PutMapping("/{id}")
-    public ResponseEntity<Doctor> updateDoctor(@PathVariable Long id, @RequestBody Doctor doctor) {
+    public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable Long id, @RequestBody DoctorDTO doctorDTO) {
+        // Chuyển đổi từ DTO sang entity
+        Doctor doctor = DoctorMapper.toEntity(doctorDTO, specialtyRepository);
+        doctor.setId(id); // Đảm bảo id của bác sĩ được cập nhật đúng
+
         return doctorService.getDoctorById(id)
                 .map(existingDoctor -> {
-                    doctor.setId(id);
+                    // Cập nhật thông tin của bác sĩ
                     Doctor updatedDoctor = doctorService.saveOrUpdateDoctor(doctor);
-                    return new ResponseEntity<>(updatedDoctor, HttpStatus.OK);
+                    // Chuyển đổi lại từ entity sang DTO để trả về
+                    DoctorDTO updatedDoctorDTO = DoctorMapper.toDTO(updatedDoctor);
+                    return new ResponseEntity<>(updatedDoctorDTO, HttpStatus.OK);
                 })
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
 
     @PreAuthorize("hasAuthority('CUST')")
     @DeleteMapping("/{id}")
