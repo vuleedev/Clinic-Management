@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class BookingDTO {
-	
+
 	private Long id;
     private String statusId;
     private Long doctorId;

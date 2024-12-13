@@ -14,7 +14,7 @@ public class DoctorService {
 
 	@Autowired
     private DoctorRepository doctorRepository;
-	
+
 	public List<Doctor> getAllDoctors() {
         return doctorRepository.findAll();
     }
@@ -30,7 +30,7 @@ public class DoctorService {
     public void deleteDoctor(Long id) {
         doctorRepository.deleteById(id);
     }
-	
+
     public List<Doctor> findDoctorsBySpecialty(Long specialtyId) {
         return doctorRepository.findDoctorsBySpecialty(specialtyId);
     }

@@ -9,6 +9,6 @@ import com.hamter.model.PassResetToken;
 
 @Repository
 public interface PassResetTokenRepository extends JpaRepository<PassResetToken, Long> {
-	
+
 	Optional<PassResetToken> findByToken(String token);
 }

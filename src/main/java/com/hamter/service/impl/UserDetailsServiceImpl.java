@@ -1,11 +1,12 @@
 package com.hamter.service.impl;
 
-import com.hamter.model.User;
-import com.hamter.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.hamter.model.User;
+import com.hamter.repository.UserRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -22,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng với ID: " + userId));
         return org.springframework.security.core.userdetails.User
                 .builder()
-                .username(user.getEmail()) 
+                .username(user.getEmail())
                 .password(user.getPassword())
                 .roles(user.getRole().getRoleName())
                 .build();

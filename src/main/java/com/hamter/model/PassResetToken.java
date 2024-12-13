@@ -16,7 +16,7 @@ import lombok.Data;
 @Entity
 @Table(name = "prtoken")
 public class PassResetToken {
-	
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

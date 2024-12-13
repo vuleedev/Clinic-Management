@@ -12,9 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import org.springframework.web.cors.CorsConfiguration;
-
 
 import com.hamter.filter.JwtAuthenticationFilter;
 import com.hamter.service.impl.UserDetailsServiceImpl;
@@ -65,7 +63,7 @@ public class SecurityConfig {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowCredentials(true);
             config.addAllowedOriginPattern("http://localhost:4200");
-            config.addAllowedHeader("Authorization"); 
+            config.addAllowedHeader("Authorization");
             config.addAllowedHeader("*");
             config.addAllowedMethod("*");
             return config;

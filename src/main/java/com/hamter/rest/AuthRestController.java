@@ -21,7 +21,7 @@ import com.hamter.util.JwTokenUtil;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthRestController {
-	
+
 	private final AuthService authService;
     private final JwTokenUtil jwtUtil;
 
@@ -33,18 +33,22 @@ public class AuthRestController {
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest registerRequest) {
         try {
-            authService.registerUser(registerRequest.getEmail(), registerRequest.getPassword());
+            authService.registerUser(registerRequest.getEmail(),
+            						 registerRequest.getPassword(),
+            						 registerRequest.getUserName(),
+            						 registerRequest.getGender(),
+            						 registerRequest.getAddress());
             Map<String, String> response = new HashMap<>();
             response.put("message", "Đăng ký tài khoản thành công!");
-            return ResponseEntity.ok(response); 
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Lỗi trong quá trình đăng ký: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
     }
-    
-    
+
+
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
         try {
@@ -75,5 +79,5 @@ public class AuthRestController {
             return ResponseEntity.status(500).body(response);
         }
     }
-    
+
 }

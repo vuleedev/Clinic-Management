@@ -39,13 +39,13 @@ public class BookingRestController {
 
     @Autowired
     private BookingService bookingService;
-    
+
     @Autowired
     private DoctorService doctorService;
-    
+
     @Autowired
     private JwTokenUtil jwTokenUtil;
-      
+
     @GetMapping
     @PreAuthorize("hasAuthority('MANAGE')")
     public List<Booking> getAllBookings() {
@@ -62,13 +62,13 @@ public class BookingRestController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
-    
+
     @PutMapping("/booking/{id}/status")
     @PreAuthorize("hasAuthority('MANAGE')")
     public ResponseEntity<String> updateBookingStatus(@PathVariable("id") Long id, @RequestBody BookingStatusDTO request, @RequestHeader("Authorization") String authorizationHeader) {
         try {
         	Long userId = getUserIdFromToken(authorizationHeader);
-            Booking updatedBooking = bookingService.updateBookingStatus(id, request); 
+            Booking updatedBooking = bookingService.updateBookingStatus(id, request);
             if (updatedBooking != null) {
                 return ResponseEntity.ok("Trạng thái cuộc hẹn đã được cập nhật thành công.");
             } else {
@@ -79,7 +79,7 @@ public class BookingRestController {
                     .body("Lỗi, không thể cập nhật trạng thái cuộc hẹn: " + e.getMessage());
         }
     }
-    
+
 
     @GetMapping("/doctors")
     @PreAuthorize("hasAuthority('CUST')")
@@ -93,16 +93,16 @@ public class BookingRestController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(doctorDTOs);
     }
-    
+
     @GetMapping("/available-times")
     @PreAuthorize("hasAuthority('CUST')")
-    public ResponseEntity<List<ElementBookingDTO>> getDoctorsWithAvailableTimes(@RequestParam Long specialtyId,@RequestParam Long doctorId,@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {  
-        List<ElementBookingDTO> doctorsWithAvailableTimes = bookingService.getDoctorsWithAvailableTimes(specialtyId, doctorId, date);   
+    public ResponseEntity<List<ElementBookingDTO>> getDoctorsWithAvailableTimes(@RequestParam Long specialtyId,@RequestParam Long doctorId,@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        List<ElementBookingDTO> doctorsWithAvailableTimes = bookingService.getDoctorsWithAvailableTimes(specialtyId, doctorId, date);
         if (doctorsWithAvailableTimes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(doctorsWithAvailableTimes);
-        
+
     }
 
     @PostMapping("/create-booking")
@@ -110,7 +110,7 @@ public class BookingRestController {
     public ResponseEntity<Map<String, String>> createBooking(@RequestBody BookingDTO bookingDTO, @RequestHeader("Authorization") String authorizationHeader) {
         Long userId = getUserIdFromToken(authorizationHeader);
         try {
-            bookingDTO.setUserId(userId); 
+            bookingDTO.setUserId(userId);
             BookingDTO createdBookingDTO = bookingService.create(bookingDTO, userId);
             Map<String, String> response = new HashMap<>();
             response.put("message", "Cuộc hẹn đã được tạo thành công, có thể hủy cuộc hẹn trước khi được xác nhận");
@@ -125,10 +125,10 @@ public class BookingRestController {
     @DeleteMapping("{id}")
     @PreAuthorize("hasAuthority('CUST')")
     public ResponseEntity<Map<String, String>> deleteBooking(@PathVariable("id") Long id, @RequestHeader("Authorization") String authorizationHeader) {
-        Long userId = getUserIdFromToken(authorizationHeader); 
+        Long userId = getUserIdFromToken(authorizationHeader);
         Map<String, String> response = new HashMap<>();
         try {
-            Booking booking = bookingService.cancelBookingPending(id, userId); 
+            Booking booking = bookingService.cancelBookingPending(id, userId);
             bookingService.delete(id);
             response.put("message", "Xóa cuộc hẹn thành công");
             return ResponseEntity.ok(response);

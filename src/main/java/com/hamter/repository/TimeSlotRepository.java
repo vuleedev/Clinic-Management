@@ -12,15 +12,15 @@ import com.hamter.model.TimeSlot;
 
 @Repository
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
-      
+
 	@Query("SELECT ts FROM TimeSlot ts " +
 		       "JOIN ts.schedule s " +
 		       "WHERE s.doctor.id = :doctorId " +
 		       "AND s.date = :date " +
 		       "AND ts.isAvailable = true")
-		List<TimeSlot> findAvailableTimeSlots(@Param("doctorId") Long doctorId, 
+		List<TimeSlot> findAvailableTimeSlots(@Param("doctorId") Long doctorId,
 		                                      @Param("date") Date date);
 
-	
 
+	List<TimeSlot> findByScheduleId(Long scheduleId);
 }

@@ -6,12 +6,12 @@ import lombok.Data;
 
 @Data
 public class TimeSlotDTO {
-	
+
 	private Long id;
-    private Long doctorId;  
-    private Long scheduleId;  
-    private Date startTime;
-    private Date endTime;
+    private Long doctorId;
+    private Long scheduleId;
+    private String startTime;
+    private String endTime;
     private Boolean isAvailable;
     private Date createdAt;
     private Date updatedAt;

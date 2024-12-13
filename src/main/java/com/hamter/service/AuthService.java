@@ -1,22 +1,21 @@
 package com.hamter.service;
 
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.hamter.model.Role;
 import com.hamter.model.User;
 import com.hamter.repository.UserRepository;
 
-import java.util.Date;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 @Service
 public class AuthService {
-	
+
 	@Autowired
 	private RoleService roleService;
-	
+
 	private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -33,11 +32,14 @@ public class AuthService {
         return user;
     }
 
-    public void registerUser(String email, String password) {
+    public void registerUser(String email, String password, String userName, Boolean gender, String andress) {
         String encodedPassword = passwordEncoder.encode(password);
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setPassword(encodedPassword);
+        newUser.setUserName(userName);
+        newUser.setGender(gender);
+        newUser.setAddress(andress);
         newUser.setCreatedAt(new Date());
         newUser.setUpdatedAt(new Date());
         Role defaultRole = roleService.findByRoleName("CUST");

@@ -1,11 +1,20 @@
 package com.hamter.model;
 
-import javax.persistence.*;
-
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import lombok.Data;
 
 @Data
 @Entity
@@ -21,14 +30,14 @@ public class Booking implements Serializable {
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
-    
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    
+
     @JoinColumn(nullable = false)
     private String email;
-    
+
     @Column(columnDefinition = "nvarchar(max)")
     private String cancelReason;
 
@@ -36,11 +45,11 @@ public class Booking implements Serializable {
     private Date date;
 
     private String timeType;
-    
+
     @ManyToOne
     @JoinColumn(name = "time_slot_id", nullable = false)
     private TimeSlot timeSlot;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt", nullable = false)
     private Date createdAt;

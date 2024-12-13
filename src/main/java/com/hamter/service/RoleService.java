@@ -8,10 +8,10 @@ import com.hamter.repository.RoleRepository;
 
 @Service
 public class RoleService {
-	
+
 	@Autowired
 	private RoleRepository roleRepository;
-	
+
 	public Role findByRoleId(Long id) {
 		return roleRepository.findById(id).orElse(null);
 	}

@@ -7,18 +7,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hamter.model.TimeSlot;
+import com.hamter.repository.DoctorRepository;
+import com.hamter.repository.ScheduleRepository;
 import com.hamter.repository.TimeSlotRepository;
 
 @Service
 public class TimeSlotService {
-	
+
 	@Autowired
 	TimeSlotRepository timeSlotRepository;
-	
+
+	@Autowired
+    private DoctorRepository doctorRepository;
+
+    @Autowired
+    private ScheduleRepository scheduleRepository;
+
 	public List<TimeSlot> findAvailableTimeSlots(Long doctorId, Date date) {
 		return timeSlotRepository.findAvailableTimeSlots(doctorId, date);
 	}
-	
+
 	public List<TimeSlot> getAllTimeSlots() {
         return timeSlotRepository.findAll();
     }
@@ -35,4 +43,11 @@ public class TimeSlotService {
         timeSlotRepository.deleteById(id);
     }
 
+    public DoctorRepository getDoctorRepository() {
+        return doctorRepository;
+    }
+
+    public ScheduleRepository getScheduleRepository() {
+        return scheduleRepository;
+    }
 }

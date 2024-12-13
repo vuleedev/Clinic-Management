@@ -1,5 +1,8 @@
 package com.hamter.rest;
 
+import java.util.Date;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,9 +15,6 @@ import com.hamter.model.PassResetToken;
 import com.hamter.model.User;
 import com.hamter.repository.PassResetTokenRepository;
 import com.hamter.repository.UserRepository;
-
-import java.util.Date;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/resetpass")

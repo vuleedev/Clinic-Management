@@ -6,16 +6,16 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hamter.repository.DoctorRepository;
-import com.hamter.repository.HistoryRepository;
-import com.hamter.repository.UserRepository;
 import com.hamter.dto.HistoryDTO;
 import com.hamter.mapper.HistoryMapper;
 import com.hamter.model.History;
+import com.hamter.repository.DoctorRepository;
+import com.hamter.repository.HistoryRepository;
+import com.hamter.repository.UserRepository;
 
 @Service
 public class HistoryService {
-	
+
 	@Autowired
     private HistoryRepository historyRepository;
 

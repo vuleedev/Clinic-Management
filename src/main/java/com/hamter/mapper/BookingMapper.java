@@ -4,13 +4,12 @@ import org.modelmapper.ModelMapper;
 
 import com.hamter.dto.BookingDTO;
 import com.hamter.model.Booking;
-
 import com.hamter.repository.DoctorRepository;
 import com.hamter.repository.TimeSlotRepository;
 import com.hamter.repository.UserRepository;
 
 public class BookingMapper {
-	
+
 	private static final ModelMapper modelMapper = new ModelMapper();
 
     public static BookingDTO toDTO(Booking booking) {

@@ -9,9 +9,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.dto.auth.PassResetRequest;
@@ -22,13 +22,13 @@ import com.hamter.service.ResetPassService;
 
 @RestController
 public class PassResetChangeController {
-	
+
     @Autowired
     private PassResetTokenRepository passResetTokenRepository;
-    
+
     @Autowired
     private ResetPassService resetPassService;
-    
+
     @GetMapping("/reset-password")
     public ResponseEntity<?> checkToken(@RequestParam String token) {
         PassResetToken resetToken = passResetTokenRepository.findByToken(token).orElse(null);
@@ -48,7 +48,7 @@ public class PassResetChangeController {
         String message = resetPassService.changeResetPassword(request.getToken(), request.getNewPassword());
         Map<String, String> response = new HashMap<>();
         response.put("message", message);
-        
+
         if (message.equals("Mật khẩu đã được thay đổi thành công")) {
             return ResponseEntity.ok(response);
         } else {
