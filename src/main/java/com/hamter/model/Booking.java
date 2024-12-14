@@ -35,16 +35,11 @@ public class Booking implements Serializable {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @JoinColumn(nullable = false)
-    private String email;
-
     @Column(columnDefinition = "nvarchar(max)")
     private String cancelReason;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
-
-    private String timeType;
 
     @ManyToOne
     @JoinColumn(name = "time_slot_id", nullable = false)

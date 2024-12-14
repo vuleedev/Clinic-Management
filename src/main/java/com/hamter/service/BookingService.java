@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.hamter.dto.BookingDTO;
 import com.hamter.dto.DoctorDTO;
 import com.hamter.dto.TimeSlotDTO;
+import com.hamter.dto.booking.BookingDetailsDTO;
 import com.hamter.dto.booking.BookingStatusDTO;
 import com.hamter.dto.booking.ElementBookingDTO;
 import com.hamter.dto.email.EmailDTO;
@@ -65,7 +66,8 @@ public class BookingService {
 	public Booking findById(Long id) {
 	    return bookingRepository.findById(id).orElse(null);
 	}
-
+	
+	
 
 	public List<ElementBookingDTO> getDoctorsWithAvailableTimes(Long specialtyId, Long doctorId, Date date) {
         List<Doctor> doctors = doctorService.findDoctorsBySpecialty(specialtyId);
@@ -137,17 +139,17 @@ public class BookingService {
             timeSlot.setIsAvailable(true);
             timeSlotRepository.save(timeSlot);
             EmailDTO emailContent = emailContentService.getCancelBookingEmailContent(booking, request.getReason());
-            emailService.SendMailBooking(booking.getEmail(), emailContent);
+            //emailService.SendMailBooking(booking.getEmail(), emailContent);
         }
         if ("WAIT".equalsIgnoreCase(request.getStatus())) {
             EmailDTO emailContent = emailContentService.getConfirmBookingEmailContent(booking);
-            emailService.SendMailBooking(booking.getEmail(), emailContent);
+            //emailService.SendMailBooking(booking.getEmail(), emailContent);
         } else if ("COMPLETE".equalsIgnoreCase(request.getStatus())) {
             EmailDTO emailContent = emailContentService.getCompleteBookingEmailContent();
-            emailService.SendMailBooking(booking.getEmail(), emailContent);
+            //emailService.SendMailBooking(booking.getEmail(), emailContent);
         } else if ("NOT_ATTENDED".equalsIgnoreCase(request.getStatus())) {
             EmailDTO emailContent = emailContentService.getNotAttendedBookingEmailContent();
-            emailService.SendMailBooking(booking.getEmail(), emailContent);
+            //emailService.SendMailBooking(booking.getEmail(), emailContent);
         }
         booking.setUpdatedAt(new Date());
         return bookingRepository.save(booking);
@@ -162,7 +164,7 @@ public class BookingService {
         List<Booking> upcomingBookings = bookingRepository.findBookingsBetweenDates(startDate, endDate);
         for (Booking booking : upcomingBookings) {
             EmailDTO emailContent = emailContentService.getReminderEmailContent(booking);
-            emailService.SendMailBooking(booking.getEmail(), emailContent);
+            //emailService.SendMailBooking(booking.getEmail(), emailContent);
         }
     }
 
@@ -178,7 +180,7 @@ public class BookingService {
                 int notAttendedCount = bookingRepository.countByUserIdAndStatusId(userId, "NOT_ATTENDED");
                 if (notAttendedCount == 2) {
                     EmailDTO emailContent = emailContentService.getWarningEmailContent();
-                    emailService.SendMailBooking(booking.getEmail(), emailContent);
+                    //emailService.SendMailBooking(booking.getEmail(), emailContent);
                 }
             }
         }

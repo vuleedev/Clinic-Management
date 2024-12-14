@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +22,6 @@ import com.hamter.mapper.DoctorMapper;
 import com.hamter.model.Doctor;
 import com.hamter.repository.SpecialtyRepository;
 import com.hamter.service.DoctorService;
-import com.hamter.util.JwTokenUtil;
 
 @RestController
 @RequestMapping("/api/doctors")
@@ -31,17 +29,13 @@ public class DoctorRestController {
 
     @Autowired
     private DoctorService doctorService;
-
-    @Autowired
-    private JwTokenUtil jwTokenUtil;
     
     @Autowired
     private SpecialtyRepository specialtyRepository;
     
     @GetMapping
     @PreAuthorize("hasAnyAuthority('CUST', 'MANAGE')")
-    public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialty(@RequestParam Long specialtyId, @RequestHeader("Authorization") String authorizationHeader) {
-    	Long userId = getUserIdFromToken(authorizationHeader);
+    public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialty(@RequestParam Long specialtyId) {
     	List<Doctor> doctors = doctorService.findDoctorsBySpecialty(specialtyId);
         if (doctors.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -71,30 +65,20 @@ public class DoctorRestController {
     @PreAuthorize("hasAuthority('CUST')")
     @PostMapping("/create-doctor")
     public ResponseEntity<DoctorDTO> createDoctor(@RequestBody DoctorDTO doctorDTO) {
-        // Chuyển đổi từ DTO sang entity
         Doctor doctor = DoctorMapper.toEntity(doctorDTO, specialtyRepository);
-
-        // Lưu hoặc cập nhật đối tượng Doctor
         Doctor savedDoctor = doctorService.saveOrUpdateDoctor(doctor);
-
-        // Chuyển đổi lại từ entity sang DTO để trả về
         DoctorDTO savedDoctorDTO = DoctorMapper.toDTO(savedDoctor);
-
         return new ResponseEntity<>(savedDoctorDTO, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAuthority('CUST')")
     @PutMapping("/{id}")
     public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable Long id, @RequestBody DoctorDTO doctorDTO) {
-        // Chuyển đổi từ DTO sang entity
         Doctor doctor = DoctorMapper.toEntity(doctorDTO, specialtyRepository);
-        doctor.setId(id); // Đảm bảo id của bác sĩ được cập nhật đúng
-
+        doctor.setId(id);
         return doctorService.getDoctorById(id)
                 .map(existingDoctor -> {
-                    // Cập nhật thông tin của bác sĩ
                     Doctor updatedDoctor = doctorService.saveOrUpdateDoctor(doctor);
-                    // Chuyển đổi lại từ entity sang DTO để trả về
                     DoctorDTO updatedDoctorDTO = DoctorMapper.toDTO(updatedDoctor);
                     return new ResponseEntity<>(updatedDoctorDTO, HttpStatus.OK);
                 })
@@ -112,11 +96,5 @@ public class DoctorRestController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    private Long getUserIdFromToken(String authorizationHeader) {
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String jwtToken = authorizationHeader.substring(7);
-            return jwTokenUtil.extractUserId(jwtToken);
-        }
-        throw new RuntimeException("Không tìm thấy token");
-    }
+    
 }

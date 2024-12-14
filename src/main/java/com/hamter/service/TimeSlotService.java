@@ -26,7 +26,11 @@ public class TimeSlotService {
 	public List<TimeSlot> findAvailableTimeSlots(Long doctorId, Date date) {
 		return timeSlotRepository.findAvailableTimeSlots(doctorId, date);
 	}
-
+	
+	public TimeSlot findById(Long id) {
+		return timeSlotRepository.findById(id).orElse(null);
+	}
+	
 	public List<TimeSlot> getAllTimeSlots() {
         return timeSlotRepository.findAll();
     }

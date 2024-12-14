@@ -24,13 +24,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.dto.BookingDTO;
 import com.hamter.dto.DoctorDTO;
+import com.hamter.dto.booking.BookingDetailsDTO;
 import com.hamter.dto.booking.BookingStatusDTO;
 import com.hamter.dto.booking.ElementBookingDTO;
+import com.hamter.mapper.BookingMapper;
 import com.hamter.mapper.DoctorMapper;
 import com.hamter.model.Booking;
 import com.hamter.model.Doctor;
+import com.hamter.model.TimeSlot;
+import com.hamter.model.User;
 import com.hamter.service.BookingService;
 import com.hamter.service.DoctorService;
+import com.hamter.service.TimeSlotService;
+import com.hamter.service.UserService;
 import com.hamter.util.JwTokenUtil;
 
 @RestController
@@ -42,20 +48,28 @@ public class BookingRestController {
 
     @Autowired
     private DoctorService doctorService;
-
+    
+    @Autowired
+    private TimeSlotService timeSlotService;
+    
+    @Autowired
+    private UserService userService;
+    
     @Autowired
     private JwTokenUtil jwTokenUtil;
-
+    
     @GetMapping
-    @PreAuthorize("hasAuthority('MANAGE')")
-    public List<Booking> getAllBookings() {
-        return bookingService.findAll();
+    @PreAuthorize("hasAuthority('CUST')")
+    public List<BookingDTO> getAllBookings() {
+        List<Booking> bookings = bookingService.findAll();
+        return bookings.stream()
+                       .map(BookingMapper::toDTO)
+                       .toList();
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('MANAGE')")
-    public ResponseEntity<Booking> getBookingById(@PathVariable("id") Long id, @RequestHeader("Authorization") String authorizationHeader) {
-    	Long userId = getUserIdFromToken(authorizationHeader);
+    @PreAuthorize("hasAuthority('CUST')")
+    public ResponseEntity<Booking> getBookingById(@PathVariable("id") Long id) {
         Booking booking = bookingService.findById(id);
         if (booking != null) {
             return ResponseEntity.ok(booking);
@@ -64,10 +78,9 @@ public class BookingRestController {
     }
 
     @PutMapping("/booking/{id}/status")
-    @PreAuthorize("hasAuthority('MANAGE')")
-    public ResponseEntity<String> updateBookingStatus(@PathVariable("id") Long id, @RequestBody BookingStatusDTO request, @RequestHeader("Authorization") String authorizationHeader) {
+    @PreAuthorize("hasAuthority('CUST')")
+    public ResponseEntity<String> updateBookingStatus(@PathVariable("id") Long id, @RequestBody BookingStatusDTO request) {
         try {
-        	Long userId = getUserIdFromToken(authorizationHeader);
             Booking updatedBooking = bookingService.updateBookingStatus(id, request);
             if (updatedBooking != null) {
                 return ResponseEntity.ok("Trạng thái cuộc hẹn đã được cập nhật thành công.");
@@ -79,7 +92,17 @@ public class BookingRestController {
                     .body("Lỗi, không thể cập nhật trạng thái cuộc hẹn: " + e.getMessage());
         }
     }
+    
+    @GetMapping("/{bookingId}/details")
+    public ResponseEntity<BookingDetailsDTO> getBookingDetails(@PathVariable Long bookingId) {
+        Booking booking = bookingService.findById(bookingId);
+        Doctor doctor = doctorService.findById(booking.getDoctor().getId());   
+        TimeSlot timeSlot = timeSlotService.findById(booking.getTimeSlot().getId());
+        User user = userService.findById(booking.getUser().getId());
+        BookingDetailsDTO bookingDetailsDTO = new BookingDetailsDTO(booking, doctor, timeSlot, user);
 
+        return ResponseEntity.ok(bookingDetailsDTO);
+    }
 
     @GetMapping("/doctors")
     @PreAuthorize("hasAuthority('CUST')")

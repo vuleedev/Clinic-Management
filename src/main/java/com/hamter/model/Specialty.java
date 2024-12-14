@@ -15,6 +15,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 
 @Data
@@ -32,7 +35,7 @@ public class Specialty implements Serializable {
     @Column(columnDefinition = "nvarchar(200)")
     private String description;
 
-    @OneToMany(mappedBy = "specialty")
+    @OneToMany(mappedBy = "specialty") 
     private List<Doctor> doctors;
 
     @Lob

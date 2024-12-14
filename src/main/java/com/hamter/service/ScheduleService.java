@@ -21,21 +21,16 @@ public class ScheduleService {
 	private TimeSlotRepository timeSlotRepository;
 
 	public List<List<TimeSlot>> getTimeSlotsBySchedule(Long scheduleId) {
-        // Lấy lịch khám hiện tại
         Optional<Schedule> currentScheduleOpt = scheduleRepository.findById(scheduleId);
         if (!currentScheduleOpt.isPresent()) {
-            throw new RuntimeException("Schedule not found");
+            throw new RuntimeException("loi");
         }
         Schedule currentSchedule = currentScheduleOpt.get();
-
-        // Lấy lịch khám trước đó (n-1)
         Optional<Schedule> previousScheduleOpt = scheduleRepository.findTopByDateBeforeOrderByDateDesc(currentSchedule.getDate());
         if (!previousScheduleOpt.isPresent()) {
-            throw new RuntimeException("Previous schedule not found");
+            throw new RuntimeException("loi");
         }
         Schedule previousSchedule = previousScheduleOpt.get();
-
-        // Lấy tất cả timeSlot của lịch hiện tại và lịch trước đó
         List<TimeSlot> currentTimeSlots = timeSlotRepository.findByScheduleId(currentSchedule.getId());
         List<TimeSlot> previousTimeSlots = timeSlotRepository.findByScheduleId(previousSchedule.getId());
 
@@ -43,7 +38,6 @@ public class ScheduleService {
     }
 
 	public List<Schedule> getScheduleByDoctorId(Long doctorId) {
-        // Lấy tất cả các lịch làm việc của bác sĩ theo doctorId
         return scheduleRepository.findByDoctorId(doctorId);
     }
 

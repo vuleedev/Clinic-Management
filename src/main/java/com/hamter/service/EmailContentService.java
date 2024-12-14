@@ -19,7 +19,7 @@ public class EmailContentService {
 	public EmailDTO getReminderEmailContent(Booking booking) {
         String subject = "Nhắc nhở lịch hẹn khám bệnh";
         String body = String.format("Xin chào, bạn có một lịch hẹn vào ngày: %s lúc %s. Xin vui lòng đến đúng giờ!",
-                                    booking.getDate(), booking.getTimeType());
+                                    booking.getDate());
         return new EmailDTO(subject, body);
     }
 
