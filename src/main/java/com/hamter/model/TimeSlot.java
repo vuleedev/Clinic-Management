@@ -18,8 +18,6 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
 @Data
@@ -32,7 +30,6 @@ public class TimeSlot implements Serializable {
     private Long id;
 
 	@ManyToOne
-	@JsonIgnore
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
 

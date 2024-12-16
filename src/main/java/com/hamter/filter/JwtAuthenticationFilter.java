@@ -25,39 +25,40 @@ import io.jsonwebtoken.ExpiredJwtException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwTokenUtil jwtTokenUtil;
+	@Autowired
+	private JwTokenUtil jwtTokenUtil;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+	@Autowired
+	private UserDetailsService userDetailsService;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader("Authorization");
-        String jwtToken = null;
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+			throws ServletException, IOException {
+		final String authorizationHeader = request.getHeader("Authorization");
+		String jwtToken = null;
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwtToken = authorizationHeader.substring(7);
-            try {
-                Long userId = jwtTokenUtil.extractUserId(jwtToken);
-                List<String> roles = jwtTokenUtil.extractRoles(jwtToken);
+		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+			jwtToken = authorizationHeader.substring(7);
+			try {
+				Long userId = jwtTokenUtil.extractUserId(jwtToken);
+				List<String> roles = jwtTokenUtil.extractRoles(jwtToken);
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(userId));
+				UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(userId));
 
-                if (userDetails != null && jwtTokenUtil.validateToken(jwtToken, userDetails.getUsername())) {
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, AuthorityUtils.createAuthorityList(roles.toArray(new String[0]))
+				if (userDetails != null && jwtTokenUtil.validateToken(jwtToken, userDetails.getUsername())) {
+					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+							userDetails, null, AuthorityUtils.createAuthorityList(roles.toArray(new String[0]))
 
-                    );
-                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                }
-            } catch (ExpiredJwtException e) {
-                System.out.println("Token đã hết hạn: " + e.getMessage());
-            } catch (Exception e) {
-                System.out.println("Lỗi phân tích token: " + e);
-            }
-        }
-        chain.doFilter(request, response);
-    }
+					);
+					authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+				}
+			} catch (ExpiredJwtException e) {
+				System.out.println("Token đã hết hạn: " + e.getMessage());
+			} catch (Exception e) {
+				System.out.println("Lỗi phân tích token: " + e);
+			}
+		}
+		chain.doFilter(request, response);
+	}
 }

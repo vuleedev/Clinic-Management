@@ -1,4 +1,4 @@
-package com.hamter.service;
+package com.hamter.service.email;
 
 import java.util.Date;
 

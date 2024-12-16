@@ -9,6 +9,6 @@ public class RegisterRequest {
     private String password;
 
     private String userName;
-    private Boolean gender;
+    private Boolean genDer;
     private String address;
 }

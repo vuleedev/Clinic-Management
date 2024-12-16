@@ -11,34 +11,31 @@ import com.hamter.repository.ScheduleRepository;
 
 public class TimeSlotMapper {
 
-    private static final ModelMapper modelMapper = new ModelMapper();
+	private static final ModelMapper modelMapper = new ModelMapper();
 
-    public static TimeSlotDTO toDTO(TimeSlot timeSlot) {
-        TimeSlotDTO dto = modelMapper.map(timeSlot, TimeSlotDTO.class);
+	public static TimeSlotDTO toDTO(TimeSlot timeSlot) {
+		TimeSlotDTO dto = modelMapper.map(timeSlot, TimeSlotDTO.class);
 
-        dto.setStartTime(timeSlot.getStartTime() != null ? timeSlot.getStartTime().toString() : null);
-        dto.setEndTime(timeSlot.getEndTime() != null ? timeSlot.getEndTime().toString() : null);
+		dto.setStartTime(timeSlot.getStartTime() != null ? timeSlot.getStartTime().toString() : null);
+		dto.setEndTime(timeSlot.getEndTime() != null ? timeSlot.getEndTime().toString() : null);
 
-        return dto;
-    }
+		return dto;
+	}
 
-    public static TimeSlot toEntity(TimeSlotDTO dto, DoctorRepository doctorRepository, ScheduleRepository scheduleRepository) {
-        TimeSlot timeSlot = modelMapper.map(dto, TimeSlot.class);
+	public static TimeSlot toEntity(TimeSlotDTO dto, DoctorRepository doctorRepository,ScheduleRepository scheduleRepository) {
+		TimeSlot timeSlot = modelMapper.map(dto, TimeSlot.class);
 
-        if (dto.getStartTime() != null) {
-            timeSlot.setStartTime(LocalTime.parse(dto.getStartTime())); // Chuyển từ String sang LocalTime
-        }
-        if (dto.getEndTime() != null) {
-            timeSlot.setEndTime(LocalTime.parse(dto.getEndTime())); // Chuyển từ String sang LocalTime
-        }
+		if (dto.getStartTime() != null) {
+			timeSlot.setStartTime(LocalTime.parse(dto.getStartTime()));
+		}
+		if (dto.getEndTime() != null) {
+			timeSlot.setEndTime(LocalTime.parse(dto.getEndTime()));
+		}
 
-        timeSlot.setDoctor(doctorRepository.findById(dto.getDoctorId())
-            .orElseThrow(() -> new RuntimeException("không tìm thấy doctor")));
-        timeSlot.setSchedule(scheduleRepository.findById(dto.getScheduleId())
-            .orElseThrow(() -> new RuntimeException("không tìm thấy schedule")));
+		timeSlot.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElse(null));
+		timeSlot.setSchedule(scheduleRepository.findById(dto.getScheduleId()).orElse(null));
 
-        return timeSlot;
-    }
-
+		return timeSlot;
+	}
 
 }

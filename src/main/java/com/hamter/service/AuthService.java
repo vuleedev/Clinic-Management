@@ -48,7 +48,7 @@ public class AuthService {
     }
 
     public void changePassword(String email, String oldPassword, String newPassword) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Không thấy người dùng"));
+        User user = userRepository.findByEmail(email).orElse(null);
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new RuntimeException("Mật khẩu không đúng");
         }

@@ -49,7 +49,6 @@ public class SecurityConfig {
             .antMatchers("/api/auth/register", "/api/auth/login", "/api/auth/changePassword", "/api/resetpass/password-reset").permitAll()
             .antMatchers("/reset-password", "/p-reset-password").permitAll()
             .antMatchers("/api/bookings/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
-            .antMatchers("/api/bookings-details/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
             .antMatchers("/api/specialties/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
             .antMatchers("/api/doctors/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
             .antMatchers("/api/histories/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")

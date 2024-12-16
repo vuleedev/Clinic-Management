@@ -36,7 +36,7 @@ public class AuthRestController {
             authService.registerUser(registerRequest.getEmail(),
             						 registerRequest.getPassword(),
             						 registerRequest.getUserName(),
-            						 registerRequest.getGender(),
+            						 registerRequest.getGenDer(),
             						 registerRequest.getAddress());
             Map<String, String> response = new HashMap<>();
             response.put("message", "Đăng ký tài khoản thành công!");
@@ -57,7 +57,6 @@ public class AuthRestController {
             String token = jwtUtil.generateToken(user.getId(), List.of(role));
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
-            System.out.println("logggggggggggggggggggggggggggggggggggggggggggggg: " + token);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();

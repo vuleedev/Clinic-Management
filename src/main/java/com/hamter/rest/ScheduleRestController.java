@@ -29,7 +29,7 @@ public class ScheduleRestController {
     private ScheduleService scheduleService;
 
     @Autowired
-    private DoctorRepository doctorRepository; // Injecting DoctorRepository
+    private DoctorRepository doctorRepository; 
 
     @PreAuthorize("hasAuthority('CUST')")
     @GetMapping
@@ -62,7 +62,6 @@ public class ScheduleRestController {
     @PreAuthorize("hasAuthority('CUST')")
     @PostMapping("create-schedule")
     public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
-        // Use DoctorRepository to convert ScheduleDTO to Schedule entity
         Schedule schedule = ScheduleMapper.toEntity(scheduleDTO, doctorRepository);
         return ScheduleMapper.toDTO(scheduleService.create(schedule));
     }
@@ -71,7 +70,6 @@ public class ScheduleRestController {
     @PutMapping("/{id}")
     public ScheduleDTO updateSchedule(@PathVariable("id") Long id, @RequestBody ScheduleDTO scheduleDTO) {
         scheduleDTO.setId(id);
-        // Use DoctorRepository to convert ScheduleDTO to Schedule entity
         Schedule schedule = ScheduleMapper.toEntity(scheduleDTO, doctorRepository);
         return ScheduleMapper.toDTO(scheduleService.update(schedule));
     }

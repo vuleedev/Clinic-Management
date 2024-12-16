@@ -17,7 +17,7 @@ public class DoctorMapper {
     public static Doctor toEntity(DoctorDTO dto, SpecialtyRepository specialtyRepository) {
         Doctor doctor = modelMapper.map(dto, Doctor.class);
 
-        doctor.setSpecialty(specialtyRepository.findById(dto.getSpecialtyId()).orElseThrow(() -> new RuntimeException("không tìm thấy speciatly")));
+        doctor.setSpecialty(specialtyRepository.findById(dto.getSpecialtyId()).orElse(null));
 
         return doctor;
     }

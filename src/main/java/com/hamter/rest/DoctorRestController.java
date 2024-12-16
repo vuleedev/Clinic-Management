@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ import com.hamter.mapper.DoctorMapper;
 import com.hamter.model.Doctor;
 import com.hamter.repository.SpecialtyRepository;
 import com.hamter.service.DoctorService;
+import com.hamter.util.JwTokenUtil;
 
 @RestController
 @RequestMapping("/api/doctors")
@@ -29,6 +31,9 @@ public class DoctorRestController {
 
     @Autowired
     private DoctorService doctorService;
+    
+    @Autowired
+    private JwTokenUtil jwTokenUtil;
     
     @Autowired
     private SpecialtyRepository specialtyRepository;
@@ -45,7 +50,15 @@ public class DoctorRestController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(doctorDTOs);
     }
-
+    
+    @PreAuthorize("hasAuthority('CUST')")
+    @GetMapping("/doctorId-token")
+    public Doctor getDoctor(@RequestHeader("Authorization") String authorizationHeader) {
+        Long userId = getUserIdFromToken(authorizationHeader);
+        return doctorService.findById(userId);
+                
+    }
+    
     @PreAuthorize("hasAuthority('CUST')")
     @GetMapping("/all-doctor")
     public List<DoctorDTO> getAllDoctor() {
@@ -95,6 +108,13 @@ public class DoctorRestController {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
+    
+    private Long getUserIdFromToken(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String jwtToken = authorizationHeader.substring(7);
+            return jwTokenUtil.extractUserId(jwtToken);
+        }
+        throw new RuntimeException("Không tìm thấy token");
+    }
     
 }

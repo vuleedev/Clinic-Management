@@ -44,7 +44,7 @@ public class JwTokenUtil {
 	    Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
 	    Object rolesClaim = claims.get("roles");
 	    if (rolesClaim instanceof List) {
-	        return (List<String>) rolesClaim;
+			return (List<String>) rolesClaim;
 	    }
 	    return List.of();
 	}

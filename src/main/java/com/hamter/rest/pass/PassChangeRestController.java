@@ -1,4 +1,4 @@
-package com.hamter.rest;
+package com.hamter.rest.pass;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import com.hamter.repository.PassResetTokenRepository;
 import com.hamter.service.ResetPassService;
 
 @RestController
-public class PassResetChangeController {
+public class PassChangeRestController {
 
     @Autowired
     private PassResetTokenRepository passResetTokenRepository;

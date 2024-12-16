@@ -1,4 +1,4 @@
-package com.hamter.service;
+package com.hamter.service.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

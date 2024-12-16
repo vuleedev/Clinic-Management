@@ -1,4 +1,4 @@
-package com.hamter.rest;
+package com.hamter.rest.pass;
 
 import java.util.Date;
 import java.util.UUID;

@@ -18,8 +18,8 @@ public class HistoryMapper {
     public static History toEntity(HistoryDTO dto, UserRepository userRepository, DoctorRepository doctorRepository) {
         History history = modelMapper.map(dto, History.class);
 
-        history.setUser(userRepository.findById(dto.getUserId()).orElseThrow(() -> new RuntimeException("không tìm thấy user")));
-        history.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElseThrow(() -> new RuntimeException("không tìm thấy doctor")));
+        history.setUser(userRepository.findById(dto.getUserId()).orElse(null));
+        history.setDoctor(doctorRepository.findById(dto.getDoctorId()).orElse(null));
 
         return history;
     }

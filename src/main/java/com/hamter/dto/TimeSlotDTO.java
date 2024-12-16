@@ -8,8 +8,8 @@ import lombok.Data;
 public class TimeSlotDTO {
 
 	private Long id;
-    private Long doctorId;
     private Long scheduleId;
+    private Long DoctorId;
     private String startTime;
     private String endTime;
     private Boolean isAvailable;
