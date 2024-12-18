@@ -23,34 +23,41 @@ public class HistoryRestController {
     @Autowired
     private HistoryService historyService;
     
-    @GetMapping
-    @PreAuthorize("hasAuthority('CUST')")
-    public List<HistoryDTO> getAllHistories() {
-        return historyService.findAll();
+    @GetMapping("/all-history/doctor/{doctorId}")
+    @PreAuthorize("hasAuthority('STAFF')")
+    public List<HistoryDTO> getAllHistoriesByDoctor(@PathVariable Long doctorId) {
+        return historyService.findAllHistoriesByDoctorId(doctorId);
     }
     
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('CUST')")
+    @GetMapping("/history/{id}")
+    @PreAuthorize("hasAuthority('STAFF')")
     public HistoryDTO getHistoryById(@PathVariable("id") Long id) {
         return historyService.findById(id);
     }
-
-    @PostMapping("/create-history")
-    @PreAuthorize("hasAuthority('CUST')")
-    public HistoryDTO createHistory(@RequestBody HistoryDTO history) {
-        return historyService.create(history);
+    
+    @GetMapping("/history/user/{userId}")
+    @PreAuthorize("hasAuthority('STAFF')")
+    public HistoryDTO getHistoryByUserId(@PathVariable Long userId) {
+        return historyService.findHistoryByUserId(userId);
+    }
+    
+    @PostMapping("/create-history/{userId}")
+    @PreAuthorize("hasAuthority('STAFF')")
+    public HistoryDTO createHistory(@PathVariable Long userId, @RequestBody HistoryDTO historyDTO) {
+        return historyService.create(historyDTO, userId);
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('CUST')")
+    @PutMapping("/history/{id}")
+    @PreAuthorize("hasAuthority('STAFF')")
     public HistoryDTO updateHistory(@PathVariable("id") Long id, @RequestBody HistoryDTO history) {
     	history.setId(id);
         return historyService.update(id, history);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public void deleteHistory(@PathVariable("id") Long id) {
         historyService.delete(id);
     }
+    
 }

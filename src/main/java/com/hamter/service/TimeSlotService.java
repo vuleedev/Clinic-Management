@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hamter.dto.TimeSlotDTO;
 import com.hamter.model.TimeSlot;
 import com.hamter.repository.DoctorRepository;
 import com.hamter.repository.ScheduleRepository;
@@ -53,5 +54,9 @@ public class TimeSlotService {
 
     public ScheduleRepository getScheduleRepository() {
         return scheduleRepository;
+    }
+    
+    public List<TimeSlot> findTimeSlotByDoctor(Long doctorId) {
+        return timeSlotRepository.findByDoctorId(doctorId);
     }
 }

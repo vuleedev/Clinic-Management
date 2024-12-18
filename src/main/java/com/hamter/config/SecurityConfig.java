@@ -55,6 +55,7 @@ public class SecurityConfig {
             .antMatchers("/api/schedules/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
             .antMatchers("/api/time-slots/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
             .antMatchers("/api/users/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
+            .antMatchers("/api/ratings/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
             .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.dto.TimeSlotDTO;
@@ -25,14 +26,22 @@ public class TimeSlotRestController {
     @Autowired
     private TimeSlotService timeSlotService;
 
-    @PreAuthorize("hasAuthority('CUST')")
     @GetMapping
+    @PreAuthorize("hasAuthority('CUST')")
     public List<TimeSlotDTO> getAllTimeSlots() {
         return timeSlotService.getAllTimeSlots().stream()
             .map(TimeSlotMapper::toDTO)
             .collect(Collectors.toList());
     }
-
+    
+    @GetMapping("/doctor/{doctorId}/timeslot")
+    @PreAuthorize("hasAuthority('STAFF')")
+    public List<TimeSlotDTO> getTimeSlotByDoctor(@PathVariable Long doctorId) {
+        return timeSlotService.findTimeSlotByDoctor(doctorId).stream()
+            .map(TimeSlotMapper::toDTO)
+            .collect(Collectors.toList());
+    }
+    
     @PreAuthorize("hasAuthority('CUST')")
     @GetMapping("/{id}")
     public TimeSlotDTO getTimeSlotById(@PathVariable("id") Long id) {

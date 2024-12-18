@@ -19,8 +19,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.dto.DoctorDTO;
+import com.hamter.dto.UserDoctorDTO;
 import com.hamter.mapper.DoctorMapper;
+import com.hamter.mapper.UserDoctorMapper;
 import com.hamter.model.Doctor;
+import com.hamter.repository.RoleRepository;
 import com.hamter.repository.SpecialtyRepository;
 import com.hamter.service.DoctorService;
 import com.hamter.util.JwTokenUtil;
@@ -37,6 +40,23 @@ public class DoctorRestController {
     
     @Autowired
     private SpecialtyRepository specialtyRepository;
+    
+    @Autowired
+    private RoleRepository roleRepository;
+    
+    @GetMapping("/doctor/user")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE')")
+    public DoctorDTO getDoctorByUserId(@RequestHeader("Authorization") String authorizationHeader) {
+        Long userId = getUserIdFromToken(authorizationHeader);
+        return doctorService.findDoctorByUserId(userId);
+    }
+    
+    @GetMapping("/get-doctor-id/{userId}")
+    @PreAuthorize("hasAuthority('STAFF')")
+    public Long getDoctorId(@PathVariable Long userId) {
+        Long doctorId = doctorService.getDoctorIdByUserId(userId); // Lấy doctorId từ logic service
+        return doctorId; // Trả về doctorId
+    }
     
     @GetMapping
     @PreAuthorize("hasAnyAuthority('CUST', 'MANAGE')")
@@ -75,14 +95,17 @@ public class DoctorRestController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    
     @PostMapping("/create-doctor")
-    public ResponseEntity<DoctorDTO> createDoctor(@RequestBody DoctorDTO doctorDTO) {
-        Doctor doctor = DoctorMapper.toEntity(doctorDTO, specialtyRepository);
+    @PreAuthorize("hasAuthority('CUST')")
+    public ResponseEntity<DoctorDTO> createDoctor(@RequestBody UserDoctorDTO userDoctorDTO) {
+        Doctor doctor = UserDoctorMapper.toEntity(userDoctorDTO, specialtyRepository, roleRepository);
         Doctor savedDoctor = doctorService.saveOrUpdateDoctor(doctor);
         DoctorDTO savedDoctorDTO = DoctorMapper.toDTO(savedDoctor);
+
         return new ResponseEntity<>(savedDoctorDTO, HttpStatus.CREATED);
     }
+    
 
     @PreAuthorize("hasAuthority('CUST')")
     @PutMapping("/{id}")

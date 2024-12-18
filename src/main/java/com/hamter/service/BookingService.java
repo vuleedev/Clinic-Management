@@ -15,18 +15,15 @@ import org.springframework.stereotype.Service;
 
 import com.hamter.dto.BookingDTO;
 import com.hamter.dto.DoctorDTO;
-import com.hamter.dto.HistoryDTO;
 import com.hamter.dto.TimeSlotDTO;
 import com.hamter.dto.booking.BookingStatusDTO;
 import com.hamter.dto.booking.ElementBookingDTO;
 import com.hamter.dto.email.EmailDTO;
 import com.hamter.mapper.BookingMapper;
 import com.hamter.mapper.DoctorMapper;
-import com.hamter.mapper.HistoryMapper;
 import com.hamter.mapper.TimeSlotMapper;
 import com.hamter.model.Booking;
 import com.hamter.model.Doctor;
-import com.hamter.model.History;
 import com.hamter.model.TimeSlot;
 import com.hamter.repository.BookingRepository;
 import com.hamter.repository.DoctorRepository;
@@ -69,7 +66,11 @@ public class BookingService {
 	public Booking findById(Long id) {
 		return bookingRepository.findById(id).orElse(null);
 	}
-
+	
+	public List<Booking> findBookingByDoctor(Long doctorId) {
+        return bookingRepository.findByDoctorId(doctorId);
+    }
+	
 	public List<ElementBookingDTO> getDoctorsWithAvailableTimes(Long specialtyId, Long doctorId, Date date) {
 		List<Doctor> doctors = doctorService.findDoctorsBySpecialty(specialtyId);
 		if (doctors.isEmpty()) {
@@ -167,19 +168,6 @@ public class BookingService {
 			}
 		}
 	}
-
-	public Booking cancelBookingPending(Long id, Long userId) {
-		Booking booking = bookingRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Không tìm thấy cuộc hẹn"));
-		if (!"PENDING".equals(booking.getStatusId())) {
-			throw new RuntimeException("Cuộc hẹn không thể hủy");
-		}
-		booking.setStatusId("CANCELED");
-		TimeSlot timeSlot = booking.getTimeSlot();
-		timeSlot.setIsAvailable(true);
-		timeSlotRepository.save(timeSlot);
-		return bookingRepository.save(booking);
-	}
 	
 	public BookingDTO update(Long id, BookingDTO bookingDTO) {
         Booking existingBooking = bookingRepository.findById(id).orElse(null);
@@ -189,6 +177,27 @@ public class BookingService {
         booking.setUpdatedAt(new java.util.Date());
         return BookingMapper.toDTO(bookingRepository.save(booking));
     }
+	
+	public List<BookingDTO> getBookingByUserId(Long userId) {
+        List<Booking> booking = bookingRepository.findByUser_Id(userId);
+        return booking.stream()
+        		.map(BookingMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+	
+	public void deleteBookingByUser(Long id) {
+		Booking booking = bookingRepository.findById(id).orElse(null);
+		TimeSlot timeSlot = booking.getTimeSlot();
+		timeSlot.setIsAvailable(true);
+		timeSlotRepository.save(timeSlot);
+		bookingRepository.deleteById(id);
+	}
+	
+	public void updateStatusBooking(Long id) {
+		Booking booking = bookingRepository.findById(id).orElse(null);
+		booking.setStatusId("COMPLETE");
+		bookingRepository.save(booking);
+	}
 	
 	public void delete(Long id) {
 		if (!bookingRepository.existsById(id)) {

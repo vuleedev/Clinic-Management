@@ -15,7 +15,11 @@ public class TimeSlotMapper {
 
 	public static TimeSlotDTO toDTO(TimeSlot timeSlot) {
 		TimeSlotDTO dto = modelMapper.map(timeSlot, TimeSlotDTO.class);
-
+		
+		if (timeSlot.getSchedule() != null) {
+	        dto.setScheduleDate(timeSlot.getSchedule().getDate());
+	    }
+		
 		dto.setStartTime(timeSlot.getStartTime() != null ? timeSlot.getStartTime().toString() : null);
 		dto.setEndTime(timeSlot.getEndTime() != null ? timeSlot.getEndTime().toString() : null);
 

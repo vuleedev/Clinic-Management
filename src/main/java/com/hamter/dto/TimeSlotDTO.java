@@ -9,7 +9,9 @@ public class TimeSlotDTO {
 
 	private Long id;
     private Long scheduleId;
-    private Long DoctorId;
+    private Date scheduleDate;
+    private Long doctorId;
+    private String doctorName;
     private String startTime;
     private String endTime;
     private Boolean isAvailable;

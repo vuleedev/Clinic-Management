@@ -18,9 +18,11 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
 		       "WHERE s.doctor.id = :doctorId " +
 		       "AND s.date = :date " +
 		       "AND ts.isAvailable = true")
-		List<TimeSlot> findAvailableTimeSlots(@Param("doctorId") Long doctorId,
-		                                      @Param("date") Date date);
-
+	List<TimeSlot> findAvailableTimeSlots(@Param("doctorId") Long doctorId,@Param("date") Date date);
 
 	List<TimeSlot> findByScheduleId(Long scheduleId);
+	
+	List<TimeSlot> findByDoctorId(Long doctorId);
+	
+	
 }
