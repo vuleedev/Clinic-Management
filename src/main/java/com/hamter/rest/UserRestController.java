@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,9 +24,14 @@ public class UserRestController {
 
 	@Autowired
 	private UserService userService;
-
-	@PreAuthorize("hasAuthority('CUST')")
+	
+	@GetMapping("/user")
+    public OAuth2User getUser(@AuthenticationPrincipal OAuth2User principal) {
+        return principal;
+    }
+	
 	@GetMapping
+	@PreAuthorize("hasAuthority('CUST')")
 	public List<User> getAllUsers() {
 		return userService.findAll();
 	}

@@ -27,7 +27,6 @@ public class DoctorService {
 	}
 	
 	public Long getDoctorIdByUserId(Long userId) {
-	    // Logic lấy doctorId từ database hoặc nguồn khác
 	    Doctor doctor = doctorRepository.findByUser_Id(userId);
 	    return doctor.getId();
 	}

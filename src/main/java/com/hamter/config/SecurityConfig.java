@@ -58,8 +58,11 @@ public class SecurityConfig {
             .antMatchers("/api/ratings/**").hasAnyAuthority("CUST", "MANAGE", "STAFF")
             .anyRequest().authenticated()
             .and()
+            .oauth2Login()
+            .defaultSuccessUrl("http://localhost:4200/home", true)
+            .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
+        	
         http.cors().configurationSource(request -> {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowCredentials(true);
@@ -69,7 +72,7 @@ public class SecurityConfig {
             config.addAllowedMethod("*");
             return config;
         });
-
+        
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
