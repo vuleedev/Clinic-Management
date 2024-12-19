@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.dto.HistoryDTO;
 import com.hamter.service.HistoryService;
+import com.hamter.util.JwTokenUtil;
 
 @RestController
 @RequestMapping("/api/histories")
@@ -22,6 +24,9 @@ public class HistoryRestController {
 
     @Autowired
     private HistoryService historyService;
+    
+    @Autowired
+    private JwTokenUtil jwTokenUtil;
     
     @GetMapping("/all-history/doctor/{doctorId}")
     @PreAuthorize("hasAuthority('STAFF')")
@@ -39,6 +44,13 @@ public class HistoryRestController {
     @PreAuthorize("hasAuthority('STAFF')")
     public HistoryDTO getHistoryByUserId(@PathVariable Long userId) {
         return historyService.findHistoryByUserId(userId);
+    }
+    
+    @GetMapping("/history/user")
+    @PreAuthorize("hasAuthority('CUST')")
+    public List<HistoryDTO> getHistoryByUser(@RequestHeader("Authorization") String authorizationHeader) {
+    	Long userId = getUserIdFromToken(authorizationHeader);
+        return historyService.findHistoryByUser(userId);
     }
     
     @PostMapping("/create-history/{userId}")
@@ -60,4 +72,11 @@ public class HistoryRestController {
         historyService.delete(id);
     }
     
+    private Long getUserIdFromToken(String authorizationHeader) {
+		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+			String jwtToken = authorizationHeader.substring(7);
+			return jwTokenUtil.extractUserId(jwtToken);
+		}
+		throw new RuntimeException("Không tìm thấy token");
+	}
 }
