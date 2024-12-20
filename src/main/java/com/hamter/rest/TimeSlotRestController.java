@@ -27,7 +27,7 @@ public class TimeSlotRestController {
     private TimeSlotService timeSlotService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public List<TimeSlotDTO> getAllTimeSlots() {
         return timeSlotService.getAllTimeSlots().stream()
             .map(TimeSlotMapper::toDTO)
@@ -35,27 +35,27 @@ public class TimeSlotRestController {
     }
     
     @GetMapping("/doctor/{doctorId}/timeslot")
-    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public List<TimeSlotDTO> getTimeSlotByDoctor(@PathVariable Long doctorId) {
         return timeSlotService.findTimeSlotByDoctor(doctorId).stream()
             .map(TimeSlotMapper::toDTO)
             .collect(Collectors.toList());
     }
     
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @GetMapping("/{id}")
     public TimeSlotDTO getTimeSlotById(@PathVariable("id") Long id) {
         return TimeSlotMapper.toDTO(timeSlotService.getTimeSlotById(id));
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @PostMapping("/create-timeslot")
     public TimeSlotDTO createTimeSlot(@RequestBody TimeSlotDTO timeSlotDTO) {
         return TimeSlotMapper.toDTO(timeSlotService.saveOrUpdateTimeSlot(
             TimeSlotMapper.toEntity(timeSlotDTO, timeSlotService.getDoctorRepository(), timeSlotService.getScheduleRepository())));
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @PutMapping("/{id}")
     public TimeSlotDTO updateTimeSlot(@PathVariable("id") Long id, @RequestBody TimeSlotDTO timeSlotDTO) {
         timeSlotDTO.setId(id);
@@ -63,7 +63,7 @@ public class TimeSlotRestController {
             TimeSlotMapper.toEntity(timeSlotDTO, timeSlotService.getDoctorRepository(), timeSlotService.getScheduleRepository())));
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @DeleteMapping("/{id}")
     public void deleteTimeSlot(@PathVariable("id") Long id) {
         timeSlotService.deleteTimeSlot(id);

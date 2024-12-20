@@ -28,7 +28,7 @@ public class SpecialtyRestController {
     private SpecialtyService specialtyService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public ResponseEntity<List<SpecialtyDTO>> getAllSpecialties() {
     	List<Specialty> specialties = specialtyService.getAllSpecialties();
         if (specialties.isEmpty()) {
@@ -40,26 +40,26 @@ public class SpecialtyRestController {
         return ResponseEntity.ok(specialtyDTOs);
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @GetMapping("/{id}")
     public Specialty getSpecialtyById(@PathVariable("id") Long id) {
         return specialtyService.getSpecialtyById(id);
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @PostMapping("/create-specialty")
     public Specialty createSpecialty(@RequestBody Specialty specialty) {
         return specialtyService.saveOrUpdateSpecialty(specialty);
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @PutMapping("/{id}")
     public Specialty updateSpecialty(@PathVariable("id") Long id, @RequestBody Specialty specialty) {
     	specialty.setId(id);
         return specialtyService.saveOrUpdateSpecialty(specialty);
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @DeleteMapping("/{id}")
     public void deleteSpecialty(@PathVariable("id") Long id) {
     	specialtyService.deleteSpecialty(id);

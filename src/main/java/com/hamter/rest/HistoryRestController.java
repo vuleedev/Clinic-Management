@@ -29,45 +29,45 @@ public class HistoryRestController {
     private JwTokenUtil jwTokenUtil;
     
     @GetMapping("/all-history/doctor/{doctorId}")
-    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public List<HistoryDTO> getAllHistoriesByDoctor(@PathVariable Long doctorId) {
         return historyService.findAllHistoriesByDoctorId(doctorId);
     }
     
     @GetMapping("/history/{id}")
-    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public HistoryDTO getHistoryById(@PathVariable("id") Long id) {
         return historyService.findById(id);
     }
     
     @GetMapping("/history/user/{userId}")
-    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public HistoryDTO getHistoryByUserId(@PathVariable Long userId) {
         return historyService.findHistoryByUserId(userId);
     }
     
     @GetMapping("/history/user")
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public List<HistoryDTO> getHistoryByUser(@RequestHeader("Authorization") String authorizationHeader) {
     	Long userId = getUserIdFromToken(authorizationHeader);
         return historyService.findHistoryByUser(userId);
     }
     
     @PostMapping("/create-history/{userId}")
-    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public HistoryDTO createHistory(@PathVariable Long userId, @RequestBody HistoryDTO historyDTO) {
         return historyService.create(historyDTO, userId);
     }
 
     @PutMapping("/history/{id}")
-    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public HistoryDTO updateHistory(@PathVariable("id") Long id, @RequestBody HistoryDTO history) {
     	history.setId(id);
         return historyService.update(id, history);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public void deleteHistory(@PathVariable("id") Long id) {
         historyService.delete(id);
     }

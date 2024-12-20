@@ -48,7 +48,7 @@ public class BookingRestController {
 	private JwTokenUtil jwTokenUtil;
 
 	@GetMapping
-	@PreAuthorize("hasAuthority('CUST')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	public List<BookingDTO> getAllBookings() {
 		List<Booking> bookings = bookingService.findAll(); 
 		return bookings.stream() 
@@ -57,7 +57,7 @@ public class BookingRestController {
 	}
 	
 	@GetMapping("/doctor/{doctorId}/booking")
-    @PreAuthorize("hasAuthority('STAFF')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public List<BookingDTO> getBookingByDoctor(@PathVariable Long doctorId) {
         return bookingService.findBookingByDoctor(doctorId).stream()
             .map(BookingMapper::toDTO)
@@ -65,7 +65,7 @@ public class BookingRestController {
     }
 	
 	@GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('CUST')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public ResponseEntity<BookingDTO> getBookingById(@PathVariable("id") Long id) {
         Booking booking = bookingService.findById(id);
 
@@ -77,7 +77,7 @@ public class BookingRestController {
     }
 
 	@GetMapping("/doctors")
-	@PreAuthorize("hasAuthority('CUST')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialty(@RequestParam Long specialtyId) {
 		List<Doctor> doctors = doctorService.findDoctorsBySpecialty(specialtyId);
 		if (doctors.isEmpty()) {
@@ -88,7 +88,7 @@ public class BookingRestController {
 	}
 
 	@GetMapping("/available-times")
-	@PreAuthorize("hasAuthority('CUST')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	public ResponseEntity<List<ElementBookingDTO>> getDoctorsWithAvailableTimes(@RequestParam Long specialtyId,
 			@RequestParam Long doctorId, @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
 		List<ElementBookingDTO> doctorsWithAvailableTimes = bookingService.getDoctorsWithAvailableTimes(specialtyId,
@@ -101,7 +101,7 @@ public class BookingRestController {
 	}
 
 	@PostMapping("/create-booking")
-	@PreAuthorize("hasAuthority('CUST')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	public ResponseEntity<Map<String, String>> createBooking(@RequestBody BookingDTO bookingDTO,
 			@RequestHeader("Authorization") String authorizationHeader) {
 		Long userId = getUserIdFromToken(authorizationHeader);
@@ -124,27 +124,27 @@ public class BookingRestController {
 	}
 	
 	@PutMapping("/update/{id}")
-    @PreAuthorize("hasAuthority('CUST')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public BookingDTO updateBooking(@PathVariable("id") Long id, @RequestBody BookingDTO bookingDTO) {
     	bookingDTO.setId(id);
         return bookingService.update(id, bookingDTO);
     }
 	
 	@GetMapping("/all-booking/user")
-    @PreAuthorize("hasAuthority('CUST')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public List<BookingDTO> getBookingByUserId(@RequestHeader("Authorization") String authorizationHeader) {
         Long userId = getUserIdFromToken(authorizationHeader);
         return bookingService.getBookingByUserId(userId);
     }
 	
 	@DeleteMapping("/booking/user/{id}")
-	@PreAuthorize("hasAuthority('CUST')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	public void deleteBookingByUser(@PathVariable("id") Long id) {
 		bookingService.deleteBookingByUser(id);
 	}
 	
 	@PutMapping("/update/bookings/{id}")
-	@PreAuthorize("hasAuthority('STAFF')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	public void updateStatusBooking(@PathVariable("id") Long id) {
 		bookingService.updateStatusBooking(id);
 	}

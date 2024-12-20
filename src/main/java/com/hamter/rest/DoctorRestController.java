@@ -45,21 +45,21 @@ public class DoctorRestController {
     private RoleRepository roleRepository;
     
     @GetMapping("/doctor/user")
-    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public DoctorDTO getDoctorByUserId(@RequestHeader("Authorization") String authorizationHeader) {
         Long userId = getUserIdFromToken(authorizationHeader);
         return doctorService.findDoctorByUserId(userId);
     }
     
     @GetMapping("/get-doctor-id/{userId}")
-    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public Long getDoctorId(@PathVariable Long userId) {
-        Long doctorId = doctorService.getDoctorIdByUserId(userId); // Lấy doctorId từ logic service
-        return doctorId; // Trả về doctorId
+        Long doctorId = doctorService.getDoctorIdByUserId(userId);
+        return doctorId; 
     }
     
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('CUST', 'MANAGE')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialty(@RequestParam Long specialtyId) {
     	List<Doctor> doctors = doctorService.findDoctorsBySpecialty(specialtyId);
         if (doctors.isEmpty()) {
@@ -71,7 +71,7 @@ public class DoctorRestController {
         return ResponseEntity.ok(doctorDTOs);
     }
     
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @GetMapping("/doctorId-token")
     public Doctor getDoctor(@RequestHeader("Authorization") String authorizationHeader) {
         Long userId = getUserIdFromToken(authorizationHeader);
@@ -79,7 +79,7 @@ public class DoctorRestController {
                 
     }
     
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @GetMapping("/all-doctor")
     public List<DoctorDTO> getAllDoctor() {
         return doctorService.getAllDoctors().stream()
@@ -87,7 +87,7 @@ public class DoctorRestController {
             .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @GetMapping("/{id}")
     public ResponseEntity<Doctor> getDoctorById(@PathVariable Long id) {
         return doctorService.getDoctorById(id)
@@ -97,7 +97,7 @@ public class DoctorRestController {
 
     
     @PostMapping("/create-doctor")
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public ResponseEntity<DoctorDTO> createDoctor(@RequestBody UserDoctorDTO userDoctorDTO) {
         Doctor doctor = UserDoctorMapper.toEntity(userDoctorDTO, specialtyRepository, roleRepository);
         Doctor savedDoctor = doctorService.saveOrUpdateDoctor(doctor);
@@ -107,7 +107,7 @@ public class DoctorRestController {
     }
     
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @PutMapping("/{id}")
     public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable Long id, @RequestBody DoctorDTO doctorDTO) {
         Doctor doctor = DoctorMapper.toEntity(doctorDTO, specialtyRepository);
@@ -122,7 +122,7 @@ public class DoctorRestController {
     }
 
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDoctor(@PathVariable Long id) {
         if (doctorService.getDoctorById(id).isPresent()) {

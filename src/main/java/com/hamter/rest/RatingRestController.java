@@ -21,7 +21,7 @@ public class RatingRestController {
     private RatingService ratingService;
 
     @PutMapping("/save")
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     public ResponseEntity<?> saveRatings(@RequestBody List<RatingDTO> ratingRequests) {
         for (RatingDTO request : ratingRequests) {
             ratingService.saveRating(request.getHistoryId(), request.getRatingValue(), request.getComment());

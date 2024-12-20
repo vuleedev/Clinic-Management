@@ -31,7 +31,7 @@ public class ScheduleRestController {
     @Autowired
     private DoctorRepository doctorRepository; 
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @GetMapping
     public List<ScheduleDTO> getAllSchedules() {
         return scheduleService.findAll().stream()
@@ -39,7 +39,7 @@ public class ScheduleRestController {
             .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @GetMapping("/schedule/{doctorId}")
     public List<ScheduleDTO> getScheduleByDoctorId(@PathVariable Long doctorId) {
         return scheduleService.getScheduleByDoctorId(doctorId).stream()
@@ -47,26 +47,26 @@ public class ScheduleRestController {
             .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @GetMapping("/timeSlots/{scheduleId}")
     public List<List<TimeSlot>> getTimeSlotsBySchedule(@PathVariable Long scheduleId) {
         return scheduleService.getTimeSlotsBySchedule(scheduleId);
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @GetMapping("/{id}")
     public ScheduleDTO getScheduleById(@PathVariable("id") Long id) {
         return ScheduleMapper.toDTO(scheduleService.findById(id));
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @PostMapping("create-schedule")
     public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = ScheduleMapper.toEntity(scheduleDTO, doctorRepository);
         return ScheduleMapper.toDTO(scheduleService.create(schedule));
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @PutMapping("/{id}")
     public ScheduleDTO updateSchedule(@PathVariable("id") Long id, @RequestBody ScheduleDTO scheduleDTO) {
         scheduleDTO.setId(id);
@@ -74,7 +74,7 @@ public class ScheduleRestController {
         return ScheduleMapper.toDTO(scheduleService.update(schedule));
     }
 
-    @PreAuthorize("hasAuthority('CUST')")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
     @DeleteMapping("/{id}")
     public void deleteSchedule(@PathVariable("id") Long id) {
         scheduleService.delete(id);

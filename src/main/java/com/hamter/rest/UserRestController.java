@@ -31,31 +31,31 @@ public class UserRestController {
     }
 	
 	@GetMapping
-	@PreAuthorize("hasAuthority('CUST')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	public List<User> getAllUsers() {
 		return userService.findAll();
 	}
 
-	@PreAuthorize("hasAuthority('CUST')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	@GetMapping("/{id}")
 	public User getUserById(@PathVariable("id") Long id) {
 		return userService.findById(id);
 	}
 
-	@PreAuthorize("hasAuthority('CUST')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	@PostMapping("/create-user")
 	public User createUser(@RequestBody User user) {
 		return userService.create(user);
 	}
 
-	@PreAuthorize("hasAuthority('CUST')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	@PutMapping("/{id}")
 	public User updateUser(@PathVariable("id") Long id, @RequestBody User user) {
 		user.setId(id);
 		return userService.update(user);
 	}
 
-	@PreAuthorize("hasAuthority('CUST')")
+	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	@DeleteMapping("/{id}")
 	public void deleteUser(@PathVariable("id") Long id) {
 		userService.delete(id);
