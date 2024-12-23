@@ -41,7 +41,7 @@ public class EmailContentService {
         return new EmailDTO(subject, body);
     }
 
-    public EmailDTO getNotAttendedBookingEmailContent() {
+    public EmailDTO getNotAttendedBookingEmailContent() {	
         String subject = "Thông báo về trạng thái cuộc hẹn";
         String body = "Cuộc hẹn của bạn không được tham dự.";
         return new EmailDTO(subject, body);
