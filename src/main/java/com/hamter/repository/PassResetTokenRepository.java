@@ -5,10 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.hamter.model.PassResetToken;
+import com.hamter.entity.PassToken;
 
 @Repository
-public interface PassResetTokenRepository extends JpaRepository<PassResetToken, Long> {
+public interface PassResetTokenRepository extends JpaRepository<PassToken, Long> {
 
-	Optional<PassResetToken> findByToken(String token);
+	Optional<PassToken> findByToken(String token);
 }

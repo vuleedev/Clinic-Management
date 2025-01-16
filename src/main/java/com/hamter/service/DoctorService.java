@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.hamter.dto.DoctorDTO;
 import com.hamter.mapper.DoctorMapper;
-import com.hamter.model.Doctor;
+import com.hamter.entity.Doctor;
 import com.hamter.repository.DoctorRepository;
 
 @Service

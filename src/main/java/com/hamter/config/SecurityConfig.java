@@ -1,5 +1,6 @@
 package com.hamter.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,7 +25,10 @@ public class SecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
+    
+    @Autowired
+    private OAuth2LoginSuccessHandler oauth2LoginSuccessHandler;
+    
     public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -59,7 +63,7 @@ public class SecurityConfig {
             .anyRequest().authenticated()
             .and()
             .oauth2Login()
-            .defaultSuccessUrl("http://localhost:4200/home", true)
+            .successHandler(oauth2LoginSuccessHandler)
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         	

@@ -11,4 +11,5 @@ public class RegisterRequest {
     private String userName;
     private Boolean genDer;
     private String address;
+    private String phoneNumber;
 }

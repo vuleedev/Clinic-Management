@@ -1,4 +1,4 @@
-package com.hamter.rest.pass;
+package com.hamter.controller.pass;
 
 import java.util.Date;
 import java.util.UUID;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hamter.model.PassResetToken;
-import com.hamter.model.User;
+import com.hamter.entity.PassToken;
+import com.hamter.entity.User;
 import com.hamter.repository.PassResetTokenRepository;
 import com.hamter.repository.UserRepository;
 
@@ -39,13 +39,13 @@ public class PassResetRestController {
 
         String token = UUID.randomUUID().toString();
 
-        PassResetToken resetToken = new PassResetToken();
+        PassToken resetToken = new PassToken();
         resetToken.setToken(token);
         resetToken.setUser(user);
         resetToken.setExpiryDate(new Date(System.currentTimeMillis() + 600000)); //10p
         passResetTokenRepository.save(resetToken);
 
-        String resetUrl = "http://localhost:8080/reset-password?token=" + token;
+        String resetUrl = "http://localhost:4200/reset-password?token=" + token;
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
         message.setSubject("Yêu cầu đặt lại mật khẩu");

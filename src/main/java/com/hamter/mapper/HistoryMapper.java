@@ -3,7 +3,7 @@ package com.hamter.mapper;
 import org.modelmapper.ModelMapper;
 
 import com.hamter.dto.HistoryDTO;
-import com.hamter.model.History;
+import com.hamter.entity.History;
 import com.hamter.repository.DoctorRepository;
 import com.hamter.repository.UserRepository;
 

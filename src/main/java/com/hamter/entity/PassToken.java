@@ -1,4 +1,4 @@
-package com.hamter.model;
+package com.hamter.entity;
 
 import java.util.Date;
 
@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "prtoken")
-public class PassResetToken {
+public class PassToken {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

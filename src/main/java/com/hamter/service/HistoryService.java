@@ -6,13 +6,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hamter.dto.BookingDTO;
 import com.hamter.dto.HistoryDTO;
-import com.hamter.mapper.BookingMapper;
 import com.hamter.mapper.HistoryMapper;
-import com.hamter.model.Booking;
-import com.hamter.model.History;
-import com.hamter.model.User;
+import com.hamter.entity.History;
+import com.hamter.entity.User;
 import com.hamter.repository.DoctorRepository;
 import com.hamter.repository.HistoryRepository;
 import com.hamter.repository.UserRepository;
@@ -29,27 +26,21 @@ public class HistoryService {
 	@Autowired
 	private DoctorRepository doctorRepository;
 
-	public List<HistoryDTO> findAll() {
-		return historyRepository.findAll().stream().map(HistoryMapper::toDTO).collect(Collectors.toList());
-	}
-
 	public HistoryDTO findById(Long id) {
 		History history = historyRepository.findById(id).orElse(null);
 		return HistoryMapper.toDTO(history);
 	}
-	
+
 	public HistoryDTO findHistoryByUserId(Long userId) {
 		History history = historyRepository.findByUser_Id(userId);
 		return HistoryMapper.toDTO(history);
 	}
-	
+
 	public List<HistoryDTO> findHistoryByUser(Long userId) {
-        List<History> history = historyRepository.findAllByUser_Id(userId);
-        return history.stream()
-        		.map(HistoryMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-	
+		List<History> history = historyRepository.findAllByUser_Id(userId);
+		return history.stream().map(HistoryMapper::toDTO).collect(Collectors.toList());
+	}
+
 	public HistoryDTO create(HistoryDTO historyDTO, Long userId) {
 		History history = HistoryMapper.toEntity(historyDTO, userRepository, doctorRepository);
 		User user = userRepository.findById(userId).orElse(null);

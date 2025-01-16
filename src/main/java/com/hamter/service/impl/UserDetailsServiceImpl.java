@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.hamter.model.User;
+import com.hamter.entity.User;
 import com.hamter.repository.UserRepository;
 
 @Service

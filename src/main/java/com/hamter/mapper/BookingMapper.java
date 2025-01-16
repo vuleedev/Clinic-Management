@@ -3,7 +3,7 @@ package com.hamter.mapper;
 import org.modelmapper.ModelMapper;
 
 import com.hamter.dto.BookingDTO;
-import com.hamter.model.Booking;
+import com.hamter.entity.Booking;
 import com.hamter.repository.DoctorRepository;
 import com.hamter.repository.TimeSlotRepository;
 import com.hamter.repository.UserRepository;

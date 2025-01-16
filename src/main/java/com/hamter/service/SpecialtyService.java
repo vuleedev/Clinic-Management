@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hamter.model.Specialty;
+import com.hamter.entity.Specialty;
 import com.hamter.repository.SpecialtyRepository;
 
 @Service

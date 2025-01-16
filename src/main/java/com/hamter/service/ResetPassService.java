@@ -5,8 +5,8 @@ import java.util.Date;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.hamter.model.PassResetToken;
-import com.hamter.model.User;
+import com.hamter.entity.PassToken;
+import com.hamter.entity.User;
 import com.hamter.repository.PassResetTokenRepository;
 import com.hamter.repository.UserRepository;
 
@@ -24,7 +24,7 @@ public class ResetPassService {
     }
 
     public String changeResetPassword(String token, String newPassword) {
-        PassResetToken resetToken = passResetTokenRepository.findByToken(token).orElse(null);
+        PassToken resetToken = passResetTokenRepository.findByToken(token).orElse(null);
         if (resetToken == null) {
             return "Token không hợp lệ";
         }

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.hamter.model.TimeSlot;
+import com.hamter.entity.TimeSlot;
 
 @Repository
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {

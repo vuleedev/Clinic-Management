@@ -3,7 +3,6 @@ package com.hamter.service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +21,9 @@ import com.hamter.dto.email.EmailDTO;
 import com.hamter.mapper.BookingMapper;
 import com.hamter.mapper.DoctorMapper;
 import com.hamter.mapper.TimeSlotMapper;
-import com.hamter.model.Booking;
-import com.hamter.model.Doctor;
-import com.hamter.model.TimeSlot;
+import com.hamter.entity.Booking;
+import com.hamter.entity.Doctor;
+import com.hamter.entity.TimeSlot;
 import com.hamter.repository.BookingRepository;
 import com.hamter.repository.DoctorRepository;
 import com.hamter.repository.TimeSlotRepository;
@@ -73,12 +72,8 @@ public class BookingService {
 	
 	public List<ElementBookingDTO> getDoctorsWithAvailableTimes(Long specialtyId, Long doctorId, Date date) {
 		List<Doctor> doctors = doctorService.findDoctorsBySpecialty(specialtyId);
-		if (doctors.isEmpty()) {
-			return Collections.emptyList();
-		}
 		List<TimeSlot> availableTimeSlots = timeSlotService.findAvailableTimeSlots(doctorId, date);
-		List<TimeSlotDTO> timeSlotDTOs = availableTimeSlots.stream().map(TimeSlotMapper::toDTO)
-				.collect(Collectors.toList());
+		List<TimeSlotDTO> timeSlotDTOs = availableTimeSlots.stream().map(TimeSlotMapper::toDTO).collect(Collectors.toList());
 		return doctors.stream().map(doctor -> {
 			DoctorDTO doctorDTO = DoctorMapper.toDTO(doctor);
 			List<TimeSlotDTO> doctorTimeSlots = timeSlotDTOs.stream().collect(Collectors.toList());

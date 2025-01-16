@@ -1,4 +1,4 @@
-package com.hamter.rest;
+package com.hamter.controller;
 
 import java.util.List;
 

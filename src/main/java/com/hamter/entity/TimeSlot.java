@@ -1,6 +1,5 @@
-package com.hamter.model;
+package com.hamter.entity;
 
-import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Date;
 
@@ -23,7 +22,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "TimeSlots")
-public class TimeSlot implements Serializable {
+public class TimeSlot {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

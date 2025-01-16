@@ -1,4 +1,4 @@
-package com.hamter.rest;
+package com.hamter.controller;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -27,8 +27,8 @@ import com.hamter.dto.DoctorDTO;
 import com.hamter.dto.booking.ElementBookingDTO;
 import com.hamter.mapper.BookingMapper;
 import com.hamter.mapper.DoctorMapper;
-import com.hamter.model.Booking;
-import com.hamter.model.Doctor;
+import com.hamter.entity.Booking;
+import com.hamter.entity.Doctor;
 import com.hamter.service.BookingService;
 import com.hamter.service.DoctorService;
 
@@ -50,31 +50,34 @@ public class BookingRestController {
 	@GetMapping
 	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	public List<BookingDTO> getAllBookings() {
-		List<Booking> bookings = bookingService.findAll(); 
-		return bookings.stream() 
-				.map(BookingMapper::toDTO).collect(Collectors.toList()); 
+		List<Booking> bookings = bookingService.findAll();
+		return bookings
+				.stream()
+				.map(BookingMapper::toDTO)
+				.collect(Collectors.toList());
 
 	}
-	
+
 	@GetMapping("/doctor/{doctorId}/booking")
 	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
-    public List<BookingDTO> getBookingByDoctor(@PathVariable Long doctorId) {
-        return bookingService.findBookingByDoctor(doctorId).stream()
-            .map(BookingMapper::toDTO)
-            .collect(Collectors.toList());
-    }
-	
+	public List<BookingDTO> getBookingByDoctor(@PathVariable Long doctorId) {
+		return bookingService.findBookingByDoctor(doctorId)
+				.stream()
+				.map(BookingMapper::toDTO)
+				.collect(Collectors.toList());
+	}
+
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
-    public ResponseEntity<BookingDTO> getBookingById(@PathVariable("id") Long id) {
-        Booking booking = bookingService.findById(id);
+	public ResponseEntity<BookingDTO> getBookingById(@PathVariable("id") Long id) {
+		Booking booking = bookingService.findById(id);
 
-        if (booking != null) {
-            BookingDTO bookingDTO = BookingMapper.toDTO(booking);
-            return ResponseEntity.ok(bookingDTO);
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    }
+		if (booking != null) {
+			BookingDTO bookingDTO = BookingMapper.toDTO(booking);
+			return ResponseEntity.ok(bookingDTO);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+	}
 
 	@GetMapping("/doctors")
 	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
@@ -91,8 +94,7 @@ public class BookingRestController {
 	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	public ResponseEntity<List<ElementBookingDTO>> getDoctorsWithAvailableTimes(@RequestParam Long specialtyId,
 			@RequestParam Long doctorId, @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-		List<ElementBookingDTO> doctorsWithAvailableTimes = bookingService.getDoctorsWithAvailableTimes(specialtyId,
-				doctorId, date);
+		List<ElementBookingDTO> doctorsWithAvailableTimes = bookingService.getDoctorsWithAvailableTimes(specialtyId, doctorId, date);
 		if (doctorsWithAvailableTimes.isEmpty()) {
 			return ResponseEntity.noContent().build();
 		}
@@ -117,39 +119,38 @@ public class BookingRestController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 	}
-	
+
 	@DeleteMapping("{id}")
 	public void delete(@PathVariable("id") Long id) {
 		bookingService.delete(id);
 	}
-	
+
 	@PutMapping("/update/{id}")
 	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
-    public BookingDTO updateBooking(@PathVariable("id") Long id, @RequestBody BookingDTO bookingDTO) {
-    	bookingDTO.setId(id);
-        return bookingService.update(id, bookingDTO);
-    }
-	
+	public BookingDTO updateBooking(@PathVariable("id") Long id, @RequestBody BookingDTO bookingDTO) {
+		bookingDTO.setId(id);
+		return bookingService.update(id, bookingDTO);
+	}
+
 	@GetMapping("/all-booking/user")
 	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
-    public List<BookingDTO> getBookingByUserId(@RequestHeader("Authorization") String authorizationHeader) {
-        Long userId = getUserIdFromToken(authorizationHeader);
-        return bookingService.getBookingByUserId(userId);
-    }
-	
+	public List<BookingDTO> getBookingByUserId(@RequestHeader("Authorization") String authorizationHeader) {
+		Long userId = getUserIdFromToken(authorizationHeader);
+		return bookingService.getBookingByUserId(userId);
+	}
+
 	@DeleteMapping("/booking/user/{id}")
 	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	public void deleteBookingByUser(@PathVariable("id") Long id) {
 		bookingService.deleteBookingByUser(id);
 	}
-	
+
 	@PutMapping("/update/bookings/{id}")
 	@PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
 	public void updateStatusBooking(@PathVariable("id") Long id) {
 		bookingService.updateStatusBooking(id);
 	}
-	
-	
+
 	private Long getUserIdFromToken(String authorizationHeader) {
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 			String jwtToken = authorizationHeader.substring(7);

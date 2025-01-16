@@ -1,4 +1,4 @@
-package com.hamter.rest;
+package com.hamter.controller;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hamter.model.User;
+import com.hamter.entity.User;
 import com.hamter.service.UserService;
 
 @RestController

@@ -3,7 +3,7 @@ package com.hamter.mapper;
 import org.modelmapper.ModelMapper;
 
 import com.hamter.dto.UserDTO;
-import com.hamter.model.User;
+import com.hamter.entity.User;
 
 public class UserMapper {
 	private static final ModelMapper modelMapper = new ModelMapper();

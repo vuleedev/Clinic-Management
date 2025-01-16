@@ -1,4 +1,4 @@
-package com.hamter.rest.pass;
+package com.hamter.controller.pass;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.dto.auth.PassResetRequest;
 import com.hamter.dto.auth.ResponseMessage;
-import com.hamter.model.PassResetToken;
+import com.hamter.entity.PassToken;
 import com.hamter.repository.PassResetTokenRepository;
 import com.hamter.service.ResetPassService;
 
@@ -31,7 +31,7 @@ public class PassChangeRestController {
 
     @GetMapping("/reset-password")
     public ResponseEntity<?> checkToken(@RequestParam String token) {
-        PassResetToken resetToken = passResetTokenRepository.findByToken(token).orElse(null);
+        PassToken resetToken = passResetTokenRepository.findByToken(token).orElse(null);
         if (resetToken == null) {
             return ResponseEntity.badRequest().body(new ResponseMessage("Token không hợp lệ", "error", null));
         }
@@ -39,7 +39,7 @@ public class PassChangeRestController {
             return ResponseEntity.badRequest().body(new ResponseMessage("Token đã hết hạn", "error", null));
         }
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.LOCATION, "http://localhost:4200/reset-password?token=" + token);
+        headers.add(HttpHeaders.LOCATION, "https://booking-website-five.vercel.app/reset-password?token=" + token);
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
 

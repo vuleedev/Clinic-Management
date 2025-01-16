@@ -1,4 +1,4 @@
-package com.hamter.rest;
+package com.hamter.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.dto.ScheduleDTO;
 import com.hamter.mapper.ScheduleMapper;
-import com.hamter.model.Schedule;
-import com.hamter.model.TimeSlot;
+import com.hamter.entity.Schedule;
+import com.hamter.entity.TimeSlot;
 import com.hamter.repository.DoctorRepository; // Injecting DoctorRepository
 import com.hamter.service.ScheduleService;
 
@@ -32,7 +32,7 @@ public class ScheduleRestController {
     private DoctorRepository doctorRepository; 
 
     @PreAuthorize("hasAnyAuthority('STAFF', 'MANAGE', 'CUST')")
-    @GetMapping
+    @GetMapping("/all-schedule")
     public List<ScheduleDTO> getAllSchedules() {
         return scheduleService.findAll().stream()
             .map(ScheduleMapper::toDTO)

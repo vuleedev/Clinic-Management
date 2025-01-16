@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.hamter.model.Role;
-import com.hamter.model.User;
+import com.hamter.entity.Role;
+import com.hamter.entity.User;
 import com.hamter.repository.UserRepository;
 
 @Service
@@ -32,13 +32,14 @@ public class AuthService {
         return user;
     }
 
-    public void registerUser(String email, String password, String userName, Boolean gender, String andress) {
+    public void registerUser(String email, String password, String userName, Boolean gender, String andress, String phoneNumber) {
         String encodedPassword = passwordEncoder.encode(password);
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setPassword(encodedPassword);
         newUser.setUserName(userName);
         newUser.setGender(gender);
+        newUser.setPhoneNumber(phoneNumber);
         newUser.setAddress(andress);
         newUser.setCreatedAt(new Date());
         newUser.setUpdatedAt(new Date());

@@ -3,7 +3,7 @@ package com.hamter.mapper;
 import org.modelmapper.ModelMapper;
 
 import com.hamter.dto.ScheduleDTO;
-import com.hamter.model.Schedule;
+import com.hamter.entity.Schedule;
 import com.hamter.repository.DoctorRepository;
 
 public class ScheduleMapper {

@@ -1,4 +1,4 @@
-package com.hamter.model;
+package com.hamter.entity;
 
 import java.time.LocalDateTime;
 

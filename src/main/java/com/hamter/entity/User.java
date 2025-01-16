@@ -1,6 +1,5 @@
-package com.hamter.model;
+package com.hamter.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -19,7 +18,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+public class User  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

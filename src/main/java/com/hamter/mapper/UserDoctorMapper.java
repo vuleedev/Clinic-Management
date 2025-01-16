@@ -3,9 +3,9 @@ package com.hamter.mapper;
 import org.modelmapper.ModelMapper;
 
 import com.hamter.dto.UserDoctorDTO;
-import com.hamter.model.Doctor;
-import com.hamter.model.Role;
-import com.hamter.model.User;
+import com.hamter.entity.Doctor;
+import com.hamter.entity.Role;
+import com.hamter.entity.User;
 import com.hamter.repository.RoleRepository;
 import com.hamter.repository.SpecialtyRepository;
 

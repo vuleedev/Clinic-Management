@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import org.modelmapper.ModelMapper;
 
 import com.hamter.dto.TimeSlotDTO;
-import com.hamter.model.TimeSlot;
+import com.hamter.entity.TimeSlot;
 import com.hamter.repository.DoctorRepository;
 import com.hamter.repository.ScheduleRepository;
 

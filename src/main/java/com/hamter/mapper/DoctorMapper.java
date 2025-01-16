@@ -3,7 +3,7 @@ package com.hamter.mapper;
 import org.modelmapper.ModelMapper;
 
 import com.hamter.dto.DoctorDTO;
-import com.hamter.model.Doctor;
+import com.hamter.entity.Doctor;
 import com.hamter.repository.SpecialtyRepository;
 
 public class DoctorMapper {

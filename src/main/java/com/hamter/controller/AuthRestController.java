@@ -1,4 +1,4 @@
-package com.hamter.rest;
+package com.hamter.controller;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hamter.dto.auth.CPasswordRequest;
 import com.hamter.dto.auth.LoginRequest;
 import com.hamter.dto.auth.RegisterRequest;
-import com.hamter.model.User;
+import com.hamter.entity.User;
 import com.hamter.service.AuthService;
 import com.hamter.util.JwTokenUtil;
 
@@ -37,6 +37,7 @@ public class AuthRestController {
             						 registerRequest.getPassword(),
             						 registerRequest.getUserName(),
             						 registerRequest.getGenDer(),
+            						 registerRequest.getPhoneNumber(),
             						 registerRequest.getAddress());
             Map<String, String> response = new HashMap<>();
             response.put("message", "Đăng ký tài khoản thành công!");

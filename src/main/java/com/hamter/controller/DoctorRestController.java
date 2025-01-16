@@ -1,4 +1,4 @@
-package com.hamter.rest;
+package com.hamter.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +22,7 @@ import com.hamter.dto.DoctorDTO;
 import com.hamter.dto.UserDoctorDTO;
 import com.hamter.mapper.DoctorMapper;
 import com.hamter.mapper.UserDoctorMapper;
-import com.hamter.model.Doctor;
+import com.hamter.entity.Doctor;
 import com.hamter.repository.RoleRepository;
 import com.hamter.repository.SpecialtyRepository;
 import com.hamter.service.DoctorService;

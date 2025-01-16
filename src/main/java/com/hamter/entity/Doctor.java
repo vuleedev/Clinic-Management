@@ -1,15 +1,18 @@
-package com.hamter.model;
+package com.hamter.entity;
 
-import java.io.Serializable;
+
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -18,32 +21,32 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "bookings")
-public class Booking implements Serializable {
+@Table(name = "doctors")
+public class Doctor  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String statusId;
+    @Column(columnDefinition = "nvarchar(50)")
+    private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "doctor_id", nullable = false)
-    private Doctor doctor;
+    private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    private String phoneNumber;
+
+    private Boolean gender;
+
+    @Lob
+    private String profilePicture;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
-
-    @Column(columnDefinition = "nvarchar(max)")
-    private String cancelReason;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date date;
-
+    
     @ManyToOne
-    @JoinColumn(name = "time_slot_id", nullable = false)
-    private TimeSlot timeSlot;
+    @JoinColumn(name = "specialty_id", nullable = false)
+    private Specialty specialty;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt", nullable = false)
@@ -52,5 +55,4 @@ public class Booking implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updatedAt", nullable = false)
     private Date updatedAt;
-
 }

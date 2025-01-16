@@ -3,7 +3,7 @@ package com.hamter.mapper;
 import org.modelmapper.ModelMapper;
 
 import com.hamter.dto.SpecialtyDTO;
-import com.hamter.model.Specialty;
+import com.hamter.entity.Specialty;
 
 public class SpecialtyMapper {
     private static final ModelMapper modelMapper = new ModelMapper();

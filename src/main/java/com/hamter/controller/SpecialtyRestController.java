@@ -1,4 +1,4 @@
-package com.hamter.rest;
+package com.hamter.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hamter.dto.SpecialtyDTO;
 import com.hamter.mapper.SpecialtyMapper;
-import com.hamter.model.Specialty;
+import com.hamter.entity.Specialty;
 import com.hamter.service.SpecialtyService;
 
 @RestController

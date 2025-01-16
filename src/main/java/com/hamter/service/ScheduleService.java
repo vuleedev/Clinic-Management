@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hamter.model.Schedule;
-import com.hamter.model.TimeSlot;
+import com.hamter.entity.Schedule;
+import com.hamter.entity.TimeSlot;
 import com.hamter.repository.ScheduleRepository;
 import com.hamter.repository.TimeSlotRepository;
 
